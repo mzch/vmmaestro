@@ -63,3 +63,13 @@ Reboot VMs.
 #### vmmaestro status [VM [VM [VM]...]]
 If VM is running, shows the message, "```VM name is running.```".
 Otherwise shows the message, "```VM name is stopped.```"
+
+#### vmmaestro console VM
+Connect serial port and show local text screen. 
+
+#### vmmaestro monitor VM
+Connect KVM/QEMU monitor port.
+
+----
+## Hint    
+* By default, VNC port is bind to localhost address (127.0.0.1). I recommend use ```SSH tunneling``` instead of changing bind address.
