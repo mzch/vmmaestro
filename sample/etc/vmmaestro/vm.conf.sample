@@ -1,0 +1,55 @@
+##############################
+## VM spesific configuration
+##############################
+vm=vm_name
+
+##############################
+## Display type
+display='vnc'
+# VNC Server Bind address
+vnc_bind='127.0.0.1'
+# VNC display number
+vnc_display='0'
+#
+#display='spice'
+#spice_port=10000
+
+##############################
+## Memory Settings (MB)
+vmem=1024
+
+##############################
+## Storage Settings
+
+## Disk Drive Device
+disk[0]='vm-swap'
+disk[1]='vm-root'
+
+##############################
+## Floppy Settings
+#floppy[0]=
+#floppy[1]=
+
+##############################
+## CD-ROM Settings
+iso=/etc/vmmaestro/img/linux.iso
+
+##############################
+## Network Settings
+# First NIC
+nic_type[0]='virtio'
+nic_addr[0]='00:16:3E:00:00:00'
+nic_name[0]='primary'
+nic_bridge[0]='br0'
+# Second NIC
+nic_type[1]='virtio'
+nic_addr[1]='00:16:3E:00:00:01'
+nic_name[1]='secondary'
+nic_bridge[1]='br1'
+
+##############################
+## Keyboard Settings
+lang='ja'
+
+##############################
+## CPU Settings

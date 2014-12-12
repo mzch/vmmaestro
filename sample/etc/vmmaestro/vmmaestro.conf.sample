@@ -1,0 +1,84 @@
+################################################################
+###  vmmaestro - system default settings
+################################################################
+
+##################################################
+## CPU
+vmodel=kvm64
+#
+vcpu=1
+vcore=2
+vthread=2
+vsocket=1
+
+##################################################
+## Memory (MB)
+vmem=2048
+
+##################################################
+## Storage
+diskvg=vm
+## Disk Settings
+disk_if=virtio
+disk_fmt=raw
+
+##################################################
+## CD-ROM
+##  specify the full path of the iso image file
+iso=
+
+##################################################
+## Keyboard Settings
+lang='en-us'
+#lang='ja'
+
+##################################################
+## Clock
+use_utctime='y'
+sync_host='y'
+
+##################################################
+# display	'vnc'
+#        	'spice'
+display='vnc'
+vnc_bind='127.0.0.1'
+
+##################################################
+# VGA Card Type
+# 'std'		recommend
+# 'qxl'		recommend in use of 'SPiCE'
+# 'cirrus'
+# 'vmware'
+# 'none'	Do Not use graphical display
+vga_type='std'
+
+##################################################
+### User
+runas='kvm'
+
+##################################################
+## Network
+VMNICUP=$SYSDIR/ifup.sh
+VMNICDOWN=$SYSDIR/ifdown.sh
+
+##################################################
+### Certificate
+#SSLDIR=/etc/vmmaestro/ssl
+SSLDIR=/home/$runas/.qemu/ssl
+
+##################################################
+### SASL
+#SASL_CONF_PATH=/etc/sasl2/qemu.conf
+SASL_CONF_PATH=/home/$runas/.qemu/sasl2/sasl2.conf
+export SASL_CONF_PATH
+
+##################################################
+### Base Settings
+RUNDIR=/var/run/vmmaestro
+LIBDIR=/var/lib/vmmaestro
+
+##################################################
+# DO NOT MODIFY BELOW!!
+###
+QEMU='qemu-system-x86_64'
+################################################################
