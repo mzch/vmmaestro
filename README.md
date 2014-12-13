@@ -8,39 +8,44 @@ vmmaestro (:D) is a simple command line tool to start, shutdown VMs and help to 
 ----
 ## Instllation    
 ### Step 1
-clone repogitory.    
+Clone this repogitory.    
 ### Step 2
 * Copy vmmaestor, which is a shell script, to anywhere you'd like, i.e. /usr/local/bin/
 * Create ```/etc/vmmaestro``` directory.
-* Copy ifup.sh & ifdown.sh to ```/etc/vmmaestro```
-* Create global configuration file, ```/etc/vmmaestro/vmmaestro.conf``` by using ```vmmaestro.conf.sample```
     
 ### Step 3
-If you will use SPiCE and TLS, place 3 files into ```/etc/vmmaestro/ssl```.
-* ca-cert.pem, this is a merged file with CA Root certificate and CA intermediate certificate.
-* server-ca.pem, this is a server certificate.
-* server-key.pem, this is a private key file.
+If you use SPiCE and TLS, place 3 files into ```/etc/vmmaestro/ssl```.
+* A PEM formated file merged CA Root certificate with CA intermediate certificate. It must be named ```ca-cert.pem```.
+* A server certificate issued by CA. It must be named ```server-ca.pem```.
+* A private key file. It must be named ```server-key.pem```.
 
 ### Step 4
-You must install ```sudo```, ```brctl``` package and ```qemu-kvm``` packages.
+Install ```sudo```, ```sasl2-bin```, ```brctl``` and ```qemu-kvm``` packages.
 
 ### Step 5
-* if not created ```kvm``` user or other, add ```kvm``` user account.
-* Add ```kvm``` user to /etc/sudoers (this repo includes a sample settings).
+* If not created ```kvm``` user or other, add ```kvm``` user account.
+* Add ```kvm``` user to /etc/sudoers (this repository includes a sample settings).
 
 #### Step 6
-* create volume group and lvm partitions as you prefer.
+* Create volume group and lvm partitions for VM as you prefer.
 
 #### Step 7
-* create VM spefcific configuration file in ```/etc/vmmaestro```. The file name must be the same name as VM and an extension is '.conf'
+* Add TUN/tap kernel module, ```tun``` to the system. (execute '```modprobe tun```')
 
 #### Step 8
-* Add TUN/tap kernel module, ```tun``` to the system. (```modprobe tun```)
-
-#### Step 9
 * Add bridge interface per NIC. Recommend to name a bridge like '```br0```', '```br1```'...
 
+#### Step 9
+* Create a sasl configuration file for QEMU (this repository includes a sample config file).
+* Add user and password to the sasl database by using ```saslpasswd2```.    
+	This is required to access VNC/SPiCE Console.    
+
 #### Step 10
+* Create the global configuration file, ```/etc/vmmaestro/vmmaestro.conf``` by using ```vmmaestro.conf.sample```
+* Create the VM specific configuration file in ```/etc/vmmaestro```. The file name must be the same name as VM and has an extension, '```.conf```'.
+* You can put all settings in the VM specific configuration and leave blank the global configuration. However, I recommend to put as many common settings as possible in the global configuration file. When the same item in both file, **the one put into the VM specific configuration is given priority**.
+
+#### Step 11
 * Type ```vmmaestro start vm-name``` and enjoy!
 
 ----
@@ -52,8 +57,7 @@ start VMs. This command can boot multiple VMs.
 shutdown VMs. When entering this command, VMs will do shutdown sequences.
 
 #### vmmaestro stop [VM [VM [VM]...]]
-stop VMs. When entering this command, VMs will terminate immediately.
-
+stop VMs. When entering this command, VMs will terminate immediately
 #### vmmaestro kill [VM [VM [VM]...]]
 kill kvm process directly.
 

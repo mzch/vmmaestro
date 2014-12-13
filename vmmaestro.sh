@@ -111,25 +111,46 @@ function create_network_adaptor
   while [[ x${nic_type[$idx]} != x ]];
   do
 
-    nic_arg='-net nic'
-    if [[ ${nic_vlan[$idx]} ]]; then
-      nic_arg=$nic_arg',vlan='${nic_vlan[$idx]}
+    if [[ x${nic_model[$idx]} == x ]]; then
+      echo "Not specified NIC model: "$idx
+      exit 13
     fi
-    if [[ ${nic_addr[$idx]} ]]; then
-      nic_arg=$nic_arg',macaddr='${nic_addr[$idx]}
-    fi
-    nic_arg=$nic_arg',model='${nic_type[$idx]}
-    if [[ ${nic_name[$idx]} ]]; then
-      nic_arg=$nic_arg',name='${nic_name[$idx]}
-    fi
-    net_args=$net_args' '$nic_arg
-
-    nic_arg='-net tap'
-    if [[ ${nic_vlan[$idx]} ]]; then
-      nic_arg=$nic_arg',vlan='${nic_vlan[$idx]}
-    fi
-    nic_arg=$nic_arg',ifname='${nic_bridge[$idx]}
-    nic_arg=$nic_arg',script='$VMNICUP',downscript='$VMNICDOWN
+    case "${nic_type[$idx]}" in
+      "bridge")
+        nic_arg='-net nic'
+        if [[ ${nic_vlan[$idx]} ]]; then
+          nic_arg=$nic_arg',vlan='${nic_vlan[$idx]}
+        fi
+        if [[ ${nic_addr[$idx]} ]]; then
+          nic_arg=$nic_arg',macaddr='${nic_addr[$idx]}
+        fi
+        nic_arg=$nic_arg',model='${nic_model[$idx]}
+        if [[ ${nic_name[$idx]} ]]; then
+          nic_arg=$nic_arg',name='${nic_name[$idx]}
+        fi
+        nic_arg=$nic_arg'-net '${nic_type[$idx]}
+        if [[ ${nic_vlan[$idx]} ]]; then
+          nic_arg=$nic_arg',vlan='${nic_vlan[$idx]}
+        fi
+        nic_arg=$nic_arg',br='${nic_bridge[$idx]}
+        ;;
+      "vhost")
+        nic_arg='-netdev tap,id='${nic_id[$idx]}
+        nic_arg=$nic_arg',vhost=on,script=no'
+        nic_arg=$nic_arg' -net model='${nic_model[$idx]}
+        nic_arg=$nic_arg',netdev='${nic_id[$idx]}
+        if [[ ${nic_addr[$idx]} ]]; then
+          nic_arg=$nic_arg',macaddr='${nic_addr[$idx]}
+        fi
+        if [[ ${nic_name[$idx]} ]]; then
+          nic_arg=$nic_arg',name='${nic_name[$idx]}
+        fi
+        ;;
+      *)
+        echo "Unknown network type: "${nic_type[$idx]}
+        exit 13
+        ;;
+    esac
     net_args=$net_args' '$nic_arg
 
     ((idx=idx+1))
@@ -146,7 +167,7 @@ function create_display
   fi
   case "$display" in
     vnc)
-      disp_args='-vnc '$vnc_bind:$vnc_display
+      disp_args='-vnc '$vnc_bind:$vnc_display',sasl'
       ;;
     spice)
       disp_args='-spice sasl,tls-port='$spice_port',x509-dir='$SSLDIR
@@ -252,7 +273,12 @@ function build_cmdline
   create_rtc
   get_pid_file
 
-  CMDLINE=$QEMU' -enable-kvm -daemonize -runas '$runas' '$cpu_args
+  if [[ $QEMU == 'kvm' ]]; then
+    CMDLINE=$QEMU
+  else
+    CMDLINE=$QEMU' -enable-kvm'
+  fi
+  CMDLINE=$CMDLINE' -daemonize -runas '$runas' '$cpu_args
   CMDLINE=$CMDLINE' '$disk_args' '$cd_args' '$fd_args
   CMDLINE=$CMDLINE' '$net_args' '$kbd_args
   CMDLINE=$CMDLINE' '$disp_args' '$console_args' '$rtc_args
@@ -268,13 +294,6 @@ function build_cmdline
 ########################################
 function read_conf
 {
-  declare -A drive
-  declare -A floppy
-  declare -A nic_type
-  declare -A nic_addr
-  declare -A nic_name
-  declare -A nic_bridge
-
   def_conf=$SYSDIR/vmmaestro.conf
 
   if [ ! -f $def_conf ]; then
@@ -411,6 +430,8 @@ function status_vm
 
 if [[ $use_sudo == 'y' ]]; then
   SUDO='sudo'
+else
+  SUDO=
 fi
 
 cmd=$1
