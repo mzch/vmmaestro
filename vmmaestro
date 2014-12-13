@@ -108,7 +108,7 @@ function create_disk_drive
     if [[ x${use_aio[$idx]} == x ]]; then
       use_aio[$idx]='n'
     fi
-    if [[ x${usr_aio[$idx]} == 'y' ]]; then
+    if [[ ${use_aio[$idx]} == 'y' ]]; then
       drive_id='drive'$idx
       disk_args=$disk_args' -drive if=none,id='$drive_id',cache=none,'
       disk_args=$disk_args'aio=native,format=raw,file='$disk_drive
@@ -190,29 +190,40 @@ function create_network_adaptor
     fi
 
     nic_arg='-netdev '${nic_type[$idx]}',id='${nic_name[$idx]}
-    nic_arg='-netdev '${nic_type[$idx]}',id='${nic_name[$idx]}
     case "${nic_type[$idx]}" in
       "bridge")
+        net_args=$net_args' '$nic_arg
+        nic_arg='-net bridge'
+        if [[ ! -z "${nic_vlan[$idx]}" ]]; then
+          nic_arg=$nic_arg',vlan='${nic_vlan[$idx]}
+        fi
         nic_arg=$nic_arg',br='${nic_bridge[$idx]}
         ;;
       "tap")
-        nic_arg=$nic_arg',script=no'
+        if [[ x${nic_vhost[$idx]} != x && ${nic_vhost[$idx]} == 'y' ]]; then
+          nic_arg=$nic_arg',vhost=on'
+          nic_model[$idx]=$DEF_NIC
+        fi
+        net_args=$net_args' '$nic_arg
+        nic_arg='-net tap'
+        if [[ ! -z "${nic_vlan[$idx]}" ]]; then
+          nic_arg=$nic_arg',vlan='${nic_vlan[$idx]}
+        fi
+        nic_arg=$nic_arg'ifname='${nic_name[$idx]}
+        if [[ x${nic_ifup[$idx]} == x ]]; then
+          nic_arg=$nic_arg',script=no'
+        else
+          nic_arg=$nic_arg',script='${nic_ifup[$idx]}
+        fi
+        if [[ x${nic_ifdown[$idx]} != x ]]; then
+          nic_arg=$nic_arg',downscript=='${nic_ifdown[$idx]}
+        fi
         ;;
       *)
         echo "Unknown NIC type: "${nic_name[$idx]}
         exit 13
         ;;
     esac
-    if [[ x${nic_vhost[$idx]} == x || ${nic_vhost[$idx]} != 'n' ]]; then
-        nic_arg=$nic_arg',vhost=on,'
-        nic_model[$idx]=$DEF_NIC
-    fi
-    net_args=$net_args' '$nic_arg
-
-    nic_arg='-net '${nic_type[$idx]}
-    if [[ ${nic_vlan[$idx]} ]]; then
-      nic_arg=$nic_arg',vlan='${nic_vlan[$idx]}
-    fi
     net_args=$net_args' '$nic_arg
 
     nic_arg='-net nic'
@@ -223,7 +234,7 @@ function create_network_adaptor
       nic_arg=$nic_arg',macaddr='${nic_addr[$idx]}
     fi
     nic_arg=$nic_arg',model='${nic_model[$idx]}
-    nic_arg=$nic_arg',netdev='${nic_name[$idx]}',name='${nic_name[$idx]}
+    nic_arg=$nic_arg',netdev='$nic_id',name='${nic_name[$idx]}
     net_args=$net_args' '$nic_arg
     
     ((idx=idx+1))
