@@ -20,7 +20,7 @@ If you use SPiCE and TLS, place 3 files into ```/etc/vmmaestro/ssl```.
 * A private key file. It must be named ```server-key.pem```.
 
 ### Step 4
-Install ```sudo```, ```sasl2-bin```, ```brctl``` and ```qemu-kvm``` packages.
+Install ```sudo```, ```brctl``` and ```qemu-kvm``` packages.
 
 ### Step 5
 * If not created ```kvm``` user or other, add ```kvm``` user account.
@@ -31,21 +31,17 @@ Install ```sudo```, ```sasl2-bin```, ```brctl``` and ```qemu-kvm``` packages.
 
 #### Step 7
 * Add TUN/tap kernel module, ```tun``` to the system. (execute '```modprobe tun```')
+* Add Vhost-net kernel module, ```vhost-net``` to the system. (execute '```modprobe vhost-net```')
 
 #### Step 8
 * Add bridge interface per NIC. Recommend to name a bridge like '```br0```', '```br1```'...
 
 #### Step 9
-* Create a sasl configuration file for QEMU (this repository includes a sample config file).
-* Add user and password to the sasl database by using ```saslpasswd2```.    
-	This is required to access VNC/SPiCE Console.    
-
-#### Step 10
 * Create the global configuration file, ```/etc/vmmaestro/vmmaestro.conf``` by using ```vmmaestro.conf.sample```
 * Create the VM specific configuration file in ```/etc/vmmaestro```. The file name must be the same name as VM and has an extension, '```.conf```'.
 * You can put all settings in the VM specific configuration and leave blank the global configuration. However, I recommend to put as many common settings as possible in the global configuration file. When the same item in both file, **the one put into the VM specific configuration is given priority**.
 
-#### Step 11
+#### Step 10
 * Type ```vmmaestro start vm-name``` and enjoy!
 
 ----
@@ -76,4 +72,4 @@ Connect KVM/QEMU monitor port.
 
 ----
 ## Hint    
-* By default, VNC port is bind to localhost address (127.0.0.1). I recommend use ```SSH tunneling``` instead of changing bind address.
+* By default, VNC & SPICE port is bind to localhost address (127.0.0.1). I recommend use ```SSH tunneling``` instead of changing bind address.

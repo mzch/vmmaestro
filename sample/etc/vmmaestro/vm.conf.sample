@@ -133,22 +133,24 @@ iso=/etc/vmmaestro/img/linux.iso
 ##					'n' Do not user vhost-net
 ############################################################
 # First NIC
-nic_type[0]='bridge'
+nic_type[0]='tap'
 nic_addr[0]='00:16:3E:00:00:00'
-nic_name[0]='pnic'
+nic_name[0]='tap0:1'
 nic_vlan[0]='0'
 nic_model[0]='virtio'
 nic_bridge[0]='br0'
+nic_if[0]='tap0:1'
 nic_ifup[0]='/etc/vmmaestro/ifup-br0.sh'
 nic_ifdown[0]='/etc/vmmaestro/ifdown-br0.sh'
 nic_vhost[0] = 'n'
 # Second NIC
-nic_type[1]='bridge'
+nic_type[1]='tap'
 nic_addr[1]='00:16:3E:00:00:01'
-nic_name[1]='snic'
+nic_name[1]='tap1:1'
 nic_vlan[1]='1'
 nic_model[1]='virtio'
 nic_bridge[1]='br1'
+nic_if[1]='tap1:1'
 nic_ifup[1]='/etc/vmmaestro/ifup-br1.sh'
 nic_ifdown[1]='/etc/vmmaestro/ifdown-br1.sh'
 nic_vhost[1] = 'n'
