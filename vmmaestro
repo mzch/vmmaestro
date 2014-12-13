@@ -45,7 +45,7 @@ function set_default_values
 #### check args
 ########################################
 
-if [[ $# != 2 ]]; then
+if [[ $# < 2 ]]; then
   cmds='[start|consolestart|stop|shutdown|restart|kill|console|monitor|status]'
   echo 'Usage: '$0' '$cmds' vm-name,...'
   exit 1
@@ -538,6 +538,7 @@ function status_vm
 ########################################
 function connect_to_console
 {
+  clear
   get_serial
   echo For reasons unknown, ^O is the panic button.
   $SUDO socat -,raw,echo=0,escape=0x0f UNIX-CONNECT:$serial_port 
@@ -548,6 +549,7 @@ function connect_to_console
 ########################################
 function connect_to_monitor
 {
+  clear
   get_monitor
   echo For reasons unknown, ^O is the panic button.
   $SUDO socat -,raw,echo=0,escape=0x0f UNIX-CONNECT:$monitor_port
@@ -579,6 +581,7 @@ while [[ "$1" ]]; do
     consolestart|cstart)
       start_vm
       connect_to_console
+      break
       ;;
     start)
       start_vm
