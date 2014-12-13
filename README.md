@@ -1,21 +1,21 @@
 vmmaestro
 =========
 
-Thsi tiny shell script is for controlling KVM. There is the first note that this script NEVER managements VMs in all senses. It has no fail over mechanism including live migration, no beautiful GUI. You can't see any statistical information. In addition, it can't even create an new VM disk image.
+This tiny shell script is for controlling KVM. There is the first note that this script NEVER managements VMs in all senses. It has no fail over mechanism including live migration, no beautiful GUI. You can't see any statistical information. In addition, it can't even create an new VM disk image.
 
 vmmaestro (:D) is a simple command line tool to start, shutdown VMs and help to connect to its screen from your client PC.    
 
 ----
-## Instllation    
+## Installation    
 ### Step 1
-Clone this repogitory.    
+Clone this repository.    
 ### Step 2
-* Copy vmmaestor, which is a shell script, to anywhere you'd like, i.e. /usr/local/bin/
+* Copy vmmaestro, which is a shell script, to anywhere you'd like, i.e. /usr/local/bin/
 * Create ```/etc/vmmaestro``` directory.
     
 ### Step 3
 If you use SPiCE and TLS, place 3 files into ```/etc/vmmaestro/ssl```.
-* A PEM formated file merged CA Root certificate with CA intermediate certificate. It must be named ```ca-cert.pem```.
+* A PEM formatted file merged CA Root certificate with CA intermediate certificate. It must be named ```ca-cert.pem```.
 * A server certificate issued by CA. It must be named ```server-ca.pem```.
 * A private key file. It must be named ```server-key.pem```.
 
