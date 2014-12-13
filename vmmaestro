@@ -256,10 +256,10 @@ function create_display
 {
   case "$display" in
     vnc)
-      disp_args=' -vga '$graphics' -vnc '$vnc_addr:$vnc_display',sasl'
+      disp_args=' -vga '$graphics' -vnc '$vnc_addr:$vnc_display
       ;;
     spice)
-      disp_args=' -vga qxl -spice sasl,port='$spice_port
+      disp_args=' -vga qxl -spice addr='$spice_addr',port='$spice_port
       if [[ $spice_tls == 'y' ]]; then
         disp_args=$disp_args',tls-port='$spice_tls_port',x509-dir='$SSLDIR
       fi
