@@ -8,6 +8,16 @@
 vm=vm_name
 
 ############################################################
+## Boot order
+##		boot_order	'c'	Hard Disk
+##					'd'	CD-ROM
+##					'a' First FD
+##					'b' Second FD
+##					'n' Network boot via first NIC
+############################################################
+#boot_order='acdn'
+
+############################################################
 ## Display type
 ##		When use 'VNC', set display='vnc'
 ##		When use 'SPICE', set display='spice'
@@ -15,9 +25,10 @@ vm=vm_name
 ############################################################
 display='vnc'
 #display='spice'
+
 ############################################################
 ## VNC server setting
-##		vnc_bind		Recommend to set '127.0.0.1'
+##		vnc_addr		Recommend to set '127.0.0.1'
 ##					for security reasons.
 ##					In case of accessing from external network,
 ##					Please use SSH tunnel.
@@ -25,31 +36,63 @@ display='vnc'
 ##					a unique number on the same host.
 ############################################################
 # VNC Server Bind address
-vnc_bind='127.0.0.1'
+vnc_addr='127.0.0.1'
 # VNC display number
 vnc_display='0'
 #
 ############################################################
 ## SPICE using port
-##		spice_port	set public port number
+##		spice_port	set port number
+##		spice_tls	'y' use TLS eencryption
+##					'n' not use TLS
+##		spice_tls_port
+##					port used TLS connection
 ############################################################
 #spice_port=10000
+#spice_tls='y'
+#spice_tls_port=10001
+
+############################################################
+## Graphics
+##		'std'		max resolution
+##		'vmware'		faster than others
+##		'cirrus'		high compatibility
+##		'qxl'		set this automatically when using 'SPICE'
+##		'none'		Do Not Use Graphical console
+## * When using 'SPICE', this option will be ignored.
+############################################################
+graphics='std'
 
 ############################################################
 ## Memory Settings (MB)
 ##		vmem			Set amount of memory used by VM
+##		use_balolon	'y' activate memory ballooning
+##					'n' fixed size memory
 ############################################################
 vmem=1024
+use_balloon='y'
 
 ############################################################
 ## Storage Settings
-##		disk			Set lv name used as VM's drive.
-##					VM recognize drives in the exact
-##					order you specify here.
+##		disk	_lv		Set lv name used as VM's drive.
+##		disk_if		'virtio'		para-virtual device, fastest
+##					'ide'		IDE emulation
+##					'scsi'		SCSI emulation
+##		disk_fmt		'raw'		Raw format
+##					
+##		use_aio		'y'			Use Async I/O (fast)
+##					'n'			Do Not use Async
+## * VM recognize drives in the exact order you specify here.
 ############################################################
 ## Disk Drive Device
-disk[0]='vm-swap'
-disk[1]='vm-root'
+disk_lv[0]='vm-swap'
+disk_if[0]='virtio'
+disk_fmt[0]='raw'
+use_aio[0]='y'
+disk_lv[1]='vm-root'
+disk_if[1]='virtio'
+disk_fmt[1]='raw'
+use_aio[1]='y'
 
 ############################################################
 ## Floppy disk
@@ -67,36 +110,39 @@ iso=/etc/vmmaestro/img/linux.iso
 ############################################################
 ## Network
 ##		You can set as many multiple NICs as the host has
-##		nic_type		'vhost'		faster but need kernel module
-##					'brdige'		use general tap interface
-##		nic_model	'virtio'		para-virtual driver, fastest
-##					if you'd like to know other options,
-##					exec 'qemu-kvm -net nic,model=\?'
+##		nic_type		'tap'		use 'tap' driver
+##					'brdige'		use 'bridge' driver
 ##		nic_addr		Specify MAC address. Please use prefix
 ##					'00:16:3E', which IEEE assigned to XenSource
 ##					for generating on Xen system.
-##		nic_name		Any name you prefer. This will be shown
-##					in the monitor. 
-##		nic_id		set interface id if you sekect type 'vhost'
-##		nic_vlan		set vlan name if you select type 'bridge'
+##		nic_name		Any name you prefer. This will be also shown
+##					in the monitor
+##		nic_vlan		set vlan name
+##		nic_vhost	'y' use vhost-net driver (fast)
+##					'n' Do not user vhost-net
+##		nic_model	'virtio'		para-virtual driver, fastest
+##					if you'd like to know other options,
+##					exec 'qemu-kvm -net nic,model=\?'
+##		* When you set nic_vhost to 'y', this setting is ignored
+##		  and 'virtio' is always set.
 ##		nic_bridge	set brdige interface name if you select
 ##					type 'bridge'
 ############################################################
 # First NIC
 nic_type[0]='vhost'
-nic_model[0]='virtio'
 nic_addr[0]='00:16:3E:00:00:00'
 nic_name[0]='primary'
-nic_id[0]=$vm
 nic_vlan[0]='vlan0'
+nic_vhost[0] = 'y'
+nic_model[0]='virtio'
 nic_bridge[0]='br0'
 # Second NIC
 nic_type[1]='vhost'
-nic_model[0]='virtio'
 nic_addr[1]='00:16:3E:00:00:01'
 nic_name[1]='secondary'
-nic_id[0]=$vm
 nic_vlan[1]='vlan1'
+nic_vhost[1] = 'y'
+nic_model[1]='virtio'
 nic_bridge[1]='br1'
 
 ############################################################
@@ -108,21 +154,21 @@ lang='ja'
 
 ############################################################
 ## CPU
-##		vmodel		CPU model
+##		cpu_model	CPU model
 ##					'host'		The same as host machine
 ##								Recommend this
 ##					if you'd like to know other options,
 ##					exec 'qemu-kvm -cpu \?'
-##		vcpu			Number of CPU units
-##		vcore		Number of CPU cores per 1 CPU unit
-##		vthread		Number of CPU threads
-##		vsocket		Number of CPU soclets
+##		cpu_units	Number of CPU units
+##		cpu_cores	Number of CPU cores per 1 CPU unit
+##		cpu_threads	Number of CPU threads
+##		cpu_sockets	Number of CPU soclets
 ############################################################
-vmodel='host'
-vcpu=1
-vcore=2
-vthread=2
-vsocket=1
+cpu_model='host'
+cpu_units=1
+cpu_cores=2
+#cpu_threads=2
+#cpu_sockets=1
 
 ############################################################
 ## Misc
