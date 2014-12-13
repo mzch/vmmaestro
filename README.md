@@ -42,7 +42,7 @@ Install ```sudo```, ```brctl``` and ```qemu-kvm``` packages.
 * You can put all settings in the VM specific configuration and leave blank the global configuration. However, I recommend to put as many common settings as possible in the global configuration file. When the same item in both file, **the one put into the VM specific configuration is given priority**.
 
 #### Step 10
-Create acl file for bridge interface in ```/etc/qemu```. (See ```sample/etc/sample/bridge.conf```)
+Create acl file for bridge interface in ```/etc/qemu```. (See ```sample/etc/qemu/bridge.conf```)
 
 #### Step 11
 * Type ```vmmaestro start vm-name``` and enjoy!
