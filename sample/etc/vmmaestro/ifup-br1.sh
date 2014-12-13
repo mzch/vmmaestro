@@ -8,4 +8,4 @@ sudo /sbin/ifconfig $1 0.0.0.0 promisc up
 echo "Adding $1 to $BR..."
 sudo /sbin/brctl addif $BR $1
 
-sleep 10
+#sleep 10

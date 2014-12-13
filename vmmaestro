@@ -576,9 +576,10 @@ while [[ "$1" ]]; do
     monitor|kvm|qemu)
       connect_to_monitor
       ;;
-    consolestart)
+    consolestart|cstart)
       start_vm
       connect_to_console
+      ;;
     start)
       start_vm
       ;;
