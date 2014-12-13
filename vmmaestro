@@ -6,6 +6,7 @@
 #  Copyright (C) 2014 Koichi MATSUMOTO.  All rights reserved.
 #
 ################################################################################
+
 #E=echo
 
 use_sudo='y'
@@ -447,6 +448,7 @@ function start_vm
   do
     sleep 1
     proc_check
+    ((delay=delay+1))
   done
 
   if [[ $boot_qemu_delay == $delay ]]; then
@@ -462,11 +464,13 @@ function shutdown_vm
 {
   get_monitor
   echo system_powerdown | $SUDO socat - UNIX-CONNECT:$monitor_port
+  delay=0
   proc_check
-  while [[ ! $? ]];
+  while [[ ! $? && $delay < $boot_qemu_delay ]];
   do
     sleep 1
     proc_check
+    ((delay=delay+1))
   done
 }
 
@@ -477,11 +481,13 @@ function stop_vm
 {
   get_monitor
   echo quit | $SUDO socat - UNIX-CONNECT:$monitor_port
+  delay=0
   proc_check
-  while [[ ! $? ]];
+  while [[ ! $? && $delay < $boot_qemu_delay ]];
   do
     sleep 1
     proc_check
+    ((delay=delay+1))
   done
 }
 
