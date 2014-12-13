@@ -84,10 +84,6 @@ function create_mem
 ##############################
 function create_disk_drive
 {
-disk_lv[0]='vm-swap'
-disk_dev[0]='virtio'
-use_aio[0]='y'
-
   disk_args=""
   idx=0
   while [[ x${disk_lv[$idx]} != x ]];
@@ -108,15 +104,20 @@ use_aio[0]='y'
     if [[ x${disk_if[$idx]} == x ]]; then
       disk_if[$idx]=$DEF_DISKIF
     fi
-    disk_args=$disk_args' -drive file='$disk_drive',if='${disk_if[$idx]}
-    if [[ x${disk_fmt[$idx]} != x ]]; then
-      disk_args=$disk_args',format='${disk_fmt[$idx]}
-    fi
     if [[ x${use_aio[$idx]} == x ]]; then
-      use_aio[$idx]='y'
+      use_aio[$idx]='n'
     fi
-    if [[ ${use_aio[$idx]} == 'y' ]]; then
-      disk_args=$disk_args',aio=native,x-data-plane=on'
+    if [[ x${usr_aio[$idx]} == 'y' ]]; then
+      drive_id='drive'$idx
+      disk_args=$disk_args' -drive if=none,id='$drive_id',cache=none,'
+      disk_args=$disk_args'aio=native,format=raw,file='$disk_drive
+      disk_args=$disk_args' -device virtio-blk,drive='$drive_id
+      disk_args=$disk_args',scsi=off,config-wce=off,x-data-plane=on'
+    else
+      disk_args=$disk_args' -drive file='$disk_drive',if='${disk_if[$idx]}
+      if [[ x${disk_fmt[$idx]} != x ]]; then
+        disk_args=$disk_args',format='${disk_fmt[$idx]}
+      fi
     fi
     disk_args=$disk_args',index='$idx',media=disk'
     ((idx=idx+1))
@@ -186,19 +187,28 @@ function create_network_adaptor
     if [[ x${nic_model[$idx]} == x ]]; then
       nic_model[$idx]=$DEF_NIC
     fi
+
     nic_arg='-netdev '${nic_type[$idx]}',id='${nic_name[$idx]}
-    if [[ ${nic_type[$idx]} == "bridge" ]]; then
-      nic_arg=$nic_arg',br='${nic_bridge[$idx]}
-    elif [[ $)nic_type[$idx]} == "tap" ]]; then
-      nic_arg=$nic_arg',script=no'
-    fi
+    nic_arg='-netdev '${nic_type[$idx]}',id='${nic_name[$idx]}
+    case "${nic_type[$idx]}" in
+      "bridge")
+        nic_arg=$nic_arg',br='${nic_bridge[$idx]}
+        ;;
+      "tap")
+        nic_arg=$nic_arg',script=no'
+        ;;
+      *)
+        echo "Unknown NIC type: "${nic_name[$idx]}
+        exit 13
+        ;;
+    esac
     if [[ x${nic_vhost[$idx]} == x || ${nic_vhost[$idx]} != 'n' ]]; then
         nic_arg=$nic_arg',vhost=on,'
         nic_model[$idx]=$DEF_NIC
     fi
-    net_args=$net_args' '$nic_args
+    net_args=$net_args' '$nic_arg
 
-    nic_arg='-net '${net_type[$idx]}
+    nic_arg='-net '${nic_type[$idx]}
     if [[ ${nic_vlan[$idx]} ]]; then
       nic_arg=$nic_arg',vlan='${nic_vlan[$idx]}
     fi

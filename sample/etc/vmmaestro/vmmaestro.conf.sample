@@ -3,6 +3,12 @@
 ################################################################
 
 ############################################################
+## Disk Storage
+##              Set volume group name for VM disks
+############################################################
+diskvg='vm'
+
+############################################################
 ## Display type
 ##		When use 'VNC', set display='vnc'
 ##		When use 'SPICE', set display='spice'
@@ -103,16 +109,6 @@ lang='en-us'
 ##		runas		Set user when KVM doesn't run as root
 ############################################################
 runas='kvm'
-
-############################################################
-## Network
-##		VMNICUP		script executed when VM's NIC is up
-##		VMNICDOWN	script executed when VM's NIC is down
-## * If you don't know how QEMU enables virtual NICs,
-##   Leave below as it is.
-############################################################
-VMNICUP=$SYSDIR/ifup.sh
-VMNICDOWN=$SYSDIR/ifdown.sh
 
 ############################################################
 ## Certificate
