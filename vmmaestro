@@ -562,7 +562,7 @@ while [[ "$1" ]]; do
       ;;
     kill)
       get_pid_file
-      $SUDO kill -KILL `cat $pid_file`
+      $SUDO kill -KILL `$SUDO cat $pid_file`
       ;;
     status)
       status_vm
