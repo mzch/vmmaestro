@@ -234,7 +234,7 @@ function create_network_adaptor
       nic_arg=$nic_arg',macaddr='${nic_addr[$idx]}
     fi
     nic_arg=$nic_arg',model='${nic_model[$idx]}
-    nic_arg=$nic_arg',netdev='$nic_id',name='${nic_name[$idx]}
+    nic_arg=$nic_arg',netdev='${nic_name[$idx]}',name='${nic_name[$idx]}
     net_args=$net_args' '$nic_arg
     
     ((idx=idx+1))
