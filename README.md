@@ -20,7 +20,7 @@ If you use SPiCE and TLS, place 3 files into ```/etc/vmmaestro/ssl```.
 * A private key file. It must be named ```server-key.pem```.
 
 ### Step 4
-Install ```sudo```, ```brctl``` and ```qemu-kvm``` packages.
+Install ```sudo```, ```bridge-utils``` and ```qemu-kvm``` packages.
 
 ### Step 5
 * If not created ```kvm``` user or other, add ```kvm``` user account.
@@ -50,6 +50,9 @@ Type ```vmmaestro start vm-name``` and enjoy!
 
 ----
 ## Reference    
+#### vmmaestro consolestart VM
+start VM and connect to serial console.
+
 #### vmmaestro start [VM [VM [VM]...]]
 start VMs. This command can boot multiple VMs.
 
