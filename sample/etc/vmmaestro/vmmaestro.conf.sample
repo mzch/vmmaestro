@@ -27,20 +27,17 @@ display='vnc'
 ############################################################
 # VNC Server Bind address
 vnc_addr='127.0.0.1'
-# VNC display number
-vnc_display='0'
 #
 ############################################################
 ## SPICE using port
+##		spice_addr	set bind address
 ##		spice_port	set port number
 ##		spice_tls	'y' use TLS eencryption
 ##					'n' not use TLS
 ##		spice_tls_port
 ##					port used TLS connection
 ############################################################
-#spice_port=10000
-#spice_tls='y'
-#spice_tls_port=10001
+spice_addr='127.0.0.1'
 
 ############################################################
 ## Graphics

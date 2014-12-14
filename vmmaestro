@@ -26,6 +26,7 @@ boot_qemu_delay=10
 ########################################
 function set_default_values
 {
+  runas='kvm'
   cpu_model='host'
   cpu_units=1
   cpu_cores=2
@@ -348,6 +349,12 @@ function create_console
   console_args=$s_args' '$m_args
 }
 
+#-device virtio-serial
+#-chardev socket,path=/tmp/foo,server,nowait,id=foo \
+#-chardev socket,path=/tmp/bar,server,nowait,id=bar \
+#-device virtioconsole,chardev=foo,name=org.fedoraproject.console.foo
+#-device virtioconsole,chardev=bar,name=org.fedoraproject.console.bar
+
 #############################
 #### Build Command Line
 #############################
@@ -422,6 +429,9 @@ function del_conf
   unset nic_vlan
   unset nic_vhost
   unset nic_bridge
+  unset nic_if
+  unset nic_ifup
+  unset nic_ifdown
   unset diskvg
   unset disk_lv
   unset disk_if
@@ -429,7 +439,6 @@ function del_conf
   unset use_aio
   unset iso
   unset lang
-  unset runas
   unset floppy
   unset display
   unset spice_port
