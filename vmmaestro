@@ -29,7 +29,6 @@ function set_default_values
   runas='kvm'
   cpu_model='host'
   cpu_units=1
-  cpu_cores=2
   vmem=1024
   use_balloon='y'
   display='vnc'
@@ -60,8 +59,11 @@ fi
 ##############################
 function create_cpu
 {
-  cpu_arg='-cpu='$cpu_model' -smp '$cpu_units',cores='$cpu_cores
+  cpu_arg='-cpu='$cpu_model' -smp '$cpu_units
   
+  if [[ $cpu_cores != x ]]; then
+    cpu_args=$cpu_args',cores='$cpu_cores
+  fi
   if [[ x$cpu_threads != x ]]; then
     cpu_args=$cpu_args',threads='$cpu_threads
   fi
@@ -420,6 +422,7 @@ function read_conf
 function del_conf
 {
   unset vm
+  unset cpu_cores
   unset cpu_threads
   unset cpu_sockets
   unset nic_type

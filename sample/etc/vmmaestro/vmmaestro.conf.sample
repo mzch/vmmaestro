@@ -58,13 +58,13 @@ graphics='std'
 ##					if you'd like to know other options,
 ##					exec 'qemu-kvm -cpu \?'
 ##		cpu_units	Number of CPU units
-##		cpu_cores	Number of CPU cores per 1 CPU unit
+##		cpu_cores	Number of CPU cores per socket
 ##		cpu_threads	Number of CPU threads
 ##		cpu_sockets	Number of CPU soclets
 ############################################################
 cpu_model='host'
 cpu_units=1
-cpu_cores=2
+#cpu_cores=2
 #cpu_threads=2
 #cpu_sockets=1
 
