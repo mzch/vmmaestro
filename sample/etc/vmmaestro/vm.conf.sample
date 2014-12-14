@@ -16,10 +16,14 @@
 ## Display type
 ##		When use 'VNC', set display='vnc'
 ##		When use 'SPICE', set display='spice'
+##		When running on Desktop PC, set display='sdl'
+##		When headless, set display='none'
 ##		Otherwise an error will occur.
 ############################################################
 display='vnc'
 #display='spice'
+#display='sdl'
+#display='none'
 
 ############################################################
 ## VNC server setting
@@ -42,10 +46,13 @@ vnc_display='0'
 ##					'n' not use TLS
 ##		spice_tls_port
 ##					port used TLS connection
+##		spice_sasl	'y'	use sasl authentication
+##					'n' no authentication
 ############################################################
 #spice_port=10000
 #spice_tls='y'
 #spice_tls_port=10001
+#spice_sasl='y'
 
 ############################################################
 ## Graphics

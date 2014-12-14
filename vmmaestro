@@ -37,6 +37,7 @@ function set_default_values
   spice_addr='127.0.0.1'
   vnc_display='0'
   spice_tls='n'
+  spice_sasl='n'
   use_utctime='y'
   sync_host='y'
 }
@@ -263,9 +264,24 @@ function create_display
       ;;
     spice)
       disp_args=' -vga qxl -spice addr='$spice_addr',port='$spice_port
+      if [[ $spice_sasl == 'y' ]];then
+        disp_args=$disp_args',sasl'
+      else
+        disp_args=$disp_args',disable-ticketing'
+      fi
       if [[ $spice_tls == 'y' ]]; then
+        if [[ x$spice_tls_port == x || x$SSLDIR == x ]]; then
+          echo 'Need both TLS port and SSL cert dir specified.'
+          exit 14
+        fi
         disp_args=$disp_args',tls-port='$spice_tls_port',x509-dir='$SSLDIR
       fi
+      ;;
+    sdl)
+      disp_args=' -vga '$graphics' -sdl'
+      ;;
+    none)
+      disp_args=''
       ;;
     *)
       echo 'Illegal display: '$display
