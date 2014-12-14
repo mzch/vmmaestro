@@ -59,7 +59,7 @@ fi
 ##############################
 function create_cpu
 {
-  cpu_args='-cpu='$cpu_model' -smp '$cpu_units
+  cpu_args='-cpu '$cpu_model' -smp '$cpu_units
   
   if [[ x$cpu_cores != x ]]; then
     cpu_args=$cpu_args',cores='$cpu_cores
