@@ -18,12 +18,14 @@
 ##		When use 'SPICE', set display='spice'
 ##		When running on Desktop PC, set display='sdl'
 ##		When headless, set display='none'
+##		When redirect console to serial, set display='off'
 ##		Otherwise an error will occur.
 ############################################################
 display='vnc'
 #display='spice'
 #display='sdl'
 #display='none'
+#display='off'
 
 ############################################################
 ## VNC server setting

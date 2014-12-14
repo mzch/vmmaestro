@@ -281,8 +281,10 @@ function create_display
       disp_args=' -vga '$graphics' -sdl'
       ;;
     none)
-      disp_args=''
+      disp_args=' -display none'
       ;;
+    off)
+      disp_args=' -nographic'
     *)
       echo 'Illegal display: '$display
       exit 14
