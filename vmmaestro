@@ -40,6 +40,7 @@ function set_default_values
   spice_sasl='n'
   use_utctime='y'
   sync_host='y'
+  disk_num=0
 }
 
 ########################################
@@ -111,10 +112,19 @@ function create_disk_drive
     if [[ x${disk_if[$idx]} == x ]]; then
       disk_if[$idx]=$DEF_DISKIF
     fi
-    if [[ x${use_aio[$idx]} == x ]]; then
-      use_aio[$idx]='n'
+    case "${disk_if[$idx]}") in
+      "ide")      ;;
+      "scsi")     ;;
+      "virtio")   ;;
+      *)
+        echo "Unknown disk interface: "${disk_if[$idx]}
+        exit 10
+        ;;
+    esac
+    if [[ x${use_dp[$idx]} == x ]]; then
+      use_dp[$idx]='n'
     fi
-    if [[ ${use_aio[$idx]} == 'y' ]]; then
+    if [[ ${use_dp[$idx]} == 'y' ]]; then
       drive_id='drive'$idx
       disk_args=$disk_args' -drive if=none,id='$drive_id',cache=none,'
       disk_args=$disk_args'aio=native,format=raw,file='$disk_drive
@@ -122,28 +132,27 @@ function create_disk_drive
       disk_args=$disk_args' -device virtio-blk,drive='$drive_id
       disk_args=$disk_args',scsi=off,config-wce=off,x-data-plane=on'
     else
-      disk_args=$disk_args' -drive file='$disk_drive',if='${disk_if[$idx]}
+      if [[ x${aio_type[$idx]} == x ]]; then
+        aio_type[$idx]='native'
+      fi
+      case "${aio_type[$idx]}" in
+        "native"    ;;
+        "threads"   ;;
+        *)
+          echo "Unknown AIO type: "${aio_type[$idx]}
+          exit 10
+          ;;
+      esac
+      disk_args=$disk_args' -drive if='${disk_if[$idx]}',aio='${aio_type[$idx]}
       if [[ x${disk_fmt[$idx]} != x ]]; then
         disk_args=$disk_args',format='${disk_fmt[$idx]}
       fi
+      disk_args=$disk_args',file='$disk_drive
       disk_args=$disk_args',index='$idx',media=disk'
     fi
     ((idx=idx+1))
   done
-}
-
-##############################
-#### CD-ROM
-##############################
-function create_cdrom {
-  cd_args=""
-  if [[ x$iso != x ]]; then
-    if [[ ! -f $iso ]]; then
-        echo "Specified iso file does not exist."
-        exit 11
-    fi
-    cd_args='-cdrom '$iso
-  fi
+  disk_num=$idx
 }
 
 ##############################
@@ -163,6 +172,29 @@ function create_floppy
     fd_args=$fd_args' -drive file='$fd_file',if=floppy,index='$idx
     ((idx=idx+1))
   done
+}
+
+##############################
+#### CD-ROM
+##############################
+function create_cdrom {
+  cd_args=""
+  case "$cd_if")
+     "ide"     ;;
+     "scsi"    ;;
+     "virtio"  ;;
+     *)
+       echo "Unknown CD Interface: "$cd_if
+  esac
+  cd_args=$cd_args' -drive if='$cd_if',aio=native'
+  if [[ x$iso != x ]]; then
+    if [[ ! -f $iso ]]; then
+        echo "Specified iso file does not exist."
+        exit 11
+    fi
+    cd_args=$cd_args',file='$iso
+  fi
+  cd_args=$cd_args',index='$disk_num',media=cdrom'
 }
 
 ##############################
@@ -457,7 +489,8 @@ function del_conf
   unset disk_lv
   unset disk_if
   unset disk_fmt
-  unset use_aio
+  unset use_dp
+  unset aio_type
   unset iso
   unset lang
   unset floppy

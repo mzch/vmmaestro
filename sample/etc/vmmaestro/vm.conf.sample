@@ -83,20 +83,25 @@ use_balloon='y'
 ##					'ide'		IDE emulation
 ##					'scsi'		SCSI emulation
 ##		disk_fmt		'raw'		Raw format
-##					
-##		use_aio		'y'			Use Async I/O (fast)
-##					'n'			Do Not use Async
+##					'qcow2'
+##		use_dp		'y'			Use x-data-plane (fast but only when using LVM)
+##					'n'			Do Not use x-data-plane
+##		aio_type		'threads'	Disk I/O based on pthreads
+##					'native'		Disk I/O based on Linux Natie AIO
+##					* if specified use_dp='y', this option will be ignored.
 ## * VM recognize drives in the exact order you specify here.
 ############################################################
 ## Disk Drive Device
 disk_lv[0]='vm-swap'
 disk_if[0]='virtio'
 disk_fmt[0]='raw'
-use_aio[0]='y'
+use_dp[0]='y'
+aio_type[0]='native'
 disk_lv[1]='vm-root'
 disk_if[1]='virtio'
 disk_fmt[1]='raw'
-use_aio[1]='y'
+use_dp[1]='y'
+aio_type[1]='native'
 
 ############################################################
 ## Floppy disk
@@ -107,8 +112,13 @@ use_aio[1]='y'
 
 ############################################################
 ## CD-ROM/DVD
+##		cd_if		CD Interface
+##					'ide'	IDE
+##					'scsi'	SCSI
+##					'virtio'	Virt I/O
 ##		iso			Specify CD-ROM/DVD image file
 ############################################################
+cd_if='ide'
 iso=/etc/vmmaestro/img/linux.iso
 
 ############################################################
