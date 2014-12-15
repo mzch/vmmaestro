@@ -115,7 +115,6 @@ aio_type[1]='native'
 ##		cd_if		CD Interface
 ##					'ide'	IDE
 ##					'scsi'	SCSI
-##					'virtio'	Virt I/O
 ##		iso			Specify CD-ROM/DVD image file
 ############################################################
 cd_if='ide'

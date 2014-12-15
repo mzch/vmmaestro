@@ -40,6 +40,7 @@ function set_default_values
   spice_sasl='n'
   use_utctime='y'
   sync_host='y'
+  cd_if='ide'
   disk_num=0
 }
 
@@ -112,7 +113,7 @@ function create_disk_drive
     if [[ x${disk_if[$idx]} == x ]]; then
       disk_if[$idx]=$DEF_DISKIF
     fi
-    case "${disk_if[$idx]}") in
+    case "${disk_if[$idx]}" in
       "ide")      ;;
       "scsi")     ;;
       "virtio")   ;;
@@ -136,8 +137,8 @@ function create_disk_drive
         aio_type[$idx]='native'
       fi
       case "${aio_type[$idx]}" in
-        "native"    ;;
-        "threads"   ;;
+        "native")   ;;
+        "threads")  ;;
         *)
           echo "Unknown AIO type: "${aio_type[$idx]}
           exit 10
@@ -179,10 +180,9 @@ function create_floppy
 ##############################
 function create_cdrom {
   cd_args=""
-  case "$cd_if")
-     "ide"     ;;
-     "scsi"    ;;
-     "virtio"  ;;
+  case "$cd_if" in
+    "ide")    ;;
+    "scsi")   ;;
      *)
        echo "Unknown CD Interface: "$cd_if
   esac
@@ -317,6 +317,7 @@ function create_display
       ;;
     off)
       disp_args=' -nographic'
+      ;;
     *)
       echo 'Illegal display: '$display
       exit 14
