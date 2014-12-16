@@ -1,7 +1,7 @@
 vmmaestro
 =========
 
-This tiny shell can start/stop KVM virtual machines. There is the first note that this script NEVER managements VMs in all senses. It has no fail over mechanism including live migration, no beautiful GUI. You can't see any statistical information. In addition, it can't even create an new VM disk image.
+This tiny shell script can start/stop KVM virtual machines. There is the first note that this script NEVER managements VMs in all senses. It has no fail over mechanism including live migration, no beautiful GUI. You can't see any statistical information. In addition, it can't even create an new VM disk image.
 
 vmmaestro (:D) is a simple command line tool to start, shutdown VMs and help to connect to its screen from your client PC.    
 
@@ -23,7 +23,7 @@ If you use SPiCE and TLS, place 3 files into ```/etc/vmmaestro/ssl```.
 Install ```sudo```, ```bridge-utils``` and ```qemu-kvm``` packages.
 
 ### Step 5
-* Create ```kvm``` user account if it doesn't exists
+* Create ```kvm``` user account if it doesn't exist.
 * Add ```kvm``` user to ```sudo``` (See ```sample/etc/sudoers.d/qemu```).
 * Of course, add also your account to ```sudo```.
 
@@ -32,7 +32,7 @@ Install ```sudo```, ```bridge-utils``` and ```qemu-kvm``` packages.
 * Add Vhost-net kernel module, ```vhost-net``` to the system. (execute '```modprobe vhost-net```')
 
 #### Step 7
-Add a bridge interface per NIC. Recommend to name it like '```br0```', '```br1```'...
+Add bridge interfaces per NIC. Recommend to name them like '```br0```', '```br1```'...
 
 #### Step 8
 * Create the global configuration file, ```/etc/vmmaestro/vmmaestro.conf``` (See ```vmmaestro.conf.sample```).
@@ -43,7 +43,7 @@ Add a bridge interface per NIC. Recommend to name it like '```br0```', '```br1``
 Create acl file for bridge interfaces in ```/etc/qemu```. (See ```sample/etc/qemu/bridge.conf```)
 
 #### Step 10
-Create lvm partitions or files for VM as you prefer.
+Create lvm partitions or files for VM as you specified in the vm config file(s).
 
 #### Step 11
 Type ```vmmaestro start vm-name``` and enjoy!
