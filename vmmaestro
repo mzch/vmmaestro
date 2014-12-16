@@ -234,7 +234,7 @@ function create_network_adaptor
     fi
 
     nic_arg='-netdev '${network_type[$idx]}',id='${network_name[$idx]}
-    case "${netwrok_type[$idx]}" in
+    case "${network_type[$idx]}" in
       "bridge")
         net_args=$net_args' '$nic_arg
         nic_arg='-net bridge'
@@ -268,7 +268,7 @@ function create_network_adaptor
         fi
         ;;
       *)
-        echo "Unknown NIC type: "${network_name[$idx]}
+        echo "Unknown NIC type: "${network_type[$idx]}
         exit 13
         ;;
     esac
@@ -364,7 +364,7 @@ function create_rtc
 ##############################
 function create_rundir
 {
-    vmrundir=$system_RUNDIR/$vm
+    vmrundir=$system_rundir/$vm
     if [[ ! -d $vmrundir ]]; then
         $SUDO mkdir -p $vmrundir
         if [[ x$user_runas != x ]]; then
@@ -378,7 +378,7 @@ function create_rundir
 ##############################
 function get_serial
 {
-  serial_port=$system_RUNDIR/$vm/serial.sock
+  serial_port=$system_rundir/$vm/serial.sock
 }
 
 ##############################
@@ -386,7 +386,7 @@ function get_serial
 ##############################
 function get_monitor
 {
-  monitor_port=$system_RUNDIR/$vm/monitor.sock
+  monitor_port=$system_rundir/$vm/monitor.sock
 }
 
 ##############################
@@ -394,7 +394,7 @@ function get_monitor
 ##############################
 function get_pid_file
 {
-  pid_file=$system_RUNDIR/$vm/$vm.pid
+  pid_file=$system_rundir/$vm/$vm.pid
 }
 
 ##############################
@@ -427,12 +427,12 @@ function build_cmdline
   create_rtc
   get_pid_file
 
-  if [[ $system_QEMU == 'kvm' ]]; then
-    CMDLINE=$system_QEMU
+  if [[ $system_qemu == 'kvm' ]]; then
+    CMDLINE=$system_qemu
   else
-    CMDLINE=$system_QEMU' -enable-kvm'
+    CMDLINE=$system_qemu' -enable-kvm'
   fi
-  CMDLINE=$CMDLINE' -daemonize -runas '$runas' '$cpu_args' '$mem_args
+  CMDLINE=$CMDLINE' -daemonize -runas '$user_runas' '$cpu_args' '$mem_args
   CMDLINE=$CMDLINE' '$boot_args
   CMDLINE=$CMDLINE' '$disk_args' '$cd_args' '$fd_args
   CMDLINE=$CMDLINE' '$net_args' '$kbd_args
@@ -444,14 +444,62 @@ function build_cmdline
   fi
 }
 
+########################################
 ### Read configuratio file
-
+########################################
 function read_conf_file
 {
-  awkscript=$SYSDIR/vmvar.awk
-  awk -f $awkscript $1 | while read cmd;
+  cmds=$(awk -f - $1 <<EOAS
+  
+  BEGIN {
+    DISKS    = -1;
+    NICS     = -1;
+    CSECTION = "";
+  }
+  
+  /^[ \\ta-zA-Z0-9_-+!@$%^&\\/.:]+/ {
+    pos   = index(\$0, "=");
+    if (pos > 0)
+    {
+          left  = substr(\$0, 1, pos - 1);
+          right = substr(\$0, pos + 1, length(\$0) - pos);
+          gsub("^[ \\t]+" ,"", left);
+          gsub("[ \\t]+$" ,"", left);
+          gsub("^[ \\t]+" ,"", right);
+          gsub("[ \\t]+$" ,"", right);
+          left = tolower(left);
+          if (match(CSECTION, "disk") > 0)
+          {
+            left = sprintf("%s[%d]", left, DISKS);
+          }
+          if (match(CSECTION, "network") > 0)
+          {
+            left = sprintf("%s[%d]", left, NICS);
+          }
+          printf ("%s_%s=%s\n", CSECTION, left, right);
+    }
+  }
+  
+/^[ \\t]*\\[[a-zA-Z0-9_-+!@$%^&\\/.:]+/ {
+  gsub("^[ \\t]+" ,"", \$1);
+  gsub("[ \\t]+$" ,"", \$1);
+  gsub("^\\[" ,"", \$1);
+  gsub("\\]$" ,"", \$1);
+  CSECTION = \$1;
+  if (match(CSECTION,"disk") > 0)
+  {     
+        DISKS = DISKS + 1;
+  }
+  if (match(CSECTION, "network") > 0)
+  {     
+        NICS = NICS + 1;
+  }
+}
+EOAS
+)
+  for v in $cmds;
   do
-    $cmd
+    eval $v
   done
 }
 ########################################
@@ -468,8 +516,8 @@ function read_conf
     exit 3
   fi
   read_conf_file $def_conf
-  if [[ x$system_SASL_CONF_PATH != x ]]; then
-    export SASL_CONF_PATH=$system_SASL_CONF_PATH
+  if [[ x$system_sasl_conf_path != x ]]; then
+    export SASL_CONF_PATH=$system_sasl_conf_path
   fi
 
   vm_conf=$SYSDIR/$vm.conf
