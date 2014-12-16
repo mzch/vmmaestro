@@ -26,21 +26,21 @@ boot_qemu_delay=10
 ########################################
 function set_default_values
 {
-  user.runas='kvm'
-  cpu.model='host'
-  cpu.units=1
-  memory.vmem=1024
-  memory.balloon='y'
-  display.type='vnc'
-  graphics.type='std'
-  vnc.addr='127.0.0.1'
-  spice.addr='127.0.0.1'
-  vnc.number='0'
-  spice.tls='n'
-  spice.sasl='n'
-  clock.utctime='y'
-  clock.sync_host='y'
-  cdrom.if='ide'
+  user_runas='kvm'
+  cpu_model='host'
+  cpu_units=1
+  memory_vmem=1024
+  memory_balloon='y'
+  display_type='vnc'
+  graphics_type='std'
+  vnc_addr='127.0.0.1'
+  spice_addr='127.0.0.1'
+  vnc_number='0'
+  spice_tls='n'
+  spice_sasl='n'
+  clock_utctime='y'
+  clock_sync_host='y'
+  cdrom_if='ide'
   disk_num=0
 }
 
@@ -62,16 +62,16 @@ fi
 ##############################
 function create_cpu
 {
-  cpu_args='-cpu '$cpu.model' -smp '$cpu.units
+  cpu_args='-cpu '$cpu_model' -smp '$cpu_units
   
-  if [[ x$cpu.cores != x ]]; then
-    cpu_args=$cpu_args',cores='$cpu.cores
+  if [[ x$cpu_cores != x ]]; then
+    cpu_args=$cpu_args',cores='$cpu_cores
   fi
-  if [[ x$cpu.threads != x ]]; then
-    cpu_args=$cpu_args',threads='$cpu.threads
+  if [[ x$cpu_threads != x ]]; then
+    cpu_args=$cpu_args',threads='$cpu_threads
   fi
-  if [[ x$cpu.sockets != x ]]; then
-    cpu_args=$cpu_args',sockets='$cpu.sockets
+  if [[ x$cpu_sockets != x ]]; then
+    cpu_args=$cpu_args',sockets='$cpu_sockets
   fi
 }
 
@@ -80,8 +80,8 @@ function create_cpu
 ##############################
 function create_mem
 {
-  mem_args='-m '$memory.vmem
-  if [[ $memory.balloon == 'n' ]]; then
+  mem_args='-m '$memory_vmem
+  if [[ $memory_balloon == 'n' ]]; then
     mem_args=$mem_args' -balloon none'
   else
     mem_args=$mem_args' -balloon virtio'
@@ -95,37 +95,37 @@ function create_disk_drive
 {
   disk_args=""
   idx=0
-  while [[ x${disk.lv[$idx]} != x ]];
+  while [[ x${disk_lv[$idx]} != x ]];
   do
-    if [[ x$vg.name != x ]]; then
-        disk_drive=/dev/$vg.name/${disk.lv[$idx]}
+    if [[ x$vg_name != x ]]; then
+        disk_drive=/dev/$vg_name/${disk_lv[$idx]}
         if [[ ! -b $disk_drive ]]; then
-            echo "Specified block device does not exist: "${disk.lv[$idx]}
+            echo "Specified block device does not exist: "$disk_drive
             exit 10
         fi
     else
-        disk_drive=${disk.lv[$idx]}
+        disk_drive=${disk_lv[$idx]}
         if [[ ! -f $disk_drive ]]; then
             echo "Specified disk file does not exist: "$disk_drive
             exit 10
         fi
     fi
-    if [[ x${disk.if[$idx]} == x ]]; then
-      disk.if[$idx]=$DEF_DISKIF
+    if [[ x${disk_if[$idx]} == x ]]; then
+      disk_if[$idx]=$DEF_DISKIF
     fi
-    case "${disk.if[$idx]}" in
+    case "${disk_if[$idx]}" in
       "ide")      ;;
       "scsi")     ;;
       "virtio")   ;;
       *)
-        echo "Unknown disk interface: "${disk.if[$idx]}
+        echo "Unknown disk interface: "${disk_if[$idx]}
         exit 10
         ;;
     esac
-    if [[ x${disk.dp[$idx]} == x ]]; then
-      disk.dp[$idx]='n'
+    if [[ x${disk_dp[$idx]} == x ]]; then
+      disk_dp[$idx]='n'
     fi
-    if [[ ${disk.dp[$idx]} == 'y' ]]; then
+    if [[ ${disk_dp[$idx]} == 'y' ]]; then
       drive_id='drive'$idx
       disk_args=$disk_args' -drive if=none,id='$drive_id',cache=none,'
       disk_args=$disk_args'aio=native,format=raw,file='$disk_drive
@@ -133,20 +133,20 @@ function create_disk_drive
       disk_args=$disk_args' -device virtio-blk,drive='$drive_id
       disk_args=$disk_args',scsi=off,config-wce=off,x-data-plane=on'
     else
-      if [[ x${disk.aio[$idx]} == x ]]; then
-        disk.aio[$idx]='native'
+      if [[ x${disk_aio[$idx]} == x ]]; then
+        disk_aio[$idx]='native'
       fi
-      case "${disk.aio[$idx]}" in
+      case "${disk_aio[$idx]}" in
         "native")   ;;
         "threads")  ;;
         *)
-          echo "Unknown AIO type: "${disk.aio[$idx]}
+          echo "Unknown AIO type: "${disk_aio[$idx]}
           exit 10
           ;;
       esac
-      disk_args=$disk_args' -drive if='${disk.if[$idx]}',aio='${disk.aio[$idx]}
-      if [[ x${disk.fmt[$idx]} != x ]]; then
-        disk_args=$disk_args',format='${disk.fmt[$idx]}
+      disk_args=$disk_args' -drive if='${disk_if[$idx]}',aio='${disk_aio[$idx]}
+      if [[ x${disk_fmt[$idx]} != x ]]; then
+        disk_args=$disk_args',format='${disk_fmt[$idx]}
       fi
       disk_args=$disk_args',file='$disk_drive
       disk_args=$disk_args',index='$idx',media=disk'
@@ -162,21 +162,21 @@ function create_disk_drive
 function create_floppy
 {
   fd_args=""
-  if [[ x$floppy.drive1 != x ]];
-    fd_file=$floppy.drive1
-    if [[ ! -f $floppy.drive1 ]]; then
-        echo "Specified floppy file does not exist: "$floppy.drive1
+  if [[ x$floppy_drive1 != x ]]; then
+    fd_file=$floppy_drive1
+    if [[ ! -f $floppy_drive1 ]]; then
+        echo "Specified floppy file does not exist: "$floppy_drive1
         exit 12
     fi
-    fd_args=$fd_args' -drive file='$floppy.drive1',if=floppy,index=0'
+    fd_args=$fd_args' -drive file='$floppy_drive1',if=floppy,index=0'
   fi
-  if [[ x$floppy.drive2 != x ]];
-    fd_file=$floppy.drive2
-    if [[ ! -f $floppy.drive2 ]]; then
-        echo "Specified floppy file does not exist: "$floppy.drive2
+  if [[ x$floppy_drive2 != x ]]; then
+    fd_file=$floppy_drive2
+    if [[ ! -f $floppy_drive2 ]]; then
+        echo "Specified floppy file does not exist: "$floppy_drive2
         exit 12
     fi
-    fd_args=$fd_args' -drive file='$floppy.drive2',if=floppy,index=0'
+    fd_args=$fd_args' -drive file='$floppy_drive2',if=floppy,index=1'
   fi
 }
 
@@ -185,19 +185,19 @@ function create_floppy
 ##############################
 function create_cdrom {
   cd_args=""
-  case "$cdrom.if" in
+  case "$cdrom_if" in
     "ide")    ;;
     "scsi")   ;;
      *)
-       echo "Unknown CD Interface: "$cdrom.if
+       echo "Unknown CD Interface: "$cdrom_if
   esac
-  cd_args=$cd_args' -drive if='$cdrom.if',aio=native'
-  if [[ x$cdrom.iso != x ]]; then
-    if [[ ! -f $cdrom.iso ]]; then
+  cd_args=$cd_args' -drive if='$cdrom_if',aio=native'
+  if [[ x$cdrom_iso != x ]]; then
+    if [[ ! -f $cdrom_iso ]]; then
         echo "Specified iso file does not exist."
         exit 11
     fi
-    cd_args=$cd_args',file='$cdrom.iso
+    cd_args=$cd_args',file='$cdrom_iso
   fi
   cd_args=$cd_args',index='$disk_num',media=cdrom'
 }
@@ -208,8 +208,8 @@ function create_cdrom {
 function create_bootorder
 {
   boot_args=""
-  if [[ x$boot.order != x ]]; then
-    boot_args=$boot.order
+  if [[ x$boot_order != x ]]; then
+    boot_args=$boot_order
   fi
 }
 
@@ -220,69 +220,69 @@ function create_network_adaptor
 {
   net_args=""
   idx=0
-  while [[ x${network.type[$idx]} != x ]];
+  while [[ x${network_type[$idx]} != x ]];
   do
 
     nic_arg=""
     
-    if [[ x${network.name[$idx]} == x ]]; then
+    if [[ x${network_name[$idx]} == x ]]; then
       echo "Need NIC synbol name: "$idx
       exit 13
     fi
-    if [[ x${network.model[$idx]} == x ]]; then
-      nic_model[$idx]=$DEF_NIC
+    if [[ x${network_model[$idx]} == x ]]; then
+      network_model[$idx]=$DEF_NIC
     fi
 
-    nic_arg='-netdev '${network.type[$idx]}',id='${network.name[$idx]}
-    case "${netwrok.type[$idx]}" in
+    nic_arg='-netdev '${network_type[$idx]}',id='${network_name[$idx]}
+    case "${netwrok_type[$idx]}" in
       "bridge")
         net_args=$net_args' '$nic_arg
         nic_arg='-net bridge'
-        if [[ ! -z "${network.vlan[$idx]}" ]]; then
-          nic_arg=$nic_arg',vlan='${network.vlan[$idx]}
+        if [[ ! -z "${network_vlan[$idx]}" ]]; then
+          nic_arg=$nic_arg',vlan='${network_vlan[$idx]}
         fi
-        nic_arg=$nic_arg',br='${network.bridge[$idx]}
+        nic_arg=$nic_arg',br='${network_bridge[$idx]}
         ;;
       "tap")
-        if [[ x${network.vhost[$idx]} != x && ${network.vhost[$idx]} == 'y' ]]; then
+        if [[ x${network_vhost[$idx]} != x && ${network_vhost[$idx]} == 'y' ]]; then
           nic_arg=$nic_arg',vhost=on'
-          network.model[$idx]=$DEF_NIC
+          network_model[$idx]=$DEF_NIC
         fi
         net_args=$net_args' '$nic_arg
         nic_arg='-net tap'
-        if [[ ! -z "${network.vlan[$idx]}" ]]; then
-          nic_arg=$nic_arg',vlan='${netwrok.vlan[$idx]}
+        if [[ ! -z "${network_vlan[$idx]}" ]]; then
+          nic_arg=$nic_arg',vlan='${netwrok_vlan[$idx]}
         fi
-        if [[ x${network.if[$idx]} == x ]]; then
+        if [[ x${network_if[$idx]} == x ]]; then
           echo "Need NIC interface name: "$idx
           exit 13
         fi
-        nic_arg=$nic_arg',ifname='${network.if[$idx]}
-        if [[ x${network.ifup[$idx]} == x ]]; then
+        nic_arg=$nic_arg',ifname='${network_if[$idx]}
+        if [[ x${network_ifup[$idx]} == x ]]; then
           nic_arg=$nic_arg',script=no'
         else
-          nic_arg=$nic_arg',script='${network.ifup[$idx]}
+          nic_arg=$nic_arg',script='${network_ifup[$idx]}
         fi
-        if [[ x${network.ifdown[$idx]} != x ]]; then
-          nic_arg=$nic_arg',downscript=='${network.ifdown[$idx]}
+        if [[ x${network_ifdown[$idx]} != x ]]; then
+          nic_arg=$nic_arg',downscript=='${network_ifdown[$idx]}
         fi
         ;;
       *)
-        echo "Unknown NIC type: "${network.name[$idx]}
+        echo "Unknown NIC type: "${network_name[$idx]}
         exit 13
         ;;
     esac
     net_args=$net_args' '$nic_arg
 
     nic_arg='-net nic'
-    if [[ ${network.vlan[$idx]} ]]; then
-      nic_arg=$nic_arg',vlan='${network.vlan[$idx]}
+    if [[ ${network_vlan[$idx]} ]]; then
+      nic_arg=$nic_arg',vlan='${network_vlan[$idx]}
     fi
-    if [[ ${network.addr[$idx]} ]]; then
-      nic_arg=$nic_arg',macaddr='${network.addr[$idx]}
+    if [[ ${network_addr[$idx]} ]]; then
+      nic_arg=$nic_arg',macaddr='${network_addr[$idx]}
     fi
-    nic_arg=$nic_arg',model='${network.model[$idx]}
-    nic_arg=$nic_arg',netdev='${network.name[$idx]}',name='${network.name[$idx]}
+    nic_arg=$nic_arg',model='${network_model[$idx]}
+    nic_arg=$nic_arg',netdev='${network_name[$idx]}',name='${network_name[$idx]}
     net_args=$net_args' '$nic_arg
     
     ((idx=idx+1))
@@ -295,27 +295,27 @@ function create_network_adaptor
 ##############################
 function create_display
 {
-  case "$display.type" in
+  case "$display_type" in
     vnc)
-      disp_args=' -vga '$graphics.type' -vnc '$vnc.addr:$vnc.number
+      disp_args=' -vga '$graphics_type' -vnc '$vnc_addr:$vnc_number
       ;;
     spice)
-      disp_args=' -vga qxl -spice addr='$spice.addr',port='$spice.port
-      if [[ $spice.sasl == 'y' ]];then
+      disp_args=' -vga qxl -spice addr='$spice_addr',port='$spice_port
+      if [[ $spice_sasl == 'y' ]];then
         disp_args=$disp_args',sasl'
       else
         disp_args=$disp_args',disable-ticketing'
       fi
       if [[ $spice_tls == 'y' ]]; then
-        if [[ x$spice.tls_port == x || x$ssl.SSLDIR == x ]]; then
+        if [[ x$spice_tls_port == x || x$ssl_SSLDIR == x ]]; then
           echo 'Need both TLS port and SSL cert dir specified.'
           exit 14
         fi
-        disp_args=$disp_args',tls-port='$spice.tls_port',x509-dir='$ssl.SSLDIR
+        disp_args=$disp_args',tls-port='$spice_tls_port',x509-dir='$ssl_SSLDIR
       fi
       ;;
     sdl)
-      disp_args=' -vga '$graphics.type' -sdl'
+      disp_args=' -vga '$graphics_type' -sdl'
       ;;
     none)
       disp_args=' -display none'
@@ -324,7 +324,7 @@ function create_display
       disp_args=' -nographic'
       ;;
     *)
-      echo 'Illegal display: '$display.type
+      echo 'Illegal display: '$display_type
       exit 14
       ;;
   esac  
@@ -336,8 +336,8 @@ function create_display
 function create_kbd
 {
   kbd_args=
-  if [[ x$keyboard.lang != x ]]; then
-    kbd_args='-k '$keyboard.lang
+  if [[ x$keyboard_lang != x ]]; then
+    kbd_args='-k '$keyboard_lang
   fi
 }
 
@@ -347,12 +347,12 @@ function create_kbd
 function create_rtc
 {
   rtc_args='-rtc'
-  if [[ $clock.utctime == 'n' ]]; then
+  if [[ $clock_utctime == 'n' ]]; then
     rtc_args=$rtc_args' base=localtime'
   else
     rtc_args=$rtc_args' base=utc'
   fi
-  if [[ $clock.sync_host == 'n' ]]; then
+  if [[ $clock_sync_host == 'n' ]]; then
     rtc_args=$rtc_args',clock=vm'
   else
     rtc_args=$rtc_args',clock=host'
@@ -364,11 +364,11 @@ function create_rtc
 ##############################
 function create_rundir
 {
-    vmrundir=$system.RUNDIR/$vm
+    vmrundir=$system_RUNDIR/$vm
     if [[ ! -d $vmrundir ]]; then
         $SUDO mkdir -p $vmrundir
-        if [[ x$user.runas != x ]]; then
-          $SUDO chown $user.runas:$user.runas $vmrundir
+        if [[ x$user_runas != x ]]; then
+          $SUDO chown $user_runas:$user_runas $vmrundir
         fi
     fi
 }
@@ -378,7 +378,7 @@ function create_rundir
 ##############################
 function get_serial
 {
-  serial_port=$system.RUNDIR/$vm/serial.sock
+  serial_port=$system_RUNDIR/$vm/serial.sock
 }
 
 ##############################
@@ -386,7 +386,7 @@ function get_serial
 ##############################
 function get_monitor
 {
-  monitor_port=$system.RUNDIR/$vm/monitor.sock
+  monitor_port=$system_RUNDIR/$vm/monitor.sock
 }
 
 ##############################
@@ -394,7 +394,7 @@ function get_monitor
 ##############################
 function get_pid_file
 {
-  pid_file=$system.RUNDIR/$vm/$vm.pid
+  pid_file=$system_RUNDIR/$vm/$vm.pid
 }
 
 ##############################
@@ -408,12 +408,6 @@ function create_console
   m_args='-monitor unix:'$monitor_port',server,nowait'
   console_args=$s_args' '$m_args
 }
-
-#-device virtio-serial
-#-chardev socket,path=/tmp/foo,server,nowait,id=foo \
-#-chardev socket,path=/tmp/bar,server,nowait,id=bar \
-#-device virtioconsole,chardev=foo,name=org.fedoraproject.console.foo
-#-device virtioconsole,chardev=bar,name=org.fedoraproject.console.bar
 
 #############################
 #### Build Command Line
@@ -433,10 +427,10 @@ function build_cmdline
   create_rtc
   get_pid_file
 
-  if [[ $system.QEMU == 'kvm' ]]; then
-    CMDLINE=$system.QEMU
+  if [[ $system_QEMU == 'kvm' ]]; then
+    CMDLINE=$system_QEMU
   else
-    CMDLINE=$system.QEMU' -enable-kvm'
+    CMDLINE=$system_QEMU' -enable-kvm'
   fi
   CMDLINE=$CMDLINE' -daemonize -runas '$runas' '$cpu_args' '$mem_args
   CMDLINE=$CMDLINE' '$boot_args
@@ -454,7 +448,7 @@ function build_cmdline
 
 function read_conf_file
 {
-`awk $1 <<<EOAS
+`awk $1 <<EOAS
 
 BEGIN {
   DISKS    = 0;
@@ -481,7 +475,7 @@ BEGIN {
     {
       left = sprintf("%s[%d]", left, NICS);
     }
-    printf ("%s.%s=%s\n", CSECTION, left, right);
+    printf ("%s_%s=%s\n", CSECTION, left, right);
   }
 }
 
@@ -516,6 +510,9 @@ function read_conf
     exit 3
   fi
   read_conf_file $def_conf
+  if [[ x$system_SASL_CONF_PATH != x ]]; then
+    export SASL_CONF_PATH=$system_SASL_CONF_PATH
+  fi
 
   vm_conf=$SYSDIR/$vm.conf
 
@@ -535,31 +532,32 @@ function del_conf
   unset cpu_cores
   unset cpu_threads
   unset cpu_sockets
-  unset nic_type
-  unset nic_addr
-  unset nic_name
-  unset nic_model
-  unset nic_vlan
-  unset nic_vhost
-  unset nic_bridge
-  unset nic_if
-  unset nic_ifup
-  unset nic_ifdown
-  unset diskvg
+  unset network_type
+  unset network_addr
+  unset network_name
+  unset network_model
+  unset network_vlan
+  unset network_vhost
+  unset network_bridge
+  unset network_if
+  unset network_ifup
+  unset network_ifdown
+  unset vg_name
   unset disk_lv
   unset disk_if
   unset disk_fmt
-  unset use_dp
-  unset aio_type
-  unset iso
-  unset lang
-  unset floppy
-  unset display
+  unset disk_dp
+  unset disk_aio
+  unset cdrom_iso
+  unset cdrom_if
+  unset keyboard_lang
+  unset floppy_drive1
+  unset floppy_drive2
+  unset display_type
   unset spice_port
   unset spice_tls_port
-  unset runas
-  unset SASL_CONF_PATH
-  unset SSLDIR
+  unset system_SASL_CONF_PATH
+  unset system_SSLDIR
 }
 
 ########################################
