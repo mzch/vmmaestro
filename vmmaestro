@@ -251,7 +251,7 @@ function create_network_adaptor
         net_args=$net_args' '$nic_arg
         nic_arg='-net tap'
         if [[ ! -z "${network_vlan[$idx]}" ]]; then
-          nic_arg=$nic_arg',vlan='${netwrok_vlan[$idx]}
+          nic_arg=$nic_arg',vlan='${network_vlan[$idx]}
         fi
         if [[ x${network_if[$idx]} == x ]]; then
           echo "Need NIC interface name: "$idx
