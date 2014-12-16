@@ -20,7 +20,7 @@ If you use SPiCE and TLS, place 3 files into ```/etc/vmmaestro/ssl```.
 * A private key file. It must be named ```server-key.pem```.
 
 ### Step 4
-Install ```sudo```, ```bridge-utils``` and ```qemu-kvm``` packages.
+Install ```socat```, ```sudo```, ```bridge-utils``` and ```qemu-kvm``` packages.
 
 ### Step 5
 * Create ```kvm``` user account if it doesn't exist.
