@@ -6,7 +6,8 @@
 ## Disk Storage
 ##              Set volume group name for VM disks
 ############################################################
-diskvg='vm'
+[vg]
+name			= 'vm'
 
 ############################################################
 ## Display type
@@ -14,30 +15,32 @@ diskvg='vm'
 ##		When use 'SPICE', set display='spice'
 ##		Otherwise an error will occur.
 ############################################################
-display='vnc'
-#display='spice'
+[display]
+type			= 'vnc'
+#type		= 'spice'
 ############################################################
 ## VNC server setting
-##		vnc_addr		Recommend to set '127.0.0.1'
+##		addr			Recommend to set '127.0.0.1'
 ##					for security reasons.
 ##					In case of accessing from external network,
 ##					Please use SSH tunnel.
-##		vnc_display	VNC Display number. This must be
+##		number		VNC Display number. This must be
 ##					a unique number on the same host.
 ############################################################
+[vnc]
 # VNC Server Bind address
-vnc_addr='127.0.0.1'
+addr			= '127.0.0.1'
 #
 ############################################################
 ## SPICE using port
-##		spice_addr	set bind address
-##		spice_port	set port number
-##		spice_tls	'y' use TLS eencryption
+##		addr			set bind address
+##		port			set port number
+##		use_tls		'y' use TLS eencryption
 ##					'n' not use TLS
-##		spice_tls_port
-##					port used TLS connection
+##		tls_port		port used TLS connection
 ############################################################
-spice_addr='127.0.0.1'
+[spice]
+addr			= '127.0.0.1'
 
 ############################################################
 ## Graphics
@@ -48,25 +51,27 @@ spice_addr='127.0.0.1'
 ##		'none'		Do Not Use Graphical console
 ## * When using 'SPICE', this option will be ignored.
 ############################################################
-graphics='std'
+[graphics]
+type			= 'std'
 
 ############################################################
 ## CPU
-##		cpu_model	CPU model
+##		model		CPU model
 ##					'host'		The same as host machine
 ##								Recommend this
 ##					if you'd like to know other options,
 ##					exec 'qemu-kvm -cpu \?'
-##		cpu_units	Number of CPU units
-##		cpu_cores	Number of CPU cores per socket
-##		cpu_threads	Number of CPU threads
-##		cpu_sockets	Number of CPU soclets
+##		units		Number of CPU units
+##		cores		Number of CPU cores per socket
+##		threads		Number of CPU threads per core
+##		sockets		Number of CPU soclets
 ############################################################
-cpu_model='host'
-cpu_units=1
-#cpu_cores=2
-#cpu_threads=2
-#cpu_sockets=1
+[cpu]
+model		= 'host'
+units		= 1
+#cores		= 2
+#threads		= 2
+#sockets		= 1
 
 ############################################################
 ## Memory Settings (MB)
@@ -74,38 +79,43 @@ cpu_units=1
 ##		use_balolon	'y' activate memory ballooning
 ##					'n' fixed size memory
 ############################################################
-vmem=1024
-use_balloon='y'
+[memory]
+vmem			= 1024
+balloon		= 'y'
 
 ############################################################
 ## Clock
 ##		use_utctime	When using DOS or Windows, set 'n'
 ##		sync_host	When syncing clock with host, set 'y'
 ############################################################
-use_utctime='y'
-sync_host='y'
+[clock]
+utctime		= 'y'
+sync_host	= 'y'
 
 ############################################################
 ## Keyboard Settings
 ##		lang			Keyboard mapping. Default is 'en-us'
 ############################################################
-lang='en-us'
+[keyboard]
+lang			= 'en-us'
 
 ############################################################
 ## Boot order
-##		boot_order	'c'	Hard Disk
+##		order		'c'	Hard Disk
 ##					'd'	CD-ROM
 ##					'a' First FD
 ##					'b' Second FD
 ##					'n' Network boot via first NIC
 ############################################################
-#boot_order='cdan'
+[boot]
+#order		= 'cdan'
 
 ############################################################
 ## User
 ##		runas		Set user when KVM doesn't run as root
 ############################################################
-runas='kvm'
+[user]
+runas		= 'kvm'
 
 ############################################################
 ## Certificate
@@ -113,25 +123,27 @@ runas='kvm'
 ##					this dir is set proper permisstions
 ##					so that $runas user can read
 ############################################################
-#SSLDIR=/etc/vmmaestro/ssl
-SSLDIR=/home/$runas/.qemu/ssl
+[ssl]
+#SSLDIR		= /etc/vmmaestro/ssl
+SSLDIR		= /home/$runas/.qemu/ssl
 
 ############################################################
 ## SASL_CONF_PATH
 ##		Set s sasl configuration file path QEMU use
 ## * Need 'export'
 ############################################################
-#SASL_CONF_PATH=/etc/sasl2/qemu.conf
-SASL_CONF_PATH=/home/$runas/.qemu/sasl2/sasl2.conf
-export SASL_CONF_PATH
+[sasl]
+#SASL_CONF_PATH	= /etc/sasl2/qemu.conf
+SASL_CONF_PATH	= /home/$runas/.qemu/sasl2/sasl2.conf
 
 ####################################################################################
 # DO NOT MODIFY BELOW UNLESS YOU KNOW WHAT YOU DO!!
 ############################################################
+[system]
 ## Base Settings
-RUNDIR=/var/run/vmmaestro
-LIBDIR=/var/lib/vmmaestro
+RUNDIR			= /var/run/vmmaestro
+LIBDIR			= /var/lib/vmmaestro
 ############################################################
-#QEMU='qemu-system-x86_64'
-QEMU='kvm'
+#QEMU			= 'qemu-system-x86_64'
+QEMU				= 'kvm'
 ####################################################################################

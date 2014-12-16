@@ -3,17 +3,18 @@
 ################################################################################
 
 ############################################################
-## Boot order
-##		boot_order	'c'	Hard Disk
-##					'd'	CD-ROM
-##					'a' First FD
-##					'b' Second FD
-##					'n' Network boot via first NIC
+## Boot section
+##		order	'c'	Hard Disk
+##				'd'	CD-ROM
+##				'a' First FD
+##				'b' Second FD
+##				'n' Network boot via first NIC
 ############################################################
-#boot_order='acdn'
+[boot]
+#order 		= 'acdn'
 
 ############################################################
-## Display type
+## Display section
 ##		When use 'VNC', set display='vnc'
 ##		When use 'SPICE', set display='spice'
 ##		When running on Desktop PC, set display='sdl'
@@ -21,43 +22,45 @@
 ##		When redirect console to serial, set display='off'
 ##		Otherwise an error will occur.
 ############################################################
-display='vnc'
-#display='spice'
-#display='sdl'
-#display='none'
-#display='off'
+[display]
+type			= 'vnc'
+#type		= 'spice'
+#type		= 'sdl'
+#type		= 'none'
+#typ	e		= 'off'
 
 ############################################################
-## VNC server setting
-##		vnc_addr		Recommend to set '127.0.0.1'
+## VNC server section
+##		addr			Recommend to set '127.0.0.1'
 ##					for security reasons.
 ##					In case of accessing from external network,
 ##					Please use SSH tunnel.
-##		vnc_display	VNC Display number. This must be
+##		number		VNC Display number. This must be
 ##					a unique number on the same host.
 ############################################################
+[vnc]
 # VNC Server Bind address
-vnc_addr='127.0.0.1'
+addr			= '127.0.0.1'
 # VNC display number
-vnc_display='0'
+number		= '0'
 #
 ############################################################
-## SPICE using port
-##		spice_port	set port number
-##		spice_tls	'y' use TLS eencryption
+## SPICE section
+##		port			set port number
+##		tls			'y' use TLS eencryption
 ##					'n' not use TLS
-##		spice_tls_port
-##					port used TLS connection
-##		spice_sasl	'y'	use sasl authentication
+##		tls_port		port used TLS connection
+##		sasl			'y'	use sasl authentication
 ##					'n' no authentication
 ############################################################
-#spice_port=10000
-#spice_tls='y'
-#spice_tls_port=10001
-#spice_sasl='y'
+[spice]
+#port		= 10000
+#tls			= 'y'
+#tls_port	= 10001
+#sasl		= 'y'
 
 ############################################################
-## Graphics
+## Graphics section
 ##		'std'		max resolution
 ##		'vmware'		faster than others
 ##		'cirrus'		high compatibility
@@ -65,136 +68,155 @@ vnc_display='0'
 ##		'none'		Do Not Use Graphical console
 ## * When using 'SPICE', this option will be ignored.
 ############################################################
-graphics='std'
+[graphics]
+type			= 'std'
 
 ############################################################
-## Memory Settings (MB)
-##		vmem			Set amount of memory used by VM
-##		use_balolon	'y' activate memory ballooning
-##					'n' fixed size memory
+## Memory section
+##		vmem		Set amount of memory used by VM
+##		balolon	'y' activate memory ballooning
+##				'n' fixed size memory
 ############################################################
-vmem=1024
-use_balloon='y'
+[memory]
+vmem			= 1024
+balloon		= 'y'
 
 ############################################################
-## Storage Settings
-##		disk	_lv		Set lv name used as VM's drive.
-##		disk_if		'virtio'		para-virtual device, fastest
-##					'ide'		IDE emulation
-##					'scsi'		SCSI emulation
-##		disk_fmt		'raw'		Raw format
-##					'qcow2'
-##		use_dp		'y'			Use x-data-plane (fast but only when using LVM)
-##					'n'			Do Not use x-data-plane
-##		aio_type		'threads'	Disk I/O based on pthreads
-##					'native'		Disk I/O based on Linux Natie AIO
-##					* if specified use_dp='y', this option will be ignored.
+## Disk Section
+##		You need multiple disk drives, put [disk] sections
+##		you needs. Drive order depends on listing order here.
+############################################################
+##		lv		Set lv name used as VM's drive.
+##		if		'virtio'		para-virtual device, fastest
+##				'ide'		IDE emulation
+##				'scsi'		SCSI emulation
+##		fmt		'raw'		Raw format
+##				
+##		dp		'y'			Use x-data-plane (fast but only when using LVM)
+##				'n'			Do Not use x-data-plane
+##		aio		'threads'	Disk I/O based on pthreads
+##				'native'		Disk I/O based on Linux Natie AIO
+##				* if specified use_dp='y', this option will be ignored.
 ## * VM recognize drives in the exact order you specify here.
 ############################################################
-## Disk Drive Device
-disk_lv[0]='vm-swap'
-disk_if[0]='virtio'
-disk_fmt[0]='raw'
-use_dp[0]='y'
-aio_type[0]='native'
-disk_lv[1]='vm-root'
-disk_if[1]='virtio'
-disk_fmt[1]='raw'
-use_dp[1]='y'
-aio_type[1]='native'
+## First disk
+[disk]
+lv			= 'vm-swap'
+if			= 'virtio'
+fmt			= 'raw'
+dp			= 'y'
+aio			= 'native'
+
+### Second disk
+[disk]
+lv			= 'vm-root'
+if			= 'virtio'
+fmt			= 'raw'
+dp			= 'y'
+aio			= 'native'
 
 ############################################################
-## Floppy disk
+## Floppy disk section
 ##		floppy		When using FD image, specify it here
 ############################################################
-#floppy[0]=
-#floppy[1]=
+[floppy]
+#drive1		=
+#drive2		=
 
 ############################################################
-## CD-ROM/DVD
-##		cd_if		CD Interface
+## CD-ROM/DVD section
+##		if			CD Interface
 ##					'ide'	IDE
 ##					'scsi'	SCSI
 ##		iso			Specify CD-ROM/DVD image file
 ############################################################
-cd_if='ide'
-iso=/etc/vmmaestro/img/linux.iso
+[cdrom]
+if			= 'ide'
+iso			= /etc/vmmaestro/img/linux.iso
 
 ############################################################
-## Network
-##		You can set as many multiple NICs as the host has
-##		nic_type		'tap'		use 'tap' driver
+## Network section
+##		You need multiple disk drives, put [disk] sections
+##		you needs. Drive order depends on listing order here.
+############################################################
+##		type			'tap'		use 'tap' driver
 ##					'brdige'		use 'bridge' driver
-##		nic_addr		Specify MAC address. Please use prefix
+##		addr			Specify MAC address. Please use prefix
 ##					'00:16:3E', which IEEE assigned to XenSource
 ##					for generating on Xen system.
-##		nic_name		Any name you prefer. This will be also shown
+##		name			Any name you prefer. This will be also shown
 ##					in the monitor
-##		nic_vlan		set vlan tag
-##		nic_model	'virtio'		para-virtual driver, fastest
+##		vlan			set vlan tag
+##		model		'virtio'		para-virtual driver, fastest
 ##					if you'd like to know other options,
 ##					exec 'qemu-kvm -net nic,model=\?'
 ##		* When you set nic_vhost to 'y', this setting is ignored
 ##		  and 'virtio' is always set.
-##		nic_bridge	set brdige interface name if you select
+##		bridge		set brdige interface name if you select
 ##					type 'bridge'
-##		nic_ifup		set helper script when nic is going up
+##		if			tap interface name
+##		ifup			set helper script when nic is going up
 ##					* When seting 'nic_type' to 'bridge', ignore this.
-##		nic_ifdown	set helper script when nic is going down
+##		ifdown		set helper script when nic is going down
 ##					* When seting 'nic_type' to 'bridge', ignore this.
-##		nic_vhost	'y' use vhost-net driver (fast)
+##		vhost		'y' use vhost-net driver (fast)
 ##					'n' Do not user vhost-net
 ############################################################
 # First NIC
-nic_type[0]='tap'
-nic_addr[0]='00:16:3E:00:00:00'
-nic_name[0]='tap0v1'
-nic_vlan[0]='0'
-nic_model[0]='virtio'
-nic_bridge[0]='br0'
-nic_if[0]='tap0.1'
-nic_ifup[0]='/etc/vmmaestro/ifup-br0.sh'
-nic_ifdown[0]='/etc/vmmaestro/ifdown-br0.sh'
-nic_vhost[0] = 'n'
+[network]
+type			= 'tap'
+addr			= '00:16:3E:00:00:00'
+name			= 'tap0v1'
+vlan			= '0'
+model		= 'virtio'
+bridge		= 'br0'
+if			= 'tap0.1'
+ifup			= '/etc/vmmaestro/ifup-br0.sh'
+ifdown		= '/etc/vmmaestro/ifdown-br0.sh'
+vhost 		= 'n'
 # Second NIC
-nic_type[1]='tap'
-nic_addr[1]='00:16:3E:00:00:01'
-nic_name[1]='tap1v1'
-nic_vlan[1]='1'
-nic_model[1]='virtio'
-nic_bridge[1]='br1'
-nic_if[1]='tap1.1'
-nic_ifup[1]='/etc/vmmaestro/ifup-br1.sh'
-nic_ifdown[1]='/etc/vmmaestro/ifdown-br1.sh'
-nic_vhost[1] = 'n'
+[network]
+type			= 'tap'
+addr			= '00:16:3E:00:00:01'
+name			= 'tap1v1'
+vlan			= '1'
+model		= 'virtio'
+bridge		= 'br1'
+if			= 'tap1.1'
+ifup			= '/etc/vmmaestro/ifup-br1.sh'
+ifdown		= '/etc/vmmaestro/ifdown-br1.sh'
+vhost		= 'n'
 
 ############################################################
-## Keyboard Settings
+## Keyboard Section
 ##		lang			Keyboard mapping. Default is 'en-us'
 ############################################################
-#lang='en-us'
-lang='ja'
+[keyboard]
+#lang		= 'en-us'
+lang			= 'ja'
 
 ############################################################
-## CPU
-##		cpu_model	CPU model
+## CPU section
+##		model		CPU model
 ##					'host'		The same as host machine
 ##								Recommend this
 ##					if you'd like to know other options,
 ##					exec 'qemu-kvm -cpu \?'
-##		cpu_units	Number of CPU units
-##		cpu_cores	Number of CPU cores per 1 CPU unit
-##		cpu_threads	Number of CPU threads
-##		cpu_sockets	Number of CPU soclets
+##		units		Number of CPU units
+##		cores		Number of CPU cores per 1 CPU unit
+##		threads		Number of CPU threads
+##		sockets		Number of CPU soclets
 ############################################################
-cpu_model='host'
-cpu_units=1
-cpu_cores=2
-#cpu_threads=2
-#cpu_sockets=1
+[cpu]
+model	 	= 'host'
+units	 	= 1
+#cores	 	= 2
+#threads 	= 2
+#sockets 	= 1
 
 ############################################################
 ## Misc
 ##		args			Additional QEMU parameters
 ############################################################
-args=
+[misc]
+args			= ''
