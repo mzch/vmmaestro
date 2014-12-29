@@ -1,9 +1,9 @@
 vmmaestro
 =========
 
-This tiny shell script can start/stop KVM virtual machines. There is the first note that this script NEVER managements VMs in all senses. It has no fail over mechanism including live migration, no beautiful GUI. You can't see any statistical information. In addition, it can't even create an new VM disk image.
+This tiny shell script can start/stop KVM virtual machines. There is the first note that this script NEVER managements VMs in all senses. It has no fail over mechanism or live migration, no beautiful GUI. You can't see any statistical informations. In addition, it can't even create an new VM disk image.
 
-vmmaestro (:D) is a simple command line tool to start, shutdown VMs and help to connect to its screen from your client PC.    
+vmmaestro (:D) is a simple command line tool to start, shutdown VMs and help to connect to the screens from your client PC.    
 
 ----
 ## Installation    
@@ -81,4 +81,4 @@ Connect KVM/QEMU monitor port.
 
 ----
 ## Hint    
-* By default, VNC & SPICE port is bind to localhost address (127.0.0.1). I recommend use ```SSH tunneling``` instead of changing bind address.
+* By default, VNC & SPICE port is bind to localhost address (127.0.0.1). I recommend to use ```SSH tunneling``` instead of changing bind address.
