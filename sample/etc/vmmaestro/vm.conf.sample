@@ -167,7 +167,6 @@ iso			= /etc/vmmaestro/img/linux.iso
 type			= 'tap'
 addr			= '00:16:3E:00:00:00'
 name			= 'tap0v1'
-vlan			= '0'
 model		= 'virtio'
 bridge		= 'br0'
 if			= 'tap0.1'
@@ -179,21 +178,12 @@ vhost 		= 'n'
 type			= 'tap'
 addr			= '00:16:3E:00:00:01'
 name			= 'tap1v1'
-vlan			= '1'
 model		= 'virtio'
 bridge		= 'br1'
 if			= 'tap1.1'
 ifup			= '/etc/vmmaestro/ifup-br1.sh'
 ifdown		= '/etc/vmmaestro/ifdown-br1.sh'
 vhost		= 'n'
-
-############################################################
-## Keyboard Section
-##		lang			Keyboard mapping. Default is 'en-us'
-############################################################
-[keyboard]
-#lang		= 'en-us'
-lang			= 'ja'
 
 ############################################################
 ## CPU section

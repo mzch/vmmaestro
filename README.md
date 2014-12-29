@@ -15,8 +15,8 @@ Clone this repository.
     
 ### Step 3
 If you use SPiCE and TLS, place 3 files into ```/etc/vmmaestro/ssl```.
-* A PEM formatted file merged CA Root certificate with CA intermediate certificate. It must be named ```ca-cert.pem```.
-* A server certificate issued by CA. It must be named ```server-ca.pem```.
+* CA Root certificate in PEM format. It must be named ```ca-cert.pem```.
+* A server certificate merged with CA intermediate certificate issued by CA. It must be named ```server-ca.pem```.
 * A private key file. It must be named ```server-key.pem```.
 
 ### Step 4
@@ -28,8 +28,10 @@ Install ```socat```, ```sudo```, ```bridge-utils``` and ```qemu-kvm``` packages.
 * Of course, add also your account to ```sudo```.
 
 #### Step 6
+* Add KVM kernel module. (execute ```modprobe kvm```)
 * Add TUN/tap kernel module, ```tun``` to the system. (execute '```modprobe tun```')
 * Add Vhost-net kernel module, ```vhost-net``` to the system. (execute '```modprobe vhost-net```')
+* Add entries above into ```/etc/modules``` if necessary.
 
 #### Step 7
 Add bridge interfaces per NIC. Recommend to name them like '```br0```', '```br1```'...

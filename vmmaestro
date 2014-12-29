@@ -236,22 +236,12 @@ function create_network_adaptor
     nic_arg='-netdev '${network_type[$idx]}',id='${network_name[$idx]}
     case "${network_type[$idx]}" in
       "bridge")
-        net_args=$net_args' '$nic_arg
-        nic_arg='-net bridge'
-        if [[ ! -z "${network_vlan[$idx]}" ]]; then
-          nic_arg=$nic_arg',vlan='${network_vlan[$idx]}
-        fi
         nic_arg=$nic_arg',br='${network_bridge[$idx]}
         ;;
       "tap")
         if [[ x${network_vhost[$idx]} != x && ${network_vhost[$idx]} == 'y' ]]; then
           nic_arg=$nic_arg',vhost=on'
           network_model[$idx]=$DEF_NIC
-        fi
-        net_args=$net_args' '$nic_arg
-        nic_arg='-net tap'
-        if [[ ! -z "${network_vlan[$idx]}" ]]; then
-          nic_arg=$nic_arg',vlan='${network_vlan[$idx]}
         fi
         if [[ x${network_if[$idx]} == x ]]; then
           echo "Need NIC interface name: "$idx
@@ -275,9 +265,6 @@ function create_network_adaptor
     net_args=$net_args' '$nic_arg
 
     nic_arg='-net nic'
-    if [[ ${network_vlan[$idx]} ]]; then
-      nic_arg=$nic_arg',vlan='${network_vlan[$idx]}
-    fi
     if [[ ${network_addr[$idx]} ]]; then
       nic_arg=$nic_arg',macaddr='${network_addr[$idx]}
     fi
@@ -542,7 +529,6 @@ function del_conf
   unset network_addr
   unset network_name
   unset network_model
-  unset network_vlan
   unset network_vhost
   unset network_bridge
   unset network_if
