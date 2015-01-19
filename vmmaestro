@@ -58,10 +58,35 @@ fi
 #### create startup command line
 ########################################
 ##############################
+#### check CPU
+##############################
+function check_cpu
+{
+  target_cpu=$1
+  TMPFILE=/tmp/.vmmaestro.tmp
+  $system_qemu -cpu ? > $TMPFILE 2>&1
+  CPUs=$(awk "/^x86/{ print $2; }" $TMPFILE)
+  for c in $CPUs
+  do
+    if [[ $target_cpu = $c ]]; then
+      return 1
+    fi
+  done
+
+  return 0
+}
+
+##############################
 #### create CPU
 ##############################
 function create_cpu
 {
+  check_cpu
+  if [[ ! $? ]]; then
+    echo "Illegal cpu mode = "$cpu_model
+    exit 1
+  fi
+
   cpu_args='-cpu '$cpu_model' -smp '$cpu_units
   
   if [[ x$cpu_cores != x ]]; then
@@ -214,6 +239,24 @@ function create_bootorder
 }
 
 ##############################
+#### Nic model
+##############################
+function check_nic
+{
+  model=$1
+  nic_models="virtio i82551 i82557b i82559er ne2k_pci ne2k_isa pcnet"
+  nic_models=$nic_models" rtl8139 e1000 smc91c111 lance mcf_fec"
+  for m in $nic_models
+  do
+    if [[ $m = $model ]]; then
+      return 1
+    fi
+  done
+
+  return 0
+}
+
+##############################
 #### Network
 ##############################
 function create_network_adaptor
@@ -231,6 +274,11 @@ function create_network_adaptor
     fi
     if [[ x${network_model[$idx]} == x ]]; then
       network_model[$idx]=$DEF_NIC
+    fi
+    check_nic ${network_model[$idx]}
+    if [[ ! $? ]]; then
+      echo "Illegal nic model: "$${network_model[$idx]} 
+      exit 13
     fi
 
     nic_arg='-netdev '${network_type[$idx]}',id='${network_name[$idx]}
@@ -322,9 +370,18 @@ function create_display
 ##############################
 function create_kbd
 {
+  KBD_LIST="ar de-ch es fo fr-ca hu ja mk no pt-br sv da en-gb et fr fr-ch is lt nl pl ru th"
+  KBD_LIST=$KBD_LIST"de en-us fi fr-be hr it lv nl-be pt sl tr"
+
   kbd_args=
-  if [[ x$keyboard_lang != x ]]; then
-    kbd_args='-k '$keyboard_lang
+  if [[ x$keyboard_lang != x ]]; then 
+    for l in $KBD_LIST
+    do
+      if [[ $keyboard_lang = $l ]]; then
+        kbd_args='-k '$keyboard_lang
+        break
+      fi
+    done
   fi
 }
 
@@ -489,6 +546,7 @@ EOAS
     eval $v
   done
 }
+
 ########################################
 ### Read configuration
 ########################################
