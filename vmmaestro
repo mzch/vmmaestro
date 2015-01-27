@@ -111,6 +111,9 @@ function create_mem
   else
     mem_args=$mem_args' -balloon virtio'
   fi
+  if [[ $memory_huge == 'y' ]]; then
+    mem_args=$mem_args' -mem-path /dev/hugepages'
+  fi
 }
 
 ##############################

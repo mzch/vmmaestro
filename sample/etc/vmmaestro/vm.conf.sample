@@ -76,10 +76,12 @@ type			= 'std'
 ##		vmem		Set amount of memory used by VM
 ##		balolon	'y' activate memory ballooning
 ##				'n' fixed size memory
+##		huge		'y' use huge memory page
 ############################################################
 [memory]
 vmem			= 1024
 balloon		= 'y'
+huge			= 'n'
 
 ############################################################
 ## Disk Section
