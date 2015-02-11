@@ -619,7 +619,9 @@ function del_conf
 function proc_check
 {
   get_pid_file
-
+  if [[ ! -f $pid_file ]]; then
+  	return 1
+  fi
   $SUDO kill -0 `$SUDO cat $pid_file`
 }
 
@@ -700,10 +702,10 @@ function status_vm
 {
   echo -n $vm" "
   proc_check
-  if [[ ! $? ]]; then
-    echo is running.
-  else
+  if [[ $? -ne 0 ]]; then
     echo is stopped.
+  else
+    echo is running.
   fi
 }
 
