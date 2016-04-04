@@ -11,6 +11,7 @@ vmmaestro (:D) is a simple command line tool to start, shutdown VMs and help to 
 Clone this repository.    
 ### Step 2
 * Copy ```vmmaestro``` to anywhere you'd like, i.e. ```/usr/local/bin/```
+* Give executable permission to ```vmmeastro```, i.e. ```chmod +x /usr/local/bin/vmmaestro```
 * Create ```/etc/vmmaestro``` directory.
     
 ### Step 3
