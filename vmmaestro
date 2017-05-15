@@ -81,7 +81,7 @@ function check_cpu
 ##############################
 function create_cpu
 {
-  check_cpu
+  check_cpu $cpu_model
   if [[ ! $? ]]; then
     echo "Illegal cpu mode = "$cpu_model
     exit 1
