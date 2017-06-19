@@ -159,7 +159,7 @@ function create_disk_drive
       disk_args=$disk_args'aio=native,format=raw,file='$disk_drive
       disk_args=$disk_args',index='$idx',media=disk'
       disk_args=$disk_args' -device virtio-blk,drive='$drive_id
-      disk_args=$disk_args',scsi=off,config-wce=off,x-data-plane=on'
+      disk_args=$disk_args',scsi=off,config-wce=off'
     else
       if [[ x${disk_aio[$idx]} == x ]]; then
         disk_aio[$idx]='native'
