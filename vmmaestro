@@ -225,7 +225,7 @@ function create_cdrom {
         echo "Specified iso file does not exist."
         exit 11
     fi
-    cd_args=$cd_args',file='$cdrom_iso
+    cd_args=$cd_args',file='$cdrom_iso', cache.direct=on'
   fi
   cd_args=$cd_args',index='$disk_num',media=cdrom'
 }
