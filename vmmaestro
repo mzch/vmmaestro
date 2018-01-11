@@ -156,7 +156,7 @@ function create_disk_drive
     if [[ ${disk_dp[$idx]} == 'y' ]]; then
       drive_id='drive'$idx
       disk_args=$disk_args' -drive if=none,id='$drive_id',cache=none,'
-      disk_args=$disk_args'aio=native,format=raw,file='$disk_drive
+      disk_args=$disk_args'aio=native,cache.direct=on,format=raw,file='$disk_drive
       disk_args=$disk_args',index='$idx',media=disk'
       disk_args=$disk_args' -device virtio-blk,drive='$drive_id
       disk_args=$disk_args',scsi=off,config-wce=off'
@@ -172,7 +172,7 @@ function create_disk_drive
           exit 10
           ;;
       esac
-      disk_args=$disk_args' -drive if='${disk_if[$idx]}',aio='${disk_aio[$idx]}
+      disk_args=$disk_args' -drive if='${disk_if[$idx]}',aio='${disk_aio[$idx]}',cache.direct=on'
       if [[ x${disk_fmt[$idx]} != x ]]; then
         disk_args=$disk_args',format='${disk_fmt[$idx]}
       fi
@@ -305,7 +305,7 @@ function create_network_adaptor
           nic_arg=$nic_arg',script='${network_ifup[$idx]}
         fi
         if [[ x${network_ifdown[$idx]} != x ]]; then
-          nic_arg=$nic_arg',downscript=='${network_ifdown[$idx]}
+          nic_arg=$nic_arg',downscript='${network_ifdown[$idx]}
         fi
         ;;
       *)
