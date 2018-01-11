@@ -16,6 +16,7 @@ Clone this repository.
     
 ### Step 3
 If you use SPiCE and TLS, place 3 files into ```/etc/vmmaestro/ssl```.
+
 * CA Root certificate in PEM format. It must be named ```ca-cert.pem```.
 * A server certificate merged with CA intermediate certificate issued by CA. It must be named ```server-ca.pem```.
 * A private key file. It must be named ```server-key.pem```.
@@ -83,3 +84,5 @@ Connect KVM/QEMU monitor port.
 ----
 ## Hint    
 * By default, VNC & SPICE port is bind to localhost address (127.0.0.1). I recommend to use ```SSH tunneling``` instead of changing bind address.
+
+
