@@ -622,7 +622,7 @@ function proc_check
   if [[ ! -f $pid_file ]]; then
   	return 1
   fi
-  $SUDO kill -0 `$SUDO cat $pid_file`
+  $SUDO kill -0 `$SUDO cat $pid_file` > /dev/null 2>&1
 }
 
 ########################################
