@@ -27,7 +27,7 @@ type			= 'vnc'
 #type		= 'spice'
 #type		= 'sdl'
 #type		= 'none'
-#typ	e		= 'off'
+#type		= 'off'
 
 ############################################################
 ## VNC server section
@@ -198,6 +198,7 @@ vhost		= 'n'
 ##		cores		Number of CPU cores per 1 CPU unit
 ##		threads		Number of CPU threads
 ##		sockets		Number of CPU soclets
+##		iswinguest	Set 1 when Windows guest
 ############################################################
 [cpu]
 model	 	= 'host'
@@ -205,6 +206,7 @@ units	 	= 1
 #cores	 	= 2
 #threads 	= 2
 #sockets 	= 1
+#iswinguest = 0
 
 ############################################################
 ## Misc

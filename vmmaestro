@@ -42,6 +42,7 @@ function set_default_values
   clock_sync_host='y'
   cdrom_if='ide'
   disk_num=0
+  iswinguest=0
 }
 
 ########################################
@@ -97,6 +98,9 @@ function create_cpu
   fi
   if [[ x$cpu_sockets != x ]]; then
     cpu_args=$cpu_args',sockets='$cpu_sockets
+  fi
+  if [[ x$iswinguest != 0 ]]; then
+    cpu_args=$cpu_args',hv_relaxed,hv_spinlocks=0x1fff,hv_vapic,hv_time'
   fi
 }
 
@@ -586,6 +590,7 @@ function del_conf
   unset cpu_cores
   unset cpu_threads
   unset cpu_sockets
+  unset iswinguest
   unset network_type
   unset network_addr
   unset network_name
