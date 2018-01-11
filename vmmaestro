@@ -100,7 +100,7 @@ function create_cpu
   if [[ x$cpu_sockets != x ]]; then
     cpu_args=$cpu_args',sockets='$cpu_sockets
   fi
-  if [[ x$iswinguest != 0 ]]; then
+  if [[ $iswinguest != 0 ]]; then
     cpu_args=$cpu_args',hv_relaxed,hv_spinlocks=0x1fff,hv_vapic,hv_time'
   fi
 }
@@ -488,7 +488,7 @@ function build_cmdline
   CMDLINE=$CMDLINE' '$boot_args
   CMDLINE=$CMDLINE' '$disk_args' '$cd_args' '$fd_args
   CMDLINE=$CMDLINE' '$net_args' '$kbd_args
-  if [[ $iommu != 0 ; then
+  if [[ $iommu != 0 ]]; then
     CMDLINE=$CMDLINE' -device=iommu'
   fi
   CMDLINE=$CMDLINE' '$disp_args' '$console_args' '$rtc_args
