@@ -159,8 +159,8 @@ function create_disk_drive
     fi
     if [[ ${disk_dp[$idx]} == 'y' ]]; then
       drive_id='drive'$idx
-      disk_args=$disk_args' -drive if=none,id='$drive_id',cache=none,'
-      disk_args=$disk_args'aio=native,cache.direct=on,format=raw,file='$disk_drive
+      disk_args=$disk_args' -drive if=none,id='$drive_id
+      disk_args=$disk_args',aio=native,cache.direct=on,format=raw,file='$disk_drive
       disk_args=$disk_args',index='$idx',media=disk'
       disk_args=$disk_args' -device virtio-blk,drive='$drive_id
       disk_args=$disk_args',scsi=off,config-wce=off'
@@ -223,13 +223,13 @@ function create_cdrom {
      *)
        echo "Unknown CD Interface: "$cdrom_if
   esac
-  cd_args=$cd_args' -drive if='$cdrom_if',aio=native'
+  cd_args=$cd_args' -drive if='$cdrom_if',aio=native,cache.direct=on'
   if [[ x$cdrom_iso != x ]]; then
     if [[ ! -f $cdrom_iso ]]; then
         echo "Specified iso file does not exist."
         exit 11
     fi
-    cd_args=$cd_args',file='$cdrom_iso', cache.direct=on'
+    cd_args=$cd_args',file='$cdrom_iso
   fi
   cd_args=$cd_args',index='$disk_num',media=cdrom'
 }
