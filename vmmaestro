@@ -43,6 +43,7 @@ function set_default_values
   cdrom_if='ide'
   disk_num=0
   iswinguest=0
+  iommu=0
 }
 
 ########################################
@@ -487,6 +488,9 @@ function build_cmdline
   CMDLINE=$CMDLINE' '$boot_args
   CMDLINE=$CMDLINE' '$disk_args' '$cd_args' '$fd_args
   CMDLINE=$CMDLINE' '$net_args' '$kbd_args
+  if [[ $iommu != 0 ; then
+    CMDLINE=$CMDLINE' -device=iommu'
+  fi
   CMDLINE=$CMDLINE' '$disp_args' '$console_args' '$rtc_args
   CMDLINE=$CMDLINE' -pidfile '$pid_file
 
@@ -591,6 +595,7 @@ function del_conf
   unset cpu_threads
   unset cpu_sockets
   unset iswinguest
+  unset iommu
   unset network_type
   unset network_addr
   unset network_name
