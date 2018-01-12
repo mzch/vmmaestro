@@ -223,13 +223,13 @@ function create_cdrom {
      *)
        echo "Unknown CD Interface: "$cdrom_if
   esac
-  cd_args=$cd_args' -drive if='$cdrom_if',aio=native,cache.direct=on'
+  cd_args=$cd_args' -drive if='$cdrom_if',aio=native'
   if [[ x$cdrom_iso != x ]]; then
     if [[ ! -f $cdrom_iso ]]; then
         echo "Specified iso file does not exist."
         exit 11
     fi
-    cd_args=$cd_args',file='$cdrom_iso
+    cd_args=$cd_args',cache.direct=on,file='$cdrom_iso
   fi
   cd_args=$cd_args',index='$disk_num',media=cdrom'
 }
