@@ -29,6 +29,7 @@ function set_default_values
   user_runas='kvm'
   cpu_model='host'
   cpu_units=1
+  cpu_iswinguest=0
   memory_vmem=1024
   memory_balloon='y'
   display_type='vnc'
@@ -42,7 +43,6 @@ function set_default_values
   clock_sync_host='y'
   cdrom_if='ide'
   disk_num=0
-  iswinguest=0
 }
 
 ########################################
@@ -99,7 +99,7 @@ function create_cpu
   if [[ x$cpu_sockets != x ]]; then
     cpu_args=$cpu_args',sockets='$cpu_sockets
   fi
-  if [[ $iswinguest != 0 ]]; then
+  if [[ $cpu_iswinguest != 0 ]]; then
     cpu_args=$cpu_args',hv_relaxed,hv_spinlocks=0x1fff,hv_vapic,hv_time'
   fi
 }
@@ -591,7 +591,7 @@ function del_conf
   unset cpu_cores
   unset cpu_threads
   unset cpu_sockets
-  unset iswinguest
+  unset cpu_iswinguest
   unset network_type
   unset network_addr
   unset network_name

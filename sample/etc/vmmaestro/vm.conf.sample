@@ -23,7 +23,7 @@
 ##		Otherwise an error will occur.
 ############################################################
 [display]
-type			= 'vnc'
+type		= 'vnc'
 #type		= 'spice'
 #type		= 'sdl'
 #type		= 'none'
@@ -40,7 +40,7 @@ type			= 'vnc'
 ############################################################
 [vnc]
 # VNC Server Bind address
-addr			= '127.0.0.1'
+addr		= '127.0.0.1'
 # VNC display number
 number		= '0'
 #
@@ -55,7 +55,7 @@ number		= '0'
 ############################################################
 [spice]
 #port		= 10000
-#tls			= 'y'
+#tls		= 'y'
 #tls_port	= 10001
 #sasl		= 'y'
 
@@ -69,7 +69,7 @@ number		= '0'
 ## * When using 'SPICE', this option will be ignored.
 ############################################################
 [graphics]
-type			= 'std'
+type		= 'std'
 
 ############################################################
 ## Memory section
@@ -79,9 +79,9 @@ type			= 'std'
 ##		huge		'y' use huge memory page
 ############################################################
 [memory]
-vmem			= 1024
+vmem		= 1024
 balloon		= 'y'
-huge			= 'n'
+huge		= 'n'
 
 ############################################################
 ## Disk Section
@@ -103,19 +103,19 @@ huge			= 'n'
 ############################################################
 ## First disk
 [disk]
-lv			= 'vm-swap'
-if			= 'virtio'
-fmt			= 'raw'
-dp			= 'y'
-aio			= 'native'
+lv		= 'vm-swap'
+if		= 'virtio'
+fmt		= 'raw'
+dp		= 'y'
+aio		= 'native'
 
 ### Second disk
 [disk]
-lv			= 'vm-root'
-if			= 'virtio'
-fmt			= 'raw'
-dp			= 'y'
-aio			= 'native'
+lv		= 'vm-root'
+if		= 'virtio'
+fmt		= 'raw'
+dp		= 'y'
+aio		= 'native'
 
 ############################################################
 ## Floppy disk section
@@ -133,8 +133,8 @@ aio			= 'native'
 ##		iso			Specify CD-ROM/DVD image file
 ############################################################
 [cdrom]
-if			= 'ide'
-iso			= /etc/vmmaestro/img/linux.iso
+if		= 'ide'
+iso		= /etc/vmmaestro/img/linux.iso
 
 ############################################################
 ## Network section
@@ -166,24 +166,24 @@ iso			= /etc/vmmaestro/img/linux.iso
 ############################################################
 # First NIC
 [network]
-type			= 'tap'
-addr			= '00:16:3E:00:00:00'
-name			= 'tap0v1'
+type		= 'tap'
+addr		= '00:16:3E:00:00:00'
+name		= 'tap0v1'
 model		= 'virtio'
 bridge		= 'br0'
-if			= 'tap0.1'
-ifup			= '/etc/vmmaestro/ifup-br0.sh'
+if		= 'tap0.1'
+ifup		= '/etc/vmmaestro/ifup-br0.sh'
 ifdown		= '/etc/vmmaestro/ifdown-br0.sh'
 vhost 		= 'n'
 # Second NIC
 [network]
-type			= 'tap'
-addr			= '00:16:3E:00:00:01'
-name			= 'tap1v1'
+type		= 'tap'
+addr		= '00:16:3E:00:00:01'
+name		= 'tap1v1'
 model		= 'virtio'
 bridge		= 'br1'
-if			= 'tap1.1'
-ifup			= '/etc/vmmaestro/ifup-br1.sh'
+if		= 'tap1.1'
+ifup		= '/etc/vmmaestro/ifup-br1.sh'
 ifdown		= '/etc/vmmaestro/ifdown-br1.sh'
 vhost		= 'n'
 
@@ -206,11 +206,11 @@ units	 	= 1
 #cores	 	= 2
 #threads 	= 2
 #sockets 	= 1
-#iswinguest = 0
+#iswinguest	= 0
 
 ############################################################
 ## Misc
 ##		args			Additional QEMU parameters
 ############################################################
 [misc]
-args			= ''
+args		= ''

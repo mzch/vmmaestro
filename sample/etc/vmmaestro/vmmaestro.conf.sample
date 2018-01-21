@@ -7,7 +7,7 @@
 ##              Set volume group name for VM disks
 ############################################################
 [vg]
-name			= 'vm'
+name		= 'vm'
 
 ############################################################
 ## Display type
@@ -16,49 +16,49 @@ name			= 'vm'
 ##		Otherwise an error will occur.
 ############################################################
 [display]
-type			= 'vnc'
+type		= 'vnc'
 #type		= 'spice'
 ############################################################
 ## VNC server setting
-##		addr			Recommend to set '127.0.0.1'
-##					for security reasons.
-##					In case of accessing from external network,
-##					Please use SSH tunnel.
+##		addr		Recommend to set '127.0.0.1'
+##				for security reasons.
+##				In case of accessing from external network,
+##				Please use SSH tunnel.
 ##		number		VNC Display number. This must be
-##					a unique number on the same host.
+##				a unique number on the same host.
 ############################################################
 [vnc]
 # VNC Server Bind address
-addr			= '127.0.0.1'
+addr		= '127.0.0.1'
 #
 ############################################################
 ## SPICE using port
-##		addr			set bind address
-##		port			set port number
+##		addr		set bind address
+##		port		set port number
 ##		use_tls		'y' use TLS eencryption
-##					'n' not use TLS
-##		tls_port		port used TLS connection
+##				'n' not use TLS
+##		tls_port	port used TLS connection
 ############################################################
 [spice]
-addr			= '127.0.0.1'
+addr		= '127.0.0.1'
 
 ############################################################
 ## Graphics
 ##		'std'		max resolution
-##		'vmware'		faster than others
-##		'cirrus'		high compatibility
+##		'vmware'	faster than others
+##		'cirrus'	high compatibility
 ##		'qxl'		set this automatically when using 'SPICE'
 ##		'none'		Do Not Use Graphical console
 ## * When using 'SPICE', this option will be ignored.
 ############################################################
 [graphics]
-type			= 'std'
+type		= 'std'
 
 ############################################################
 ## CPU
 ##		model		CPU model
 ##					'host'		The same as host machine
-##								Recommend this
+##							Recommend this
 ##					if you'd like to know other options,
 ##					exec 'qemu-kvm -cpu \?'
 ##		units		Number of CPU units
@@ -70,17 +70,17 @@ type			= 'std'
 model		= 'host'
 units		= 1
 #cores		= 2
-#threads		= 2
-#sockets		= 1
+#threads	= 2
+#sockets	= 1
 
 ############################################################
 ## Memory Settings (MB)
-##		vmem			Set amount of memory used by VM
+##		vmem		Set amount of memory used by VM
 ##		use_balolon	'y' activate memory ballooning
-##					'n' fixed size memory
+##				'n' fixed size memory
 ############################################################
 [memory]
-vmem			= 1024
+vmem		= 1024
 balloon		= 'y'
 
 ############################################################
@@ -94,18 +94,18 @@ sync_host	= 'y'
 
 ############################################################
 ## Keyboard Settings
-##		lang			Keyboard mapping. Default is 'en-us'
+##		lang		Keyboard mapping. Default is 'en-us'
 ############################################################
 [keyboard]
-lang			= 'en-us'
+lang		= 'en-us'
 
 ############################################################
 ## Boot order
 ##		order		'c'	Hard Disk
-##					'd'	CD-ROM
-##					'a' First FD
-##					'b' Second FD
-##					'n' Network boot via first NIC
+##				'd'	CD-ROM
+##				'a' First FD
+##				'b' Second FD
+##				'n' Network boot via first NIC
 ############################################################
 [boot]
 #order		= 'cdan'
@@ -141,8 +141,8 @@ SASL_CONF_PATH	= /home/$runas/.qemu/sasl2/sasl2.conf
 ############################################################
 [system]
 ## Base Settings
-RUNDIR			= /var/run/vmmaestro
+RUNDIR		= /var/run/vmmaestro
 ############################################################
-#QEMU			= 'qemu-system-x86_64'
-QEMU				= 'kvm'
+#QEMU		= 'qemu-system-x86_64'
+QEMU		= 'kvm'
 ####################################################################################
