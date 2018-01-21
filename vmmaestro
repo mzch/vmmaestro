@@ -484,7 +484,7 @@ function create_console
 #############################
 function build_cmdline
 {
-  io_mmu
+  # io_mmu
   create_cpu
   create_mem
   create_disk_drive
