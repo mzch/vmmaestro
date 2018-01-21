@@ -59,6 +59,19 @@ fi
 #### create startup command line
 ########################################
 ##############################
+#### is enabled IOMMU
+##############################
+function io_mmu
+{
+  sudo dmesg | grep -e 'IOMMU enabled' > /dev/null
+  if [[ $? == 0 ]]; then
+    iommu_args='-device intel-iommu'
+  else
+    iommu_args=''
+  fi
+}
+
+##############################
 #### check CPU
 ##############################
 function check_cpu
@@ -465,6 +478,7 @@ function create_console
 #############################
 function build_cmdline
 {
+  io_mmu
   create_cpu
   create_mem
   create_disk_drive
@@ -484,7 +498,7 @@ function build_cmdline
     CMDLINE=$system_qemu' -enable-kvm'
   fi
   CMDLINE=$CMDLINE' -daemonize -runas '$user_runas
-  CMDLINE=$CMDLINE' '$cpu_args' '$mem_args
+  CMDLINE=$CMDLINE' '$iommu_args' '$cpu_args' '$mem_args
   CMDLINE=$CMDLINE' '$boot_args
   CMDLINE=$CMDLINE' '$disk_args' '$cd_args' '$fd_args
   CMDLINE=$CMDLINE' '$net_args' '$kbd_args
