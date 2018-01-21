@@ -63,9 +63,15 @@ fi
 ##############################
 function io_mmu
 {
+  vendor=`grep vendor_id /proc/cpuinfo | uniq | awk '{ print $3; }'`
+  iommu_args=''
   sudo dmesg | grep -e 'IOMMU enabled' > /dev/null
   if [[ $? == 0 ]]; then
-    iommu_args='-device intel-iommu'
+    if [[ $vendor == 'GenuineIntel' ]]; then
+      iommu_args='-device intel-iommu'
+    else
+      iommu_args='-device amd-iommu'
+    fi
   else
     iommu_args=''
   fi
