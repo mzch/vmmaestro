@@ -9,6 +9,11 @@
 
 #E=echo
 
+########################################
+# use_sudo : y use sudo command 
+#            d use doas command
+#            else not use any commnad
+########################################
 use_sudo='y'
 
 ########################################
@@ -763,6 +768,8 @@ function connect_to_monitor
 
 if [[ $use_sudo == 'y' ]]; then
   SUDO='sudo'
+elif [[ $use_sudo == 'd' ]]; then
+  SUDO='doas'
 else
   SUDO=
 fi
