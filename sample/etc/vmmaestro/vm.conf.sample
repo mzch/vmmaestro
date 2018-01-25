@@ -202,7 +202,7 @@ bridge		= 'br0'
 if		= 'tap0.1'
 ifup		= '/etc/vmmaestro/ifup-br0.sh'
 ifdown		= '/etc/vmmaestro/ifdown-br0.sh'
-vhost 		= 'n'
+vhost 		= 'y'
 # Second NIC
 [network]
 type		= 'tap'
@@ -213,7 +213,15 @@ bridge		= 'br1'
 if		= 'tap1.1'
 ifup		= '/etc/vmmaestro/ifup-br1.sh'
 ifdown		= '/etc/vmmaestro/ifdown-br1.sh'
-vhost		= 'n'
+vhost		= 'y'
+
+############################################################
+## Chroot section
+##		chroot	'y'	chroot vm rundir
+##			others	chroot others
+############################################################
+[user]
+chroot		=
 
 ############################################################
 ## CPU section

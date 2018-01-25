@@ -513,6 +513,12 @@ function create_rundir
           $SUDO chown $user_runas:$user_runas $vmrundir
         fi
     fi
+    chroot_dir=''
+    if [[ x$user_chroot == 'y' ]]; then
+      chroot_dir='-chroot '$vmrundir
+    elif [[ -d $user_chroot ]]; then
+      chroot_dir='-chroot '$user_chroot
+    fi
 }
 
 ##############################
@@ -577,7 +583,7 @@ function build_cmdline
   else
     CMDLINE=$system_qemu' -enable-kvm'
   fi
-  CMDLINE=$CMDLINE' -daemonize -runas '$user_runas
+  CMDLINE=$CMDLINE' -daemonize -runas '$user_runas' '$chroot_dir
   CMDLINE=$CMDLINE' -name '$vm' '$bios_args
   CMDLINE=$CMDLINE' '$iommu_args' '$cpu_args' '$mem_args
   CMDLINE=$CMDLINE' '$numa_args' '$boot_args

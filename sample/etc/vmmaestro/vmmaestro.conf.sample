@@ -113,9 +113,12 @@ lang		= 'en-us'
 ############################################################
 ## User
 ##		runas		Set user when KVM doesn't run as root
+##		chroot	'y'	Set root dir to RUNDIR/$vm
+##			others	Set root dir to others
 ############################################################
 [user]
 runas		= 'kvm'
+chroot		=
 
 ############################################################
 ## Certificate
