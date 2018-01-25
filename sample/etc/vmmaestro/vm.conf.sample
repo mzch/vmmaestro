@@ -72,6 +72,15 @@ number		= '0'
 type		= 'std'
 
 ############################################################
+## NUMA
+##		is_num		'y' simulate a numa system
+##				'n' not
+############################################################
+[numa]
+is_numa		= 'n'
+numa_opts	=
+
+############################################################
 ## Memory section
 ##		vmem		Set amount of memory used by VM
 ##		balolon	'y' activate memory ballooning
@@ -82,6 +91,25 @@ type		= 'std'
 vmem		= 1024
 balloon		= 'y'
 huge		= 'n'
+
+############################################################
+## BIOS section
+##		file		BIOS binary file name
+##		type	'0' or '1'
+##		vendor	when type '0', vendor name
+##		version		version
+##		date	when type '0', date
+##		release when type '0', %d.%d
+##		manufacturer when type '1', manufacturer
+##		product when type '1', product
+##		serial  when type '1', serial
+##		uuid    when type '1', uuid
+##		sku     when type '1', sku
+##		family  when type '1', family
+#############################################################
+[bios]
+file		= ''
+type		= ''
 
 ############################################################
 ## Disk Section

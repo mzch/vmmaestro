@@ -129,6 +129,18 @@ function create_cpu
 }
 
 ##############################
+#### check NUMA
+##############################
+function check_numa
+{
+  if [[ $numa_is_numa == 'y' ]]; then
+    numa_args='-numa '$numa_numa_opts
+  else
+    numa_args=''
+  fi 
+}
+
+##############################
 #### create Memory
 ##############################
 function create_mem
@@ -142,6 +154,61 @@ function create_mem
   if [[ $memory_huge == 'y' ]]; then
     mem_args=$mem_args' -mem-path /dev/hugepages'
   fi
+}
+
+##############################
+#### creete bios args
+##############################
+function create_bios
+{
+  if [[ x$bios_file != x ]]; then
+    bios_args='-smbios file='$bios_file
+  else
+    bios_args=''
+  fi
+  case  "$bios_type" in
+    '0')
+      bios_args=' -smbios type=0'
+      if [[ x$bios_vendor != x ]]; then
+        bios_args=$bios_args',vender='$bios_vendor
+      fi
+      if [[ x$bios_version != x ]]; then
+        bios_args=$bios_args',version='$bios_version
+      fi
+      if [[ x$bios_date != x ]]; then
+        bios_args=$bios_args',date='$bios_date
+      fi
+      if [[ x$bios_release != x ]]; then
+        bios_args=$bios_args',release'$bios_release
+      fi
+      ;;
+    '1')
+      bios_args=' -smbios type=1'
+      if [[ x$bios_manufacturer != x ]]; then
+        bios_args=$bios_args',manufacturer='$bios_manufacturer
+      fi
+      if [[ x$bios_product != x ]]; then
+        bios_args=$bios_args',product='$bios_product
+      fi
+      if [[ x$bios_version != x ]]; then
+        bios_args=$bios_args',version='$bios_version
+      fi
+      if [[ x$bios_serial != x ]]; then
+        bios_args=$bios_args',serial='$bios_serial
+      fi
+      if [[ x$bios_uuid != x ]]; then
+        bios_args=$bios_args',uuid='$bios_uuid
+      fi
+      if [[ x$bios_sku != x ]]; then
+        bios_args=$bios_args',sku='$bios_sku
+      fi
+      if [[ x$bios_family != x ]]; then
+        bios_args=$bios_args',family='$bios_family
+      fi
+      ;;
+    '*')
+      ;;
+   esac
 }
 
 ##############################
@@ -491,7 +558,9 @@ function build_cmdline
 {
   # io_mmu
   create_cpu
+  check_numa
   create_mem
+  create_bios
   create_disk_drive
   create_floppy
   create_cdrom
@@ -509,8 +578,9 @@ function build_cmdline
     CMDLINE=$system_qemu' -enable-kvm'
   fi
   CMDLINE=$CMDLINE' -daemonize -runas '$user_runas
+  CMDLINE=$CMDLINE' -name '$vm' '$bios_args
   CMDLINE=$CMDLINE' '$iommu_args' '$cpu_args' '$mem_args
-  CMDLINE=$CMDLINE' '$boot_args
+  CMDLINE=$CMDLINE' '$numa_args' '$boot_args
   CMDLINE=$CMDLINE' '$disk_args' '$cd_args' '$fd_args
   CMDLINE=$CMDLINE' '$net_args' '$kbd_args
   CMDLINE=$CMDLINE' '$disp_args' '$console_args' '$rtc_args
