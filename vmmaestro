@@ -168,7 +168,7 @@ function create_bios
   fi
   case  "$bios_type" in
     '0')
-      bios_args=' -smbios type=0'
+      bios_args=$bios_args' -smbios type=0'
       if [[ x$bios_vendor != x ]]; then
         bios_args=$bios_args',vender='$bios_vendor
       fi
@@ -183,7 +183,7 @@ function create_bios
       fi
       ;;
     '1')
-      bios_args=' -smbios type=1'
+      bios_args=$bios_args' -smbios type=1'
       if [[ x$bios_manufacturer != x ]]; then
         bios_args=$bios_args',manufacturer='$bios_manufacturer
       fi
