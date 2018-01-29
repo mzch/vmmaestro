@@ -165,6 +165,17 @@ if		= 'ide'
 iso		= /etc/vmmaestro/img/linux.iso
 
 ############################################################
+## Boot order
+##		order		'c' Hard Disk
+##				'd' CD-ROM
+##				'a' First FD
+##				'b' Second FD
+##				'n' Network boot via first NIC
+############################################################
+[boot]
+#order		= 'cdan'
+
+############################################################
 ## Network section
 ##		You need multiple disk drives, put [disk] sections
 ##		you needs. Drive order depends on listing order here.

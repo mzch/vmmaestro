@@ -332,7 +332,7 @@ function create_bootorder
 {
   boot_args=""
   if [[ x$boot_order != x ]]; then
-    boot_args=$boot_order
+    boot_args='-boot '$boot_order
   fi
 }
 

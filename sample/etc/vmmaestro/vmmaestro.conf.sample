@@ -100,17 +100,6 @@ sync_host	= 'y'
 lang		= 'en-us'
 
 ############################################################
-## Boot order
-##		order		'c'	Hard Disk
-##				'd'	CD-ROM
-##				'a' First FD
-##				'b' Second FD
-##				'n' Network boot via first NIC
-############################################################
-[boot]
-#order		= 'cdan'
-
-############################################################
 ## User
 ##		runas		Set user when KVM doesn't run as root
 ##		chroot	'y'	Set root dir to RUNDIR/$vm
