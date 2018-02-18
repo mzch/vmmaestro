@@ -602,9 +602,9 @@ function build_cmdline
     CMDLINE=$system_qemu' -enable-kvm'
   fi
   CMDLINE=$CMDLINE' -daemonize -runas '$user_runas' '$chroot_dir
-  CMDLINE=$CMDLINE' -name '$vm' '$bios_args
+  CMDLINE=$CMDLINE' -name '$vm
   CMDLINE=$CMDLINE' '$iommu_args' '$cpu_args' '$mem_args
-  CMDLINE=$CMDLINE' '$numa_args' '$boot_args
+  CMDLINE=$CMDLINE' '$numa_args' '$boot_args' '$bios_args
   CMDLINE=$CMDLINE' '$disk_args' '$cd_args' '$fd_args
   CMDLINE=$CMDLINE' '$net_args' '$kbd_args
   CMDLINE=$CMDLINE' '$disp_args' '$console_args' '$rtc_args
