@@ -97,7 +97,7 @@ huge		= 'n'
 ############################################################
 ## BIOS section
 ##		file		BIOS binary file name
-##		type	'0' or '1'
+##		type	'0', '1' or 'uefi'
 ##		vendor	when type '0', vendor name
 ##		version		version
 ##		date	when type '0', date
@@ -108,10 +108,12 @@ huge		= 'n'
 ##		uuid    when type '1', uuid
 ##		sku     when type '1', sku
 ##		family  when type '1', family
+##		nvram	when tyoe 'uefi', nvram file
 #############################################################
 [bios]
 file		= ''
 type		= ''
+nvram		= ''
 
 ############################################################
 ## Disk Section
