@@ -450,6 +450,9 @@ function create_display
     sdl)
       disp_args=' -vga '$graphics_type' -sdl'
       ;;
+    curses)
+      disp_args=' -curses'
+      ;;
     none)
       disp_args=' -display none'
       ;;

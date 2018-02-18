@@ -15,17 +15,19 @@
 
 ############################################################
 ## Display section
-##		When use 'VNC', set display='vnc'
-##		When use 'SPICE', set display='spice'
-##		When running on Desktop PC, set display='sdl'
-##		When headless, set display='none'
-##		When redirect console to serial, set display='off'
+##		When use 'VNC', set type='vnc'
+##		When use 'SPICE', set type='spice'
+##		When running on Desktop PC, set type='sdl'
+##		When use console, set type='curses'
+##		When headless, set type='none'
+##		When redirect console to serial, set type='off'
 ##		Otherwise an error will occur.
 ############################################################
 [display]
 type		= 'vnc'
 #type		= 'spice'
 #type		= 'sdl'
+#type       = 'curses'
 #type		= 'none'
 #type		= 'off'
 
