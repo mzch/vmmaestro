@@ -213,9 +213,11 @@ function create_bios
       ;;
     'uefi')
       if [[ x$bios_file != x ]]; then
-        bios_args='-drive if=pflash,format=raw,readonly,file='$bios_file
         if [[ x$bios_nvram != x ]]; then
-          bios_args=' -drive if=pflash,format=raw,file='$bios_nvram
+          bios_args='-drive if=pflash,format=raw,readonly,file='$bios_file
+          bios_args=$bios_args' -drive if=pflash,format=raw,file='$bios_nvram
+        else
+          bios_args='-drive if=pflash,format=raw,file='$bios_file
         fi
       else
         bios_args=''
