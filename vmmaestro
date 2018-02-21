@@ -161,12 +161,15 @@ function create_mem
 ##############################
 function create_bios
 {
+  if [[ x$bios_menu == 'y' ]]; then
+    bios_args="menu=on"
+  else
+    bios_args=''
+  fi
   case  "$bios_type" in
     '0')
       if [[ x$bios_file != x ]]; then
-        bios_args='-smbios file='$bios_file
-      else
-        bios_args=''
+        bios_args=$bios_args'-smbios file='$bios_file
       fi
       bios_args=$bios_args' -smbios type=0'
       if [[ x$bios_vendor != x ]]; then
@@ -184,9 +187,7 @@ function create_bios
       ;;
     '1')
       if [[ x$bios_file != x ]]; then
-        bios_args='-smbios file='$bios_file
-      else
-        bios_args=''
+        bios_args=$bios_args'-smbios file='$bios_file
       fi
       bios_args=$bios_args' -smbios type=1'
       if [[ x$bios_manufacturer != x ]]; then
@@ -214,8 +215,8 @@ function create_bios
     'uefi')
       if [[ x$bios_file != x ]]; then
         if [[ x$bios_nvram != x ]]; then
-          bios_args='-drive if=pflash,format=raw,readonly,file='$bios_file
-          bios_args=$bios_args' -drive if=pflash,format=raw,file='$bios_nvram
+          bios_args=$bios_args'-drive if=pflash,format=raw,readonly,file='$bios_file' '
+          bios_args=$bios_args'-drive if=pflash,format=raw,file='$bios_nvram
         else
           bios_args='-drive if=pflash,format=raw,file='$bios_file
         fi

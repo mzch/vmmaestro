@@ -96,6 +96,7 @@ huge		= 'n'
 
 ############################################################
 ## BIOS section
+##		menu	if 'y', display bios menu
 ##		file		BIOS binary file name
 ##		type	'0', '1' or 'uefi'
 ##		nvram	when type 'uefi', nvram file
@@ -111,6 +112,7 @@ huge		= 'n'
 ##		family  when type '1', family
 #############################################################
 [bios]
+menu		= 'n'
 file		= ''
 type		= ''
 nvram		= ''
