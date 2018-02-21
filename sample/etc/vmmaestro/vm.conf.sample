@@ -97,11 +97,11 @@ huge		= 'n'
 ############################################################
 ## BIOS section
 ##		menu	if 'y', display bios menu
-##		file		BIOS binary file name
+##		file	BIOS binary file name
 ##		type	'0', '1' or 'uefi'
 ##		nvram	when type 'uefi', nvram file
 ##		vendor	when type '0', vendor name
-##		version		version
+##		version	version
 ##		date	when type '0', date
 ##		release when type '0', %d.%d
 ##		manufacturer when type '1', manufacturer
