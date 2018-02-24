@@ -430,7 +430,11 @@ function create_network_adaptor
 
     nic_arg='-net nic'
     if [[ ${network_addr[$idx]} ]]; then
-      nic_arg=$nic_arg',macaddr='${network_addr[$idx]}
+      if [[ ${network_addr[$idx]} == 'random']]; then
+        nic_arg=$nic_arg',macaddr='`printf "00:16:3E:%02X:%02X:%02X" $(( $RANDOM & 0xff)) $(( $RANDOM & 0xff )) $(( $RANDOM & 0xff))`
+      else
+        nic_arg=$nic_arg',macaddr='${network_addr[$idx]}
+      fi
     fi
     nic_arg=$nic_arg',model='${network_model[$idx]}
     nic_arg=$nic_arg',netdev='${network_name[$idx]}',name='${network_name[$idx]}

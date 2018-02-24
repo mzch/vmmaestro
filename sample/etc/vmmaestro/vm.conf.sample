@@ -201,6 +201,7 @@ iso		= /etc/vmmaestro/img/linux.iso
 ##		addr			Specify MAC address. Please use prefix
 ##					'00:16:3E', which IEEE assigned to XenSource
 ##					for generating on Xen system.
+##					if you prefer, can specify 'random'
 ##		name			Any name you prefer. This will be also shown
 ##					in the monitor
 ##		vlan			set vlan tag
