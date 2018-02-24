@@ -66,6 +66,7 @@ number		= '0'
 ##		'std'		max resolution
 ##		'vmware'		faster than others
 ##		'cirrus'		high compatibility
+##		'virtio'	use virtio-gpu module
 ##		'qxl'		set this automatically when using 'SPICE'
 ##		'none'		Do Not Use Graphical console
 ## * When using 'SPICE', this option will be ignored.

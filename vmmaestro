@@ -452,10 +452,10 @@ function create_display
 {
   case "$display_type" in
     vnc)
-      disp_args=' -vga '$graphics_type' -vnc '$vnc_addr:$vnc_number
+      disp_args='-vga '$graphics_type' -vnc '$vnc_addr:$vnc_number
       ;;
     spice)
-      disp_args=' -vga qxl -spice addr='$spice_addr',port='$spice_port
+      disp_args='-vga qxl -spice addr='$spice_addr',port='$spice_port
       if [[ $spice_sasl == 'y' ]];then
         disp_args=$disp_args',sasl'
       else
@@ -469,17 +469,20 @@ function create_display
         disp_args=$disp_args',tls-port='$spice_tls_port',x509-dir='$ssl_SSLDIR
       fi
       ;;
+    virtio)
+      disp_args='-vga '$graphics_type' -display sdl,gl=on'
+      ;;
     sdl)
-      disp_args=' -vga '$graphics_type' -sdl'
+      disp_args='-vga '$graphics_type' -sdl'
       ;;
     curses)
-      disp_args=' -curses'
+      disp_args='-curses'
       ;;
     none)
-      disp_args=' -display none'
+      disp_args='-display none'
       ;;
     off)
-      disp_args=' -nographic'
+      disp_args='-nographic'
       ;;
     *)
       echo 'Illegal display: '$display_type
