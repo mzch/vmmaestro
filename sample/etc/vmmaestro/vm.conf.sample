@@ -110,15 +110,22 @@ prealloc	= 'n'
 ##		type	'0', '1' or 'uefi'
 ##		nvram	when type 'uefi', nvram file
 ##		vendor	when type '0', vendor name
-##		version	version
+##		version	when type '0' '1' 2' '3' '4', version
 ##		date	when type '0', date
 ##		release when type '0', %d.%d
-##		manufacturer when type '1', manufacturer
-##		product when type '1', product
-##		serial  when type '1', serial
+##		manufacturer when type '1' '2' '3' '4' '17', manufacturer
+##		product when type '1' '2', product
+##		serial  when type '1' '2' '3' '4' '17', serial
 ##		uuid    when type '1', uuid
-##		sku     when type '1', sku
+##		sku     when type '1' '3', sku
 ##		family  when type '1', family
+##		asset	when type '2' '3' 4' '17', asset
+##		location when type '2', location
+##		sock	when type '4', sock_pfx
+##		part	when type '4' '17', part
+##		loc_pfx when type '17', loc_pfx
+##		bank	when type '17', bank
+##		speed	when type '17', speed=%d
 #############################################################
 [bios]
 menu		= 'n'
@@ -135,6 +142,13 @@ serial		= ''
 uuid		= ''
 sku			= ''
 family		= ''
+asset		= ''
+location	= ''
+sock		= ''
+part		= ''
+loc_pfx		= ''
+bank		= ''
+speed		= ''
 
 ############################################################
 ## Disk Section
