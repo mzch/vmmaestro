@@ -78,10 +78,11 @@ type		= 'std'
 ## NUMA
 ##		is_num		'y' simulate a numa system
 ##				'n' not
+##		numa_opts	numa option
 ############################################################
 [numa]
 is_numa		= 'n'
-numa_opts	=
+numa_opts	= 'node'
 
 ############################################################
 ## Memory section
@@ -89,11 +90,13 @@ numa_opts	=
 ##		balolon	'y' activate memory ballooning
 ##				'n' fixed size memory
 ##		huge		'y' use huge memory page
+##		share		'y' share huge memory between host and guest
 ############################################################
 [memory]
 vmem		= 1024
 balloon		= 'y'
 huge		= 'n'
+share		= 'n'
 
 ############################################################
 ## BIOS section
@@ -199,6 +202,7 @@ iso		= /etc/vmmaestro/img/linux.iso
 ############################################################
 ##		type			'tap'		use 'tap' driver
 ##					'brdige'		use 'bridge' driver
+##					'user'			use 'vhost-user' driver
 ##		addr			Specify MAC address. Please use prefix
 ##					'00:16:3E', which IEEE assigned to XenSource
 ##					for generating on Xen system.
@@ -220,6 +224,8 @@ iso		= /etc/vmmaestro/img/linux.iso
 ##					* When seting 'nic_type' to 'bridge', ignore this.
 ##		vhost		'y' use vhost-net driver (fast)
 ##					'n' Do not user vhost-net
+##		charid		character device id for OpenVSwitch when type 'user'
+##		path		socket path for OpenVSwitch when type 'user'
 ############################################################
 # First NIC
 [network]
@@ -232,6 +238,8 @@ if		= 'tap0.1'
 ifup		= '/etc/vmmaestro/ifup-br0.sh'
 ifdown		= '/etc/vmmaestro/ifdown-br0.sh'
 vhost 		= 'y'
+charid		= 'tapv01'
+path		= '/var/run/openvswitch/vswitch01'
 # Second NIC
 [network]
 type		= 'tap'
@@ -243,6 +251,8 @@ if		= 'tap1.1'
 ifup		= '/etc/vmmaestro/ifup-br1.sh'
 ifdown		= '/etc/vmmaestro/ifdown-br1.sh'
 vhost		= 'y'
+charid		= 'tapv11'
+path		= '/var/run/openvswitch/vswitch11'
 
 ############################################################
 ## Chroot section

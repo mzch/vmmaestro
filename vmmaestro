@@ -135,6 +135,9 @@ function check_numa
 {
   if [[ $numa_is_numa == 'y' ]]; then
     numa_args='-numa '$numa_numa_opts
+    if [[ $memory_huge == 'y' && $memory_share == 'y' ]]; then
+      numa_args=$numa_args',memdev=mem'
+    fi
   else
     numa_args=''
   fi 
@@ -152,7 +155,11 @@ function create_mem
     mem_args=$mem_args' -balloon virtio'
   fi
   if [[ $memory_huge == 'y' ]]; then
-    mem_args=$mem_args' -mem-path /dev/hugepages'
+    if [[ $memory_share == 'y' ]]; then
+      mem_args=$mem_args' -object memory-backend-file,id=mem,size='${memory_vmem}'M,mem-path=/dev/hugepages,share=on'
+    else
+      mem_args=$mem_args' -mem-path /dev/hugepages'
+    fi
   fi
 }
 
@@ -373,6 +380,21 @@ function check_nic
 }
 
 ##############################
+#### Mac address
+##############################
+function create_macaddr
+{
+  macaddr=''
+  if [[ ${network_addr[$idx]} ]]; then
+    if [[ ${network_addr[$idx]} == 'random']]; then
+      macaddr=`printf "00:16:3E:%02X:%02X:%02X" $(( $RANDOM & 0xff)) $(( $RANDOM & 0xff )) $(( $RANDOM & 0xff))`
+    else
+      macaddr=${network_addr[$idx]}
+    fi
+  fi
+}
+
+##############################
 #### Network
 ##############################
 function create_network_adaptor
@@ -397,12 +419,22 @@ function create_network_adaptor
       exit 13
     fi
 
-    nic_arg='-netdev '${network_type[$idx]}',id='${network_name[$idx]}
     case "${network_type[$idx]}" in
       "bridge")
+        nic_arg='-netdev '${network_type[$idx]}',id='${network_name[$idx]}
         nic_arg=$nic_arg',br='${network_bridge[$idx]}
+        nic_arg=$nic_arg' -net nic'
+        if [[ ${network_addr[$idx]} ]]; then
+          create_macaddr
+          if [[ x$macaddr != x ]]; then
+            nic_arg=$nic_arg',macaddr='${macaddr}
+          fi
+        fi
+        nic_arg=$nic_arg',model='${network_model[$idx]}
+        nic_arg=$nic_arg',netdev='${network_name[$idx]}',name='${network_name[$idx]}
         ;;
       "tap")
+        nic_arg='-netdev '${network_type[$idx]}',id='${network_name[$idx]}
         if [[ x${network_vhost[$idx]} != x && ${network_vhost[$idx]} == 'y' ]]; then
           nic_arg=$nic_arg',vhost=on'
           network_model[$idx]=$DEF_NIC
@@ -420,6 +452,31 @@ function create_network_adaptor
         if [[ x${network_ifdown[$idx]} != x ]]; then
           nic_arg=$nic_arg',downscript='${network_ifdown[$idx]}
         fi
+        nic_arg=$nic_arg' -net nic'
+        if [[ ${network_addr[$idx]} ]]; then
+          create_macaddr
+          if [[ x$macaddr != x ]]; then
+            nic_arg=$nic_arg',macaddr='${macaddr}
+          fi
+        fi
+        nic_arg=$nic_arg',model='${network_model[$idx]}
+        nic_arg=$nic_arg',netdev='${network_name[$idx]}',name='${network_name[$idx]}
+        ;;
+      "user")
+        nic_arg='-chardev socket,id='${network_charid[$idx]}'path='${network_path[$idx]}
+        nic_arg=$nic_arg' '
+        nic_arg=$nic_arg'-netdev type=vhost-user,id='${network_name[$idx]}'chardev='${network_charid[$idx]}',vhostforce'
+        nic_arg=$nic_arg' '
+        if [[ ${network_addr[$idx]} ]]; then
+          create_macaddr
+          if [[ x$macaddr != x ]]; then
+            nic_arg=$nic_arg'-device virtio-net-pci,mac='${macaddr}',netdev='${network_name[$idx]}',mrg_rxbuf=off'
+          else
+            nic_arg=$nic_arg'-device virtio-net-pci,netdev='${network_name[$idx]}',mrg_rxbuf=off'
+          fi
+        else
+          nic_arg=$nic_arg'-device virtio-net-pci,netdev='${network_name[$idx]}',mrg_rxbuf=off'
+        fi
         ;;
       *)
         echo "Unknown NIC type: "${network_type[$idx]}
@@ -428,18 +485,6 @@ function create_network_adaptor
     esac
     net_args=$net_args' '$nic_arg
 
-    nic_arg='-net nic'
-    if [[ ${network_addr[$idx]} ]]; then
-      if [[ ${network_addr[$idx]} == 'random']]; then
-        nic_arg=$nic_arg',macaddr='`printf "00:16:3E:%02X:%02X:%02X" $(( $RANDOM & 0xff)) $(( $RANDOM & 0xff )) $(( $RANDOM & 0xff))`
-      else
-        nic_arg=$nic_arg',macaddr='${network_addr[$idx]}
-      fi
-    fi
-    nic_arg=$nic_arg',model='${network_model[$idx]}
-    nic_arg=$nic_arg',netdev='${network_name[$idx]}',name='${network_name[$idx]}
-    net_args=$net_args' '$nic_arg
-    
     ((idx=idx+1))
     
   done
