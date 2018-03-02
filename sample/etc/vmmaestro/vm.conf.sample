@@ -28,6 +28,7 @@ type		= 'vnc'
 #type		= 'spice'
 #type		= 'sdl'
 #type       = 'curses'
+#type       = 'virtio'
 #type		= 'none'
 #type		= 'off'
 
