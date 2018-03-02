@@ -388,7 +388,7 @@ function check_nic
 function create_macaddr
 {
   macaddr=''
-  if [[ ${network_addr[$idx]} == 'random']]; then
+  if [[ ${network_addr[$idx]} == 'random' ]]; then
     macaddr=`printf "00:16:3E:%02X:%02X:%02X" $(( $RANDOM & 0xff)) $(( $RANDOM & 0xff )) $(( $RANDOM & 0xff))`
   else
     macaddr=${network_addr[$idx]}
