@@ -805,6 +805,7 @@ function proc_check
   	return 1
   fi
   $SUDO kill -0 `$SUDO cat $pid_file` > /dev/null 2>&1
+  return $?
 }
 
 ########################################
@@ -852,9 +853,9 @@ function stop_vm
   proc_check
   while [[ ! $? && $delay < $boot_qemu_delay ]];
   do
+    ((delay=delay+1))
     sleep 1
     proc_check
-    ((delay=delay+1))
   done
 
   if [[ $boot_qemu_delay == $delay ]]; then
