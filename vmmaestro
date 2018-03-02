@@ -658,8 +658,8 @@ function build_cmdline
   CMDLINE=$CMDLINE' '$disp_args' '$console_args' '$rtc_args
   CMDLINE=$CMDLINE' -pidfile '$pid_file
 
-  if [[ x$args != x ]]; then
-    CMDLINE=$CMDLINE' '$args
+  if [[ x$misc_args != x ]]; then
+    CMDLINE=$CMDLINE' '$misc_args
   fi
 }
 
