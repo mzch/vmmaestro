@@ -156,9 +156,12 @@ function create_mem
   fi
   if [[ $memory_huge == 'y' ]]; then
     if [[ $memory_share == 'y' ]]; then
-      mem_args=$mem_args' -object memory-backend-file,id=mem,size='${memory_vmem}'M,mem-path=/dev/hugepages,share=on'
+      mem_args=$mem_args' -object memory-backend-file,id=mem,size='${memory_sharemem}'M,mem-path=/dev/hugepages,share=on'
     else
       mem_args=$mem_args' -mem-path /dev/hugepages'
+    fi
+    if [[ $memory_prealloc == 'y' ]]; then
+      mem_args=$memargs' -mem-prealloc'
     fi
   fi
 }
@@ -385,12 +388,10 @@ function check_nic
 function create_macaddr
 {
   macaddr=''
-  if [[ ${network_addr[$idx]} ]]; then
-    if [[ ${network_addr[$idx]} == 'random']]; then
-      macaddr=`printf "00:16:3E:%02X:%02X:%02X" $(( $RANDOM & 0xff)) $(( $RANDOM & 0xff )) $(( $RANDOM & 0xff))`
-    else
-      macaddr=${network_addr[$idx]}
-    fi
+  if [[ ${network_addr[$idx]} == 'random']]; then
+    macaddr=`printf "00:16:3E:%02X:%02X:%02X" $(( $RANDOM & 0xff)) $(( $RANDOM & 0xff )) $(( $RANDOM & 0xff))`
+  else
+    macaddr=${network_addr[$idx]}
   fi
 }
 
@@ -426,9 +427,7 @@ function create_network_adaptor
         nic_arg=$nic_arg' -net nic'
         if [[ ${network_addr[$idx]} ]]; then
           create_macaddr
-          if [[ x$macaddr != x ]]; then
-            nic_arg=$nic_arg',macaddr='${macaddr}
-          fi
+          nic_arg=$nic_arg',macaddr='${macaddr}
         fi
         nic_arg=$nic_arg',model='${network_model[$idx]}
         nic_arg=$nic_arg',netdev='${network_name[$idx]}',name='${network_name[$idx]}
@@ -455,9 +454,7 @@ function create_network_adaptor
         nic_arg=$nic_arg' -net nic'
         if [[ ${network_addr[$idx]} ]]; then
           create_macaddr
-          if [[ x$macaddr != x ]]; then
-            nic_arg=$nic_arg',macaddr='${macaddr}
-          fi
+          nic_arg=$nic_arg',macaddr='${macaddr}
         fi
         nic_arg=$nic_arg',model='${network_model[$idx]}
         nic_arg=$nic_arg',netdev='${network_name[$idx]}',name='${network_name[$idx]}
@@ -469,11 +466,7 @@ function create_network_adaptor
         nic_arg=$nic_arg' '
         if [[ ${network_addr[$idx]} ]]; then
           create_macaddr
-          if [[ x$macaddr != x ]]; then
-            nic_arg=$nic_arg'-device virtio-net-pci,mac='${macaddr}',netdev='${network_name[$idx]}',mrg_rxbuf=off'
-          else
-            nic_arg=$nic_arg'-device virtio-net-pci,netdev='${network_name[$idx]}',mrg_rxbuf=off'
-          fi
+          nic_arg=$nic_arg'-device virtio-net-pci,mac='${macaddr}',netdev='${network_name[$idx]}',mrg_rxbuf=off'
         else
           nic_arg=$nic_arg'-device virtio-net-pci,netdev='${network_name[$idx]}',mrg_rxbuf=off'
         fi

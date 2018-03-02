@@ -91,12 +91,16 @@ numa_opts	= 'node'
 ##				'n' fixed size memory
 ##		huge		'y' use huge memory page
 ##		share		'y' share huge memory between host and guest
+##		sharemem	set amount of shared memory when share 'y'
+##		prealloc	pre-allocate memory when huge 'y'
 ############################################################
 [memory]
 vmem		= 1024
 balloon		= 'y'
 huge		= 'n'
 share		= 'n'
+sharemem	= 4096
+prealloc	= 'n'
 
 ############################################################
 ## BIOS section
