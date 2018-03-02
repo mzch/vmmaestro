@@ -808,20 +808,6 @@ function start_vm
   build_cmdline
   $E $SUDO $CMDLINE
 
-  delay=0
-
-  proc_check
-  while [[ ($?) && $delay < $boot_qemu_delay ]];
-  do
-    sleep 1
-    proc_check
-    ((delay=delay+1))
-  done
-
-  if [[ $boot_qemu_delay == $delay ]]; then
-      echo Failed to start $vm
-      exit 20
-  fi
 }
 
 ########################################
