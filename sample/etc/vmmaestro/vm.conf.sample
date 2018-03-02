@@ -242,7 +242,7 @@ if		= 'tap0.1'
 ifup		= '/etc/vmmaestro/ifup-br0.sh'
 ifdown		= '/etc/vmmaestro/ifdown-br0.sh'
 vhost 		= 'y'
-charid		= 'tapv01'
+charid		= 'char01'
 path		= '/var/run/openvswitch/vswitch01'
 # Second NIC
 [network]
@@ -255,7 +255,7 @@ if		= 'tap1.1'
 ifup		= '/etc/vmmaestro/ifup-br1.sh'
 ifdown		= '/etc/vmmaestro/ifdown-br1.sh'
 vhost		= 'y'
-charid		= 'tapv11'
+charid		= 'char11'
 path		= '/var/run/openvswitch/vswitch11'
 
 ############################################################
