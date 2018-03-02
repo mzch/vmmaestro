@@ -374,7 +374,7 @@ function check_nic
   nic_models=$nic_models" rtl8139 e1000 smc91c111 lance mcf_fec"
   for m in $nic_models
   do
-    if [[ $m = $model ]]; then
+    if [[ $m == $model ]]; then
       return 1
     fi
   done
