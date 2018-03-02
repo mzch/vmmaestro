@@ -207,6 +207,7 @@ iso		= /etc/vmmaestro/img/linux.iso
 ##		type			'tap'		use 'tap' driver
 ##					'brdige'		use 'bridge' driver
 ##					'user'			use 'vhost-user' driver
+##					'none'			don't use network
 ##		addr			Specify MAC address. Please use prefix
 ##					'00:16:3E', which IEEE assigned to XenSource
 ##					for generating on Xen system.
@@ -217,7 +218,7 @@ iso		= /etc/vmmaestro/img/linux.iso
 ##		model		'virtio'		para-virtual driver, fastest
 ##					if you'd like to know other options,
 ##					exec 'qemu-kvm -net nic,model=\?'
-##		* When you set nic_vhost to 'y', this setting is ignored
+##		* When you set vhost to 'y', this setting is ignored
 ##		  and 'virtio' is always set.
 ##		bridge		set brdige interface name if you select
 ##					type 'bridge'
@@ -236,6 +237,7 @@ iso		= /etc/vmmaestro/img/linux.iso
 type		= 'tap'
 addr		= '00:16:3E:00:00:00'
 name		= 'tap0v1'
+vlan		= ''
 model		= 'virtio'
 bridge		= 'br0'
 if		= 'tap0.1'
@@ -250,6 +252,7 @@ type		= 'tap'
 addr		= '00:16:3E:00:00:01'
 name		= 'tap1v1'
 model		= 'virtio'
+vlan		= ''
 bridge		= 'br1'
 if		= 'tap1.1'
 ifup		= '/etc/vmmaestro/ifup-br1.sh'

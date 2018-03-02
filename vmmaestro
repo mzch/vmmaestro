@@ -425,6 +425,9 @@ function create_network_adaptor
         nic_arg='-netdev '${network_type[$idx]}',id='${network_name[$idx]}
         nic_arg=$nic_arg',br='${network_bridge[$idx]}
         nic_arg=$nic_arg' -net nic'
+        if [[ ${network_vlan[$idx]} ]]; then
+          nic_arg=$nic_arg',vlan='$network_vlan
+        fi
         if [[ ${network_addr[$idx]} ]]; then
           create_macaddr
           nic_arg=$nic_arg',macaddr='${macaddr}
@@ -452,6 +455,9 @@ function create_network_adaptor
           nic_arg=$nic_arg',downscript='${network_ifdown[$idx]}
         fi
         nic_arg=$nic_arg' -net nic'
+        if [[ ${network_vlan[$idx]} ]]; then
+          nic_arg=$nic_arg',vlan='$network_vlan
+        fi
         if [[ ${network_addr[$idx]} ]]; then
           create_macaddr
           nic_arg=$nic_arg',macaddr='${macaddr}
@@ -470,6 +476,9 @@ function create_network_adaptor
         else
           nic_arg=$nic_arg'-device virtio-net-pci,netdev='${network_name[$idx]}',mrg_rxbuf=off'
         fi
+        ;;
+      "none")
+        nic_arg='-net none'
         ;;
       *)
         echo "Unknown NIC type: "${network_type[$idx]}
