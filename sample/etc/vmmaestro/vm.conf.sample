@@ -160,7 +160,7 @@ speed		= ''
 ##		'ide'		IDE emulation
 ##		'scsi'		SCSI emulation
 ##	fmt	'raw'		Raw format
-##			
+##		'qcow2'		Qcow2 format
 ##	dp	'y'		Use virtio-blk (fast but only when using LVM)
 ##		'n'		Do Not use virtio-blk
 ##	aio	'threads'	Disk I/O based on pthreads

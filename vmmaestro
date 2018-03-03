@@ -560,6 +560,13 @@ function create_network_adaptor
         nic_arg=$nic_arg',netdev='${network_name[$idx]}',name='${network_name[$idx]}
         ;;
       "user")
+        if [[ x${network_charid[$idx]} == x ]]; then
+          ${network_charid[$idx]}='char'$idx
+        fi
+        if [[ x${network_path[$idx]} == x ]]; then
+          echo "Need Path: "$idx
+          exit 13
+        fi
         nic_arg='-chardev socket,id='${network_charid[$idx]}'path='${network_path[$idx]}
         nic_arg=$nic_arg' '
         nic_arg=$nic_arg'-netdev type=vhost-user,id='${network_name[$idx]}'chardev='${network_charid[$idx]}',vhostforce'
