@@ -176,21 +176,7 @@ function create_bios
 {
   bios_args=''
   if [[ x$bios_file != x ]]; then
-    if [[ $bios_type == 'uefi' ]]; then
-      if [[ x$bios_nvram != x ]]; then
-        bios_args=$bios_args'-drive if=pflash,unit=0,format=raw,readonly,file='$bios_file' '
-        bios_args=$bios_args'-drive if=pflash,unit=1,format=raw,file='$bios_nvram
-      else
-        bios_args='-drive if=pflash,format=raw,file='$bios_file
-      fi
-    else
-      bios_args=$bios_args'-smbios file='$bios_file
-    fi
-  else
-    if [[ $bios_type == 'uefi' ]]; then
-      echo "Missing UEFI file."
-      exit 9
-    fi
+      bios_args='-smbios file='$bios_file
   fi
   case  "$bios_type" in
     '0')
@@ -320,10 +306,19 @@ function create_bios
       fi
       ;;
     'uefi')
+      if [[ x$bios_file != x ]]; then
+        if [[ x$bios_nvram != x ]]; then
+          bios_args='-drive if=pflash,unit=0,format=raw,readonly,file='$bios_file
+          bios_args=$bios_args' -drive if=pflash,unit=1,format=raw,file='$bios_nvram
+        else
+          bios_args='-drive if=pflash,format=raw,file='$bios_file
+        fi
+      else
+        echo "Missing UEFI file."
+        exit 9
+      fi
       ;;
     '*')
-      echo "Illegal BIOS Type: "$bios_type
-      exit 9
       ;;
   esac
 }
