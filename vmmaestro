@@ -192,138 +192,138 @@ function create_bios
       if [[ x$bios_file != x ]]; then
         bios_args=$bios_args'-smbios file='$bios_file
       fi
+      case  "$bios_type" in
+        '0')
+          bios_args=$bios_args' -smbios type=0'
+          if [[ x$bios_vendor != x ]]; then
+            bios_args=$bios_args',vender='$bios_vendor
+          fi
+          if [[ x$bios_version != x ]]; then
+            bios_args=$bios_args',version='$bios_version
+          fi
+          if [[ x$bios_date != x ]]; then
+            bios_args=$bios_args',date='$bios_date
+          fi
+          if [[ x$bios_release != x ]]; then
+            bios_args=$bios_args',release'$bios_release
+          fi
+          ;;
+        '1')
+          bios_args=$bios_args' -smbios type=1'
+          if [[ x$bios_manufacturer != x ]]; then
+            bios_args=$bios_args',manufacturer='$bios_manufacturer
+          fi
+          if [[ x$bios_product != x ]]; then
+            bios_args=$bios_args',product='$bios_product
+          fi
+          if [[ x$bios_version != x ]]; then
+            bios_args=$bios_args',version='$bios_version
+          fi
+          if [[ x$bios_serial != x ]]; then
+            bios_args=$bios_args',serial='$bios_serial
+          fi
+          if [[ x$bios_uuid != x ]]; then
+            bios_args=$bios_args',uuid='$bios_uuid
+          fi
+          if [[ x$bios_sku != x ]]; then
+            bios_args=$bios_args',sku='$bios_sku
+          fi
+          if [[ x$bios_family != x ]]; then
+            bios_args=$bios_args',family='$bios_family
+          fi
+          ;;
+        '2')
+          bios_args=$bios_args' -smbios type=2'
+          if [[ x$bios_manufacturer != x ]]; then
+            bios_args=$bios_args',manufacturer='$bios_manufacturer
+          fi
+          if [[ x$bios_product != x ]]; then
+            bios_args=$bios_args',product='$bios_product
+          fi
+          if [[ x$bios_version != x ]]; then
+            bios_args=$bios_args',version='$bios_version
+          fi
+          if [[ x$bios_serial != x ]]; then
+            bios_args=$bios_args',serial='$bios_serial
+          fi
+          if [[ x$bios_asset != x ]]; then
+            bios_args=$bios_args',asset='$bios_asset
+          fi
+          if [[ x$bios_location != x ]]; then
+            bios_args=$bios_args',location='$bios_location
+          fi
+          if [[ x$bios_family != x ]]; then
+            bios_args=$bios_args',family='$bios_family
+          fi
+          ;;
+        '3')
+          bios_args=$bios_args' -smbios type=3'
+          if [[ x$bios_manufacturer != x ]]; then
+            bios_args=$bios_args',manufacturer='$bios_manufacturer
+          fi
+          if [[ x$bios_version != x ]]; then
+            bios_args=$bios_args',version='$bios_version
+          fi
+          if [[ x$bios_serial != x ]]; then
+            bios_args=$bios_args',serial='$bios_serial
+          fi
+          if [[ x$bios_asset != x ]]; then
+            bios_args=$bios_args',asset='$bios_asset
+          fi
+          if [[ x$bios_sku != x ]]; then
+            bios_args=$bios_args',sku='$bios_sku
+          fi
+          ;;
+        '4')
+          bios_args=$bios_args' -smbios type=4'
+          if [[ x$bios_sock != x ]]; then
+            bios_args=$bios_args',sock_pfx='$bios_sock
+          fi
+          if [[ x$bios_manufacturer != x ]]; then
+            bios_args=$bios_args',manufacturer='$bios_manufacturer
+          fi
+          if [[ x$bios_version != x ]]; then
+            bios_args=$bios_args',version='$bios_version
+          fi
+          if [[ x$bios_serial != x ]]; then
+            bios_args=$bios_args',serial='$bios_serial
+          fi
+          if [[ x$bios_asset != x ]]; then
+            bios_args=$bios_args',asset='$bios_asset
+          fi
+          if [[ x$bios_part != x ]]; then
+            bios_args=$bios_args',part='$bios_part
+          fi
+          ;;
+        '17')
+          bios_args=$bios_args' -smbios type=17'
+          if [[ x$bios_loc_pfx != x ]]; then
+            bios_args=$bios_args',loc_pfx='$bios_loc_pfx
+          fi
+          if [[ x$bios_bank != x ]]; then
+            bios_args=$bios_args',bank='$bios_bank
+          fi
+          if [[ x$bios_manufacturer != x ]]; then
+            bios_args=$bios_args',manufacturer='$bios_manufacturer
+          fi
+          if [[ x$bios_serial != x ]]; then
+            bios_args=$bios_args',serial='$bios_serial
+          fi
+          if [[ x$bios_asset != x ]]; then
+            bios_args=$bios_args',asset='$bios_asset
+          fi
+          if [[ x$bios_part != x ]]; then
+            bios_args=$bios_args',part='$bios_part
+          fi
+          if [[ x$bios_speed != x ]]; then
+            bios_args=$bios_args',speed='$bios_speed
+          fi
+          ;;
+        '*')
+          ;;
+       esac
     fi
   fi
-  case  "$bios_type" in
-    '0')
-      bios_args=$bios_args' -smbios type=0'
-      if [[ x$bios_vendor != x ]]; then
-        bios_args=$bios_args',vender='$bios_vendor
-      fi
-      if [[ x$bios_version != x ]]; then
-        bios_args=$bios_args',version='$bios_version
-      fi
-      if [[ x$bios_date != x ]]; then
-        bios_args=$bios_args',date='$bios_date
-      fi
-      if [[ x$bios_release != x ]]; then
-        bios_args=$bios_args',release'$bios_release
-      fi
-      ;;
-    '1')
-      bios_args=$bios_args' -smbios type=1'
-      if [[ x$bios_manufacturer != x ]]; then
-        bios_args=$bios_args',manufacturer='$bios_manufacturer
-      fi
-      if [[ x$bios_product != x ]]; then
-        bios_args=$bios_args',product='$bios_product
-      fi
-      if [[ x$bios_version != x ]]; then
-        bios_args=$bios_args',version='$bios_version
-      fi
-      if [[ x$bios_serial != x ]]; then
-        bios_args=$bios_args',serial='$bios_serial
-      fi
-      if [[ x$bios_uuid != x ]]; then
-        bios_args=$bios_args',uuid='$bios_uuid
-      fi
-      if [[ x$bios_sku != x ]]; then
-        bios_args=$bios_args',sku='$bios_sku
-      fi
-      if [[ x$bios_family != x ]]; then
-        bios_args=$bios_args',family='$bios_family
-      fi
-      ;;
-    '2')
-      bios_args=$bios_args' -smbios type=2'
-      if [[ x$bios_manufacturer != x ]]; then
-        bios_args=$bios_args',manufacturer='$bios_manufacturer
-      fi
-      if [[ x$bios_product != x ]]; then
-        bios_args=$bios_args',product='$bios_product
-      fi
-      if [[ x$bios_version != x ]]; then
-        bios_args=$bios_args',version='$bios_version
-      fi
-      if [[ x$bios_serial != x ]]; then
-        bios_args=$bios_args',serial='$bios_serial
-      fi
-      if [[ x$bios_asset != x ]]; then
-        bios_args=$bios_args',asset='$bios_asset
-      fi
-      if [[ x$bios_location != x ]]; then
-        bios_args=$bios_args',location='$bios_location
-      fi
-      if [[ x$bios_family != x ]]; then
-        bios_args=$bios_args',family='$bios_family
-      fi
-      ;;
-    '3')
-      bios_args=$bios_args' -smbios type=3'
-      if [[ x$bios_manufacturer != x ]]; then
-        bios_args=$bios_args',manufacturer='$bios_manufacturer
-      fi
-      if [[ x$bios_version != x ]]; then
-        bios_args=$bios_args',version='$bios_version
-      fi
-      if [[ x$bios_serial != x ]]; then
-        bios_args=$bios_args',serial='$bios_serial
-      fi
-      if [[ x$bios_asset != x ]]; then
-        bios_args=$bios_args',asset='$bios_asset
-      fi
-      if [[ x$bios_sku != x ]]; then
-        bios_args=$bios_args',sku='$bios_sku
-      fi
-      ;;
-    '4')
-      bios_args=$bios_args' -smbios type=4'
-      if [[ x$bios_sock != x ]]; then
-        bios_args=$bios_args',sock_pfx='$bios_sock
-      fi
-      if [[ x$bios_manufacturer != x ]]; then
-        bios_args=$bios_args',manufacturer='$bios_manufacturer
-      fi
-      if [[ x$bios_version != x ]]; then
-        bios_args=$bios_args',version='$bios_version
-      fi
-      if [[ x$bios_serial != x ]]; then
-        bios_args=$bios_args',serial='$bios_serial
-      fi
-      if [[ x$bios_asset != x ]]; then
-        bios_args=$bios_args',asset='$bios_asset
-      fi
-      if [[ x$bios_part != x ]]; then
-        bios_args=$bios_args',part='$bios_part
-      fi
-      ;;
-    '17')
-      bios_args=$bios_args' -smbios type=17'
-      if [[ x$bios_loc_pfx != x ]]; then
-        bios_args=$bios_args',loc_pfx='$bios_loc_pfx
-      fi
-      if [[ x$bios_bank != x ]]; then
-        bios_args=$bios_args',bank='$bios_bank
-      fi
-      if [[ x$bios_manufacturer != x ]]; then
-        bios_args=$bios_args',manufacturer='$bios_manufacturer
-      fi
-      if [[ x$bios_serial != x ]]; then
-        bios_args=$bios_args',serial='$bios_serial
-      fi
-      if [[ x$bios_asset != x ]]; then
-        bios_args=$bios_args',asset='$bios_asset
-      fi
-      if [[ x$bios_part != x ]]; then
-        bios_args=$bios_args',part='$bios_part
-      fi
-      if [[ x$bios_speed != x ]]; then
-        bios_args=$bios_args',speed='$bios_speed
-      fi
-      ;;
-    '*')
-      ;;
-   esac
 }
 
 ##############################

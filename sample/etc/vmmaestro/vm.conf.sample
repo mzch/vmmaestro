@@ -107,7 +107,7 @@ prealloc	= 'n'
 ## BIOS section
 ##		menu	if 'y', display bios menu
 ##		file	BIOS binary file name
-##		type	'0', '1' or 'uefi'
+##		type	'0', '1','2','3','4','17' or 'uefi'
 ##		nvram	when type 'uefi', nvram file
 ##		vendor	when type '0', vendor name
 ##		version	when type '0' '1' 2' '3' '4', version
