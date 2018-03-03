@@ -499,7 +499,7 @@ function create_network_adaptor
     nic_arg=""
     
     if [[ x${network_name[$idx]} == x ]]; then
-      echo "Need NIC synbol name: "$idx
+      echo "Need NIC symbol name: "$idx
       exit 13
     fi
     if [[ x${network_model[$idx]} == x ]]; then
