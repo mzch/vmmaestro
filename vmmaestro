@@ -156,6 +156,9 @@ function create_mem
   fi
   if [[ $memory_huge == 'y' ]]; then
     if [[ $memory_share == 'y' ]]; then
+      if  [[ ! $memory_sharemem ]]; then
+        memory_sharemem=$memory_vmem
+      fi
       mem_args=$mem_args' -object memory-backend-file,id=mem,size='${memory_sharemem}'M,mem-path=/dev/hugepages,share=on'
     else
       mem_args=$mem_args' -mem-path /dev/hugepages'
