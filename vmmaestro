@@ -319,7 +319,11 @@ function create_bios
         bios_args=$bios_args',speed='$bios_speed
       fi
       ;;
+    'uefi')
+      ;;
     '*')
+      echo "Illegal BIOS Type: "$bios_type
+      exit 9
       ;;
   esac
 }
