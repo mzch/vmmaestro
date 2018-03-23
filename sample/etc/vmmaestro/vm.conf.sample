@@ -172,7 +172,6 @@ speed		= ''
 lv		= 'vm-swap'
 if		= 'virtio'
 fmt		= 'raw'
-dp		= 'y'
 aio		= 'native'
 
 ### Second disk
@@ -180,7 +179,6 @@ aio		= 'native'
 lv		= 'vm-root'
 if		= 'virtio'
 fmt		= 'raw'
-dp		= 'y'
 aio		= 'native'
 
 ############################################################
