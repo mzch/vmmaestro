@@ -157,12 +157,11 @@ speed		= ''
 ############################################################
 ##	lv	Set lv name or file name used as VM's drive.
 ##	if	'virtio'	para-virtual device, fastest
+##		'virtio-scsi'	para-virtual scsi device
 ##		'ide'		IDE emulation
 ##		'scsi'		SCSI emulation
 ##	fmt	'raw'		Raw format
 ##		'qcow2'		Qcow2 format
-##	dp	'y'		Use virtio-blk (fast but only when using LVM)
-##		'n'		Do Not use virtio-blk
 ##	aio	'threads'	Disk I/O based on pthreads
 ##		'native'	Disk I/O based on Linux Natie AIO
 ##		* if specified use_dp='y', this option will be ignored.

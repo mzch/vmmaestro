@@ -352,21 +352,24 @@ function create_disk_drive
       "ide")      ;;
       "scsi")     ;;
       "virtio")   ;;
+      "virtio-scsi" ;;
       *)
         echo "Unknown disk interface: "${disk_if[$idx]}
         exit 10
         ;;
     esac
-    if [[ x${disk_dp[$idx]} == x ]]; then
-      disk_dp[$idx]='n'
-    fi
-    if [[ ${disk_dp[$idx]} == 'y' ]]; then
+    if [[ ${disk_if[$idx]} == 'virtio' || ${disk_if[$idx]} == 'virtio-scsi' ]]; then
       drive_id='drive'$idx
       disk_args=$disk_args' -drive if=none,id='$drive_id
       disk_args=$disk_args',aio=native,cache.direct=on,format=raw,file='$disk_drive
       disk_args=$disk_args',index='$idx',media=disk'
-      disk_args=$disk_args' -device virtio-blk,drive='$drive_id
-      disk_args=$disk_args',scsi=off,config-wce=off'
+      if [[ ${disk_if[$idx]} == 'virtio-scsi' ]]; then
+        disk_args=$disk_args' -device virtio-scsi,drive='$drive_id
+        disk_args=$disk_args',scsi=on,config-wce=off'
+      else
+        disk_args=$disk_args' -device virtio-blk,drive='$drive_id
+        disk_args=$disk_args',scsi=off,config-wce=off'
+      fi
     else
       if [[ x${disk_aio[$idx]} == x ]]; then
         disk_aio[$idx]='native'
