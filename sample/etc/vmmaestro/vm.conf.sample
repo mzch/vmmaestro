@@ -164,19 +164,19 @@ speed		= ''
 ##		'qcow2'		Qcow2 format
 ##	aio	'threads'	Disk I/O based on pthreads
 ##		'native'	Disk I/O based on Linux Natie AIO
-##		* if specified use_dp='y', this option will be ignored.
+##		* if specified if='virtio*', this option will be ignored.
 ## * VM recognize drives in the exact order you specify here.
 ############################################################
 ## First disk
 [disk]
-lv		= 'vm-swap'
+lv		= 'vm-root'
 if		= 'virtio'
 fmt		= 'raw'
 aio		= 'native'
 
-### Second disk
+## Second disk
 [disk]
-lv		= 'vm-root'
+lv		= 'vm-swap'
 if		= 'virtio'
 fmt		= 'raw'
 aio		= 'native'
