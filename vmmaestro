@@ -352,7 +352,7 @@ function create_disk_drive
       "ide")      ;;
       "scsi")     ;;
       "virtio")   ;;
-      "virtio-scsi" ;;
+      "virtio-scsi") ;;
       *)
         echo "Unknown disk interface: "${disk_if[$idx]}
         exit 10
