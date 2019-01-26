@@ -152,7 +152,7 @@ function create_mem
   if [[ $memory_balloon == 'n' ]]; then
     mem_args=$mem_args' -balloon none'
   else
-    mem_args=$mem_args' -balloon virtio'
+    mem_args=$mem_args' -balloon virtio,automatic=true'
   fi
   if [[ $memory_huge == 'y' ]]; then
     if [[ $memory_share == 'y' ]]; then
