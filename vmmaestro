@@ -36,7 +36,6 @@ function set_default_values
   cpu_units=1
   cpu_iswinguest=0
   memory_vmem=1024
-  memory_balloon='y'
   display_type='vnc'
   graphics_type='std'
   vnc_addr='127.0.0.1'
@@ -149,11 +148,6 @@ function check_numa
 function create_mem
 {
   mem_args='-m '$memory_vmem
-  if [[ $memory_balloon == 'n' ]]; then
-    mem_args=$mem_args' -balloon none'
-  else
-    mem_args=$mem_args' -balloon virtio'
-  fi
   if [[ $memory_auto == 'y' ]]; then
     mem_args=$mem_args' -device virtio-balloon,automatic=true'
   fi
@@ -530,7 +524,7 @@ function create_network_adaptor
           nic_arg=$nic_arg',macaddr='${macaddr}
         fi
         nic_arg=$nic_arg',model='${network_model[$idx]}
-        nic_arg=$nic_arg',netdev='${network_name[$idx]}',name='${network_name[$idx]}
+        nic_arg=$nic_arg',netdev='${network_name[$idx]}
         ;;
       "tap")
         nic_arg='-netdev '${network_type[$idx]}',id='${network_name[$idx]}
@@ -560,7 +554,7 @@ function create_network_adaptor
           nic_arg=$nic_arg',macaddr='${macaddr}
         fi
         nic_arg=$nic_arg',model='${network_model[$idx]}
-        nic_arg=$nic_arg',netdev='${network_name[$idx]}',name='${network_name[$idx]}
+        nic_arg=$nic_arg',netdev='${network_name[$idx]}
         ;;
       "user")
         if [[ x${network_charid[$idx]} == x ]]; then

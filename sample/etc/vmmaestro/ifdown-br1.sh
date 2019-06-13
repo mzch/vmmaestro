@@ -2,5 +2,8 @@
 
 BR="br1"
 
-sudo /sbin/brctl delif $BR $1
-sudo /sbin/ifconfig $1 down
+BRCTL="/sbin/brctl"
+IPCTL="/usr/bin/ip"
+
+sudo $BRCTL delif $BR $1
+sudo $IPCTL link set $1 down

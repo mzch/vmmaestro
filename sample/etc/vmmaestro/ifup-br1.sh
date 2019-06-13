@@ -2,10 +2,14 @@
 
 BR="br1"
 
+BRCTL="/sbin/brctl"
+IPCTL="/usr/bin/ip"
+
 echo "Executing $0"
 echo "Bringing up $1 for bridged mode..."
-sudo /sbin/ifconfig $1 0.0.0.0 promisc up
+sudo $IPCTL link set $1 promisc on
+sudo $IPCTL link set $1 up
 echo "Adding $1 to $BR..."
-sudo /sbin/brctl addif $BR $1
+sudo $BRCTL addif $BR $1
 
 sleep 2

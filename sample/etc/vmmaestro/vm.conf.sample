@@ -3,17 +3,6 @@
 ################################################################################
 
 ############################################################
-## Boot section
-##		order	'c' Hard Disk
-##			'd' CD-ROM
-##			'a' First FD
-##			'b' Second FD
-##			'n' Network boot via first NIC
-############################################################
-[boot]
-#order 		= 'acdn'
-
-############################################################
 ## Display section
 ##		When use 'VNC', set type='vnc'
 ##		When use 'SPICE', set type='spice'
@@ -88,8 +77,6 @@ numa_opts	= 'node'
 ############################################################
 ## Memory section
 ##		vmem	Set amount of memory used by VM
-##		balolon	'y' activate memory ballooning
-##			'n' fixed size memory
 ##		huge	'y' use huge memory page
 ##		share	'y' share huge memory between host and guest
 ##		sharemem set amount of shared memory when share 'y'
@@ -97,7 +84,6 @@ numa_opts	= 'node'
 ############################################################
 [memory]
 vmem		= 1024
-balloon		= 'y'
 huge		= 'n'
 share		= 'n'
 sharemem	= 4096

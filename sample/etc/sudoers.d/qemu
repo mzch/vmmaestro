@@ -1,3 +1,3 @@
-Cmnd_Alias NETIF = /sbin/brctl, /sbin/ifconfig
+Cmnd_Alias NETIF = /sbin/brctl, /sbin/ifconfig, /usr/bin/ip
 
 kvm ALL = (NETIF) NOPASSWD: ALL

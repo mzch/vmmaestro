@@ -21,6 +21,7 @@ sync_host	= 'y'
 ############################################################
 ## Memory
 ##		auto		When enabling automatic balooning, set 'y'
+##				note: need automatic memory ballooning patch applied.
 ############################################################
 [memory]
 auto		= 'n'
