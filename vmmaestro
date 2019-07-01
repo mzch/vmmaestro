@@ -143,6 +143,18 @@ function check_numa
 }
 
 ##############################
+#### create rng
+##############################
+function create_rng
+{
+  rng_args=''
+  if [[ $rng_enable == 'y' ]]; then
+    rng_args='-object rng-random,filename=/dev/hwrng,id=rng0 '
+    rng_args=$rng_args'-device virtio-rng-pci,rng=rng0'
+  fi
+}
+
+##############################
 #### create Memory
 ##############################
 function create_mem
@@ -738,6 +750,7 @@ function build_cmdline
   # io_mmu
   create_cpu
   check_numa
+  create_rng
   create_mem
   create_bios
   create_disk_drive
@@ -758,10 +771,9 @@ function build_cmdline
   fi
   CMDLINE=$CMDLINE' -daemonize -runas '$user_runas' '$chroot_dir
   CMDLINE=$CMDLINE' -name '$vm
-  CMDLINE=$CMDLINE' '$iommu_args' '$cpu_args' '$mem_args
-  CMDLINE=$CMDLINE' '$numa_args' '$boot_args' '$bios_args
-  CMDLINE=$CMDLINE' '$disk_args' '$cd_args' '$fd_args
-  CMDLINE=$CMDLINE' '$net_args' '$kbd_args
+  CMDLINE=$CMDLINE' '$iommu_args' '$cpu_args' '$rng_args' '$mem_args
+  CMDLINE=$CMDLINE' '$numa_args' '$boot_args' '$bios_args' '$disk_args
+  CMDLINE=$CMDLINE' '$cd_args' '$fd_args' '$net_args' '$kbd_args
   CMDLINE=$CMDLINE' '$disp_args' '$console_args' '$rtc_args
   CMDLINE=$CMDLINE' -pidfile '$pid_file
 
