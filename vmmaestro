@@ -162,6 +162,8 @@ function create_mem
   mem_args='-m '$memory_vmem
   if [[ $memory_auto == 'y' ]]; then
     mem_args=$mem_args' -device virtio-balloon,automatic=true'
+  else
+    mem_args=$mem_args' -device virtio-balloon'
   fi
   if [[ $memory_huge == 'y' ]]; then
     if [[ $memory_share == 'y' ]]; then
