@@ -985,8 +985,10 @@ function status_vm
   proc_check
   if [[ $? -ne 0 ]]; then
     echo is stopped.
+    return 1
   else
     echo is running.
+    return 0
   fi
 }
 
@@ -1027,6 +1029,8 @@ fi
 cmd=$1
 shift
 
+res=0
+
 while [[ "$1" ]]; do
   vm=$1
   read_conf
@@ -1061,6 +1065,7 @@ while [[ "$1" ]]; do
       ;;
     status)
       status_vm
+      res=$(( $res + $? ))
       ;;
     *)
       echo "Unknown command: "$cmd. >&2
@@ -1070,3 +1075,5 @@ while [[ "$1" ]]; do
   del_conf
   shift
 done
+
+exit $res
