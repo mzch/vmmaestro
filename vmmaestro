@@ -69,12 +69,15 @@ function io_mmu
 {
   vendor=`grep vendor_id /proc/cpuinfo | uniq | awk '{ print $3; }'`
   iommu_args=''
+  iommu_vendor=''
   sudo dmesg | grep -e 'IOMMU enabled' > /dev/null
   if [[ $? == 0 ]]; then
     if [[ $vendor == 'GenuineIntel' ]]; then
       iommu_args='-device intel-iommu'
+      iommu_vendor='Intel'
     else
       iommu_args='-device amd-iommu'
+      iommu_vendor='AMD'
     fi
   else
     iommu_args=''
@@ -187,9 +190,22 @@ function create_bios
 {
   bios_args=''
   if [[ x$bios_file != x ]]; then
-      bios_args='-smbios file='$bios_file
+    bios_args='-smbios file='$bios_file
   fi
   case  "$bios_type" in
+    'uefi')
+      if [[ x$bios_file != x ]]; then
+        if [[ x$bios_nvram != x ]]; then
+          bios_args='-drive if=pflash,unit=0,format=raw,readonly,file='$bios_file
+          bios_args=$bios_args' -drive if=pflash,unit=1,format=raw,file='$bios_nvram
+        else
+          bios_args='-drive if=pflash,format=raw,file='$bios_file
+        fi
+      else
+        echo "Missing UEFI file."
+        exit 9
+      fi
+      ;;
     '0')
       bios_args=$bios_args' -smbios type=0'
       if [[ x$bios_vendor != x ]]; then
@@ -314,19 +330,6 @@ function create_bios
       fi
       if [[ x$bios_speed != x ]]; then
         bios_args=$bios_args',speed='$bios_speed
-      fi
-      ;;
-    'uefi')
-      if [[ x$bios_file != x ]]; then
-        if [[ x$bios_nvram != x ]]; then
-          bios_args='-drive if=pflash,unit=0,format=raw,readonly,file='$bios_file
-          bios_args=$bios_args' -drive if=pflash,unit=1,format=raw,file='$bios_nvram
-        else
-          bios_args='-drive if=pflash,format=raw,file='$bios_file
-        fi
-      else
-        echo "Missing UEFI file."
-        exit 9
       fi
       ;;
     '*')
@@ -671,7 +674,7 @@ function create_kbd
 }
 
 ##############################
-#### Keyboard
+#### RTC
 ##############################
 function create_rtc
 {
@@ -977,7 +980,7 @@ function stop_vm
 }
 
 ########################################
-### stauts
+### stauts vm
 ########################################
 function status_vm
 {
@@ -990,6 +993,595 @@ function status_vm
     echo is running.
     return 0
   fi
+}
+
+#############################
+#### Show CPU info
+#############################
+function show_cpus
+{
+  check_cpu $cpu_model
+  if [[ ! $? ]]; then
+    model="Illegal CPU"
+  else
+    model=$cpu_model
+  fi
+
+  printf "CPU: Model=%s, Units=%d" $model $cpu_units
+
+  if [[ x$cpu_cores != x ]]; then
+    printf ",Cores=%d" $cpu_cores
+  fi
+  if [[ x$cpu_threads != x ]]; then
+    printf ",Threads=%d" $cpu_threads
+  fi
+  if [[ x$cpu_sockets != x ]]; then
+    printf ",Sockets=%d" $cpu_sockets
+  fi
+  if [[ $cpu_iswinguest != 0 ]]; then
+    printf ", Windows Mode"
+  fi
+  echo
+}
+
+#############################
+#### Show Memory info
+#############################
+function show_mem
+{
+  printf "MEM: %d MB, auto=" $memory_vmem
+  if [[ $memory_auto == 'y' ]]; then
+    printf "\e[36menabled\e[0m"
+  else
+    printf "\e[31mdisabled\e[0m"
+  fi
+  if [[ $memory_huge == 'y' ]]; then
+    printf ",Huge"
+    if [[ $memory_share == 'y' ]]; then
+      if  [[ ! $memory_sharemem ]]; then
+        memory_sharemem=$memory_vmem
+      fi
+      printf ",Shared=%d" $memory_sharemem
+    fi
+    if [[ $memory_prealloc == 'y' ]]; then
+      printf ",Pre-Alloc"
+    fi
+  fi
+  if [[ $numa_is_numa == 'y' ]]; then
+    printf "Numa=enabled"
+  fi
+  echo
+}
+
+#############################
+#### Show IOMMU
+#############################
+function show_iommu
+{
+  if [[ ! -z $iommu_vendor ]]; then
+    printf "IOMMU: %s\n" $iommu_vendor
+  fi
+}
+
+#############################
+#### Show RNG
+#############################
+function show_rng
+{
+  if [[ $rng_enable == 'y' ]]; then
+    printf "RNG: enabled\n" 
+  fi
+}
+
+##############################
+#### Show BIOS
+##############################
+function show_bios
+{
+  if [[ x$bios_file != x ]]; then
+    if [[ $bios_type = 'uefi' ]]; then
+      printf "UEFI: file=%s" $bios_file
+    else
+      printf "BIOS: file=%s" $bios_file
+      echo
+    fi
+  fi
+  case  "$bios_type" in
+    'uefi')
+      if [[ x$bios_nvram != x ]]; then
+        printf ", nvram=%s" $bios_nvram
+      fi
+      echo
+      ;;
+    '0')
+      printf "BIOS: type=0"
+      if [[ x$bios_vendor != x ]]; then
+        printf ",vender=%s" $bios_vendor
+      fi
+      if [[ x$bios_version != x ]]; then
+        printf ",version=%s" $bios_version
+      fi
+      if [[ x$bios_date != x ]]; then
+        printf ",date=%s" $bios_date
+      fi
+      if [[ x$bios_release != x ]]; then
+        printf ",release=%s" $bios_release
+      fi
+      echo
+      ;;
+    '1')
+      printf "BIOS: type=1"
+      if [[ x$bios_manufacturer != x ]]; then
+        printf ",manufacturer=%s" $bios_manufacturer
+      fi
+      if [[ x$bios_product != x ]]; then
+        printf ",product=%d" $bios_product
+      fi
+      if [[ x$bios_version != x ]]; then
+        printf ",version=%s" $bios_version
+      fi
+      if [[ x$bios_serial != x ]]; then
+        printf ",serial=%s" $bios_serial
+      fi
+      if [[ x$bios_uuid != x ]]; then
+        printf ",uuid=%s" $bios_uuid
+      fi
+      if [[ x$bios_sku != x ]]; then
+        printf ",sku=%s" $bios_sku
+      fi
+      if [[ x$bios_family != x ]]; then
+        printf ",family=%s" $bios_family
+      fi
+      echo
+      ;;
+    '2')
+      printf "BIOS: type=2"
+      if [[ x$bios_manufacturer != x ]]; then
+        printf ",manufacturer=%s" $bios_manufacturer
+      fi
+      if [[ x$bios_product != x ]]; then
+        printf ",product=%s" $bios_product
+      fi
+      if [[ x$bios_version != x ]]; then
+        printf ",version=%s" $bios_version
+      fi
+      if [[ x$bios_serial != x ]]; then
+        printf ",serial=%s" $bios_serial
+      fi
+      if [[ x$bios_asset != x ]]; then
+        printf ",asset=%s" $bios_asset
+      fi
+      if [[ x$bios_location != x ]]; then
+        printf ",location=%s" $bios_location
+      fi
+      if [[ x$bios_family != x ]]; then
+        printf ",family=%s" $bios_family
+      fi
+      echo
+      ;;
+    '3')
+      printf "BIOS: type=3"
+      if [[ x$bios_manufacturer != x ]]; then
+        printf ",manufacturer=%s" $bios_manufacturer
+      fi
+      if [[ x$bios_version != x ]]; then
+        printf ",version=%s" $bios_version
+      fi
+      if [[ x$bios_serial != x ]]; then
+        printf ",serial=%s" $bios_serial
+      fi
+      if [[ x$bios_asset != x ]]; then
+        printf ",asset=%s" $bios_asset
+      fi
+      if [[ x$bios_sku != x ]]; then
+        printf ",sku=%s" $bios_sku
+      fi
+      echo
+      ;;
+    '4')
+      printf "BIOS: type=4"
+      if [[ x$bios_sock != x ]]; then
+        printf ",sock_pfx=%s" $bios_sock
+      fi
+      if [[ x$bios_manufacturer != x ]]; then
+        printf ",manufacturer=%s" $bios_manufacturer
+      fi
+      if [[ x$bios_version != x ]]; then
+        printf ",version=%s" $bios_version
+      fi
+      if [[ x$bios_serial != x ]]; then
+        printf ",serial=%s" $bios_serial
+      fi
+      if [[ x$bios_asset != x ]]; then
+        printf ",asset=%s" $bios_asset
+      fi
+      if [[ x$bios_part != x ]]; then
+        printf ",part=%s" $bios_part
+      fi
+      echo
+      ;;
+    '17')
+      printf "BIOS: type=17"
+      if [[ x$bios_loc_pfx != x ]]; then
+        printf ",loc_pfx=%s" $bios_loc_pfx
+      fi
+      if [[ x$bios_bank != x ]]; then
+        printf ",bank=%s" $bios_bank
+      fi
+      if [[ x$bios_manufacturer != x ]]; then
+        printf ",manufacturer=%s" $bios_manufacturer
+      fi
+      if [[ x$bios_serial != x ]]; then
+        printf ",serial=%s" $bios_serial
+      fi
+      if [[ x$bios_asset != x ]]; then
+        printf ",asset=%s" $bios_asset
+      fi
+      if [[ x$bios_part != x ]]; then
+        printf ",part=%s" $bios_part
+      fi
+      if [[ x$bios_speed != x ]]; then
+        printf ",speed=%s" $bios_speed
+      fi
+      echo
+      ;;
+    '*')
+      ;;
+  esac
+}
+
+##############################
+#### Show Disks
+##############################
+function show_disks
+{
+  idx=0
+  while [[ x${disk_lv[$idx]} != x ]];
+  do
+    if [[ x$vg_name != x ]]; then
+        printf "DISK %d: /dev/%s/%s" $idx $vg_name ${disk_lv[$idx]}
+        disk_drive=/dev/$vg_name/${disk_lv[$idx]}
+        if [[ ! -b $disk_drive ]]; then
+            printf "\e[31mnot found\e[0m."
+        fi
+    else
+        printf "DISK %d: %s" $idx ${disk_lv[$idx]}
+        disk_drive=${disk_lv[$idx]}
+        if [[ ! -f $disk_drive ]]; then
+            printf "\e[31mnot found\e[0m."
+        fi
+    fi
+    if [[ x${disk_if[$idx]} == x ]]; then
+      disk_if[$idx]=$DEF_DISKIF
+    fi
+    case "${disk_if[$idx]}" in
+      "ide")      ;;
+      "scsi")     ;;
+      "virtio")   ;;
+      "virtio-scsi") ;;
+      *)
+        ${disk_if[$idx]}="\e[31mNot supported\e[0m"
+        ;;
+    esac
+    printf ",if=%s" ${disk_if[$idx]}
+    if [[ x${disk_aio[$idx]} == x ]]; then
+      disk_aio[$idx]='native'
+    fi
+    case "${disk_aio[$idx]}" in
+      "native")   ;;
+      "threads")  ;;
+      *)
+        ${disk_aio[$idx]}="\e[31mNot supported\e[0m"
+          exit 10
+          ;;
+    esac
+    printf ",aio=%s" ${disk_aio[$idx]}
+    if [[ x${disk_fmt[$idx]} != x ]]; then
+      printf ",format=%s" ${disk_fmt[$idx]}
+    fi
+    echo
+    ((idx=idx+1))
+  done
+}
+
+##############################
+#### Show CD-ROM
+##############################
+function show_cdrom
+{
+  case "$cdrom_if" in
+    "ide")    ;;
+    "scsi")   ;;
+     *)
+       $cdrom_if="\e[31mNot supported\e[0m"
+  esac
+  if [[ x$cdrom_iso != x ]]; then
+    printf "CDROM: if=%s,iso=%s" $cdrom_if $cdrom_iso
+    if [[ ! -f $cdrom_iso ]]; then
+        printf " \e[31mNot found\e[0m"
+    fi
+    echo
+  fi
+}
+
+##############################
+### Show Boot order
+##############################
+function show_boot
+{
+  if [[ x$boot_order != x ]]; then
+    printf "BOOT: %s" $boot_order
+    if [[ x$bios_menu == 'y' ]]; then
+      printf ",menu=on"
+    fi
+    echo
+  else
+    if [[ x$bios_menu == 'y' ]]; then
+      boot_args="-boot menu=on"
+      echo
+    fi
+  fi
+}
+
+##############################
+#### Show Network
+##############################
+function show_network
+{
+  idx=0
+  while [[ x${network_type[$idx]} != x ]];
+  do
+
+    if [[ x${network_name[$idx]} == x ]]; then
+      network_name[$idx]="\e[31mNone\e[0m"
+    fi
+    if [[ x${network_model[$idx]} == x ]]; then
+      network_model[$idx]=$DEF_NIC
+    fi
+    check_nic ${network_model[$idx]}
+    if [[ ! $? ]]; then
+      network_model[$idx]="\e[31mUnsupported\e[0m" 
+    fi
+
+    printf "NET %d: Model=%s,Name=%s" $idx  ${network_model[$idx]} ${network_name[$idx]}
+    case "${network_type[$idx]}" in
+      "bridge")
+        printf ",type=%s" ${network_type[$idx]}
+        if [[ ${network_vlan[$idx]} ]]; then
+          printf ",vlan=%s" $network_vlan
+        fi
+        if [[ ${network_addr[$idx]} ]]; then
+          create_macaddr
+          printf ",mac=%s" ${macaddr}
+        fi
+        ;;
+      "tap")
+        printf ",type=%s,id=%s" ${network_type[$idx]} ${network_name[$idx]}
+        if [[ x${network_vhost[$idx]} != x && ${network_vhost[$idx]} == 'y' ]]; then
+          printf ",vhost=on"
+          network_model[$idx]=$DEF_NIC
+        fi
+        if [[ x${network_if[$idx]} == x ]]; then
+          network_if[$idx]="\e[31mNone\e[0m"
+        fi
+        printf ",ifname=%s\n" ${network_if[$idx]}
+        if [[ x${network_ifup[$idx]} == x ]]; then
+          network_ifup[$idx]="\e[31mNone\e[0m"
+        else
+          printf "\tscript=%s" ${network_ifup[$idx]}
+        fi
+        if [[ x${network_ifdown[$idx]} == x ]]; then
+          network_ifdown[$idx]="\e[31mNone\e[0m"
+        fi
+        printf ",downscript=%s" ${network_ifdown[$idx]}
+        if [[ ${network_vlan[$idx]} ]]; then
+          printf ",vlan=%s" $network_vlan
+        fi
+        if [[ ${network_addr[$idx]} ]]; then
+          create_macaddr
+          printf ",mac=%s" ${macaddr}
+        fi
+        ;;
+      "user")
+        printf ",type=%s" ${network_type[$idx]}
+        if [[ x${network_charid[$idx]} == x ]]; then
+          ${network_charid[$idx]}='char'$idx
+        fi
+        if [[ x${network_path[$idx]} == x ]]; then
+          network_path[$idx]="\e[31mNone\e[0m"
+        fi
+        printf ",id=%s,name=%s,path=%s" ${network_charid[$idx]} ${network_name[$idx]} ${network_path[$idx]}
+        if [[ ${network_addr[$idx]} ]]; then
+          create_macaddr
+          printf ",mac=%s" ${macaddr}
+        fi
+        ;;
+      "none")
+        printf ",type=%s" ${network_type[$idx]}
+        ;;
+      *)
+        printf ",type=\e[31mInvalid Type\e[0m"
+        ;;
+    esac
+    echo
+    ((idx=idx+1))
+    
+  done
+}
+
+##############################
+#### Show Display
+##############################
+function show_display
+{
+  case "$display_type" in
+    vnc)
+      printf "VNC: "$vnc_addr:$vnc_number
+      ;;
+    spice)
+      printf "SPiCE addr=%s,port=%s"  $spice_addr $spice_port
+      if [[ $spice_sasl == 'y' ]];then
+        printf ",sasl"
+      fi
+      if [[ $spice_tls == 'y' ]]; then
+        if [[ x$spice_tls_port == x ]]; then
+          spice_tls_port="\e[31mNone\e[0m"
+        fi
+        if [[ x$ssl_SSLDIR == x ]]; then
+          ssl_SSLDIR="\e[31mNone\e[0m"
+        fi
+        printf ",tls-port=%s,x509-dir=%s" $spice_tls_port $ssl_SSLDIR
+      fi
+      ;;
+    virtio)
+      printf "VirtIO: type=%s" $graphics_type
+      ;;
+    sdl)
+      printf "SDL: type=%s" $graphics_type
+      ;;
+    curses)
+      printf "Curses"
+      ;;
+    none)
+      printf "NONE"
+      ;;
+    off)
+      printf "OFF"
+      ;;
+    *)
+      printf "\e[31mInvalid Display\e[0m"
+      ;;
+  esac  
+  echo
+}
+
+##############################
+#### Show Keyboard
+##############################
+function show_kbd
+{
+
+  KBD_LIST="ar de-ch es fo fr-ca hu ja mk no pt-br sv da en-gb et fr fr-ch is lt nl pl ru th"
+  KBD_LIST=$KBD_LIST"de en-us fi fr-be hr it lv nl-be pt sl tr"
+
+  flag=0
+  if [[ x$keyboard_lang != x ]]; then 
+    printf "KBD: %s" $keyboard_lang
+    for l in $KBD_LIST
+    do
+      if [[ $keyboard_lang = $l ]]; then
+        flag=1
+        break
+      fi
+    done
+    if [[ ! $flag ]]; then
+      printf "\e[31mInvalid KBD\e[0m"
+    fi
+    echo
+  fi
+}
+
+##############################
+#### Show RTC
+##############################
+function show_rtc
+{
+  printf "RTC: "
+  if [[ $clock_utctime == 'n' ]]; then
+    printf "LocalTime"
+  else
+    printf "UTC"
+  fi
+  if [[ $clock_sync_host == 'n' ]]; then
+    printf ",Not Sync"
+  else
+    printf ",Sync"
+  fi
+  echo
+}
+
+##############################
+#### Show chroot
+##############################
+function show_rundir
+{
+    vmrundir=$system_rundir/$vm
+    printf "RUNDIR: %s\n" $vmrundir
+    chroot_dir=''
+    if [[ -d $user_chroot ]]; then
+      printf "CHROOT: %s\n" $user_chroot
+    fi
+}
+
+##############################
+#### Show Serial Port Socket
+##############################
+function show_serial
+{
+  serial_port=$system_rundir/$vm/serial.sock
+  printf "SERIAL: %s\n" $serial_port
+}
+
+##############################
+#### Show Monitor Port Socket
+##############################
+function show_monitor
+{
+  monitor_port=$system_rundir/$vm/monitor.sock
+  printf "MONITOR: %s\n" $monitor_port
+}
+
+##############################
+#### Show PID file
+##############################
+function show_pid_file
+{
+  pid_file=$system_rundir/$vm/$vm.pid
+  printf "PID: %s\n" $pid_file
+}
+#############################
+#### Show Conf
+#############################
+function show_conf
+{
+  echo
+  show_cpus 
+  show_iommu
+  show_rng
+  show_mem
+  show_bios
+  show_disks
+  show_cdrom
+  show_boot
+  show_network
+  show_display
+  show_kbd
+  show_rtc
+  show_rundir
+  show_serial
+  show_monitor
+  show_pid_file
+}
+
+########################################
+### list vm
+########################################
+function list_vm
+{
+  proc_check
+  if [[ $? -ne 0 ]]; then
+    color=31
+    stat="Stopped"
+    res=1
+  else
+    color=36
+    stat="Running"
+    res=0
+  fi
+  printf "%s:\t\e[%d;1m%s\e[0m.\n" $vm $color $stat
+  show_conf
+
+  return $res
 }
 
 ########################################
@@ -1065,6 +1657,10 @@ while [[ "$1" ]]; do
       ;;
     status)
       status_vm
+      res=$(( $res + $? ))
+      ;;
+    list)
+      list_vm
       res=$(( $res + $? ))
       ;;
     *)
