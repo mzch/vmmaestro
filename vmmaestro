@@ -1031,9 +1031,9 @@ function show_mem
 {
   printf "MEM: %d MB, auto=" $memory_vmem
   if [[ $memory_auto == 'y' ]]; then
-    printf "\e[36menabled\e[0m"
+    printf "\e[36;1menabled\e[0m"
   else
-    printf "\e[31mdisabled\e[0m"
+    printf "\e[31;1mdisabled\e[0m"
   fi
   if [[ $memory_huge == 'y' ]]; then
     printf ",Huge"
@@ -1242,13 +1242,13 @@ function show_disks
         printf "DISK %d: /dev/%s/%s" $idx $vg_name ${disk_lv[$idx]}
         disk_drive=/dev/$vg_name/${disk_lv[$idx]}
         if [[ ! -b $disk_drive ]]; then
-            printf "\e[31mnot found\e[0m."
+            printf "\e[31;1mnot found\e[0m."
         fi
     else
         printf "DISK %d: %s" $idx ${disk_lv[$idx]}
         disk_drive=${disk_lv[$idx]}
         if [[ ! -f $disk_drive ]]; then
-            printf "\e[31mnot found\e[0m."
+            printf "\e[31;1mnot found\e[0m."
         fi
     fi
     if [[ x${disk_if[$idx]} == x ]]; then
@@ -1260,7 +1260,7 @@ function show_disks
       "virtio")   ;;
       "virtio-scsi") ;;
       *)
-        ${disk_if[$idx]}="\e[31mNot supported\e[0m"
+        ${disk_if[$idx]}="\e[31;1mNot supported\e[0m"
         ;;
     esac
     printf ",if=%s" ${disk_if[$idx]}
@@ -1271,7 +1271,7 @@ function show_disks
       "native")   ;;
       "threads")  ;;
       *)
-        ${disk_aio[$idx]}="\e[31mNot supported\e[0m"
+        ${disk_aio[$idx]}="\e[31;1mNot supported\e[0m"
           exit 10
           ;;
     esac
@@ -1293,12 +1293,12 @@ function show_cdrom
     "ide")    ;;
     "scsi")   ;;
      *)
-       $cdrom_if="\e[31mNot supported\e[0m"
+       $cdrom_if="\e[31;1mNot supported\e[0m"
   esac
   if [[ x$cdrom_iso != x ]]; then
     printf "CDROM: if=%s,iso=%s" $cdrom_if $cdrom_iso
     if [[ ! -f $cdrom_iso ]]; then
-        printf " \e[31mNot found\e[0m"
+        printf " \e[31;1mNot found\e[0m"
     fi
     echo
   fi
@@ -1333,14 +1333,14 @@ function show_network
   do
 
     if [[ x${network_name[$idx]} == x ]]; then
-      network_name[$idx]="\e[31mNone\e[0m"
+      network_name[$idx]="\e[31;1mNone\e[0m"
     fi
     if [[ x${network_model[$idx]} == x ]]; then
       network_model[$idx]=$DEF_NIC
     fi
     check_nic ${network_model[$idx]}
     if [[ ! $? ]]; then
-      network_model[$idx]="\e[31mUnsupported\e[0m" 
+      network_model[$idx]="\e[31;1mUnsupported\e[0m" 
     fi
 
     printf "NET %d: Model=%s,Name=%s" $idx  ${network_model[$idx]} ${network_name[$idx]}
@@ -1362,16 +1362,16 @@ function show_network
           network_model[$idx]=$DEF_NIC
         fi
         if [[ x${network_if[$idx]} == x ]]; then
-          network_if[$idx]="\e[31mNone\e[0m"
+          network_if[$idx]="\e[31;1mNone\e[0m"
         fi
         printf ",ifname=%s\n" ${network_if[$idx]}
         if [[ x${network_ifup[$idx]} == x ]]; then
-          network_ifup[$idx]="\e[31mNone\e[0m"
+          network_ifup[$idx]="\e[31;1mNone\e[0m"
         else
           printf "\tscript=%s" ${network_ifup[$idx]}
         fi
         if [[ x${network_ifdown[$idx]} == x ]]; then
-          network_ifdown[$idx]="\e[31mNone\e[0m"
+          network_ifdown[$idx]="\e[31;1mNone\e[0m"
         fi
         printf ",downscript=%s" ${network_ifdown[$idx]}
         if [[ ${network_vlan[$idx]} ]]; then
@@ -1388,7 +1388,7 @@ function show_network
           ${network_charid[$idx]}='char'$idx
         fi
         if [[ x${network_path[$idx]} == x ]]; then
-          network_path[$idx]="\e[31mNone\e[0m"
+          network_path[$idx]="\e[31;1mNone\e[0m"
         fi
         printf ",id=%s,name=%s,path=%s" ${network_charid[$idx]} ${network_name[$idx]} ${network_path[$idx]}
         if [[ ${network_addr[$idx]} ]]; then
@@ -1400,7 +1400,7 @@ function show_network
         printf ",type=%s" ${network_type[$idx]}
         ;;
       *)
-        printf ",type=\e[31mInvalid Type\e[0m"
+        printf ",type=\e[31;1mInvalid Type\e[0m"
         ;;
     esac
     echo
@@ -1425,10 +1425,10 @@ function show_display
       fi
       if [[ $spice_tls == 'y' ]]; then
         if [[ x$spice_tls_port == x ]]; then
-          spice_tls_port="\e[31mNone\e[0m"
+          spice_tls_port="\e[31;1mNone\e[0m"
         fi
         if [[ x$ssl_SSLDIR == x ]]; then
-          ssl_SSLDIR="\e[31mNone\e[0m"
+          ssl_SSLDIR="\e[31;1mNone\e[0m"
         fi
         printf ",tls-port=%s,x509-dir=%s" $spice_tls_port $ssl_SSLDIR
       fi
@@ -1449,7 +1449,7 @@ function show_display
       printf "OFF"
       ;;
     *)
-      printf "\e[31mInvalid Display\e[0m"
+      printf "\e[31;1mInvalid Display\e[0m"
       ;;
   esac  
   echo
@@ -1475,7 +1475,7 @@ function show_kbd
       fi
     done
     if [[ ! $flag ]]; then
-      printf "\e[31mInvalid KBD\e[0m"
+      printf "\e[31;1mInvalid KBD\e[0m"
     fi
     echo
   fi
