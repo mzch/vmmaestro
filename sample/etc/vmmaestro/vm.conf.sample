@@ -187,6 +187,23 @@ if		= 'ide'
 iso		= /etc/vmmaestro/img/linux.iso
 
 ############################################################
+## VirtFS
+############################################################
+[virtfs]
+driver		= local
+# driver		= handle
+# driver		= proxy
+id		= fs01
+path		= /path/to/dir
+security	= passthrough
+# security	= mapped-xattr
+# security	= mapped-file
+# security	= none
+writeout	= n
+readonly	= n
+sock_fd		= n
+
+############################################################
 ## Boot order
 ##	order	'c' Hard Disk
 ##		'd' CD-ROM

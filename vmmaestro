@@ -111,7 +111,7 @@ function create_cpu
   check_cpu $cpu_model
   if [[ ! $? ]]; then
     echo "Illegal cpu model = "$cpu_model
-    exit 1
+    exit 2
   fi
 
   cpu_args='-cpu '$cpu_model' -smp '$cpu_units
@@ -203,7 +203,7 @@ function create_bios
         fi
       else
         echo "Missing UEFI file."
-        exit 9
+        exit 3
       fi
       ;;
     '0')
@@ -350,13 +350,13 @@ function create_disk_drive
         disk_drive=/dev/$vg_name/${disk_lv[$idx]}
         if [[ ! -b $disk_drive ]]; then
             echo "Specified block device does not exist: "$disk_drive
-            exit 10
+            exit 4
         fi
     else
         disk_drive=${disk_lv[$idx]}
         if [[ ! -f $disk_drive ]]; then
             echo "Specified disk file does not exist: "$disk_drive
-            exit 10
+            exit 5
         fi
     fi
     if [[ x${disk_if[$idx]} == x ]]; then
@@ -369,7 +369,7 @@ function create_disk_drive
       "virtio-scsi") ;;
       *)
         echo "Unknown disk interface: "${disk_if[$idx]}
-        exit 10
+        exit 6
         ;;
     esac
     if [[ ${disk_if[$idx]} == 'virtio' || ${disk_if[$idx]} == 'virtio-scsi' ]]; then
@@ -393,7 +393,7 @@ function create_disk_drive
         "threads")  ;;
         *)
           echo "Unknown AIO type: "${disk_aio[$idx]}
-          exit 10
+          exit 7
           ;;
       esac
       disk_args=$disk_args' -drive if='${disk_if[$idx]}',aio='${disk_aio[$idx]}',cache.direct=on'
@@ -418,7 +418,7 @@ function create_floppy
     fd_file=$floppy_drive1
     if [[ ! -f $floppy_drive1 ]]; then
         echo "Specified floppy file does not exist: "$floppy_drive1
-        exit 12
+        exit 8
     fi
     fd_args=$fd_args' -drive file='$floppy_drive1',if=floppy,index=0'
   fi
@@ -426,7 +426,7 @@ function create_floppy
     fd_file=$floppy_drive2
     if [[ ! -f $floppy_drive2 ]]; then
         echo "Specified floppy file does not exist: "$floppy_drive2
-        exit 12
+        exit 9
     fi
     fd_args=$fd_args' -drive file='$floppy_drive2',if=floppy,index=1'
   fi
@@ -447,11 +447,61 @@ function create_cdrom {
   if [[ x$cdrom_iso != x ]]; then
     if [[ ! -f $cdrom_iso ]]; then
         echo "Specified iso file does not exist."
-        exit 11
+        exit 10
     fi
     cd_args=$cd_args',cache.direct=on,file='$cdrom_iso
   fi
   cd_args=$cd_args',index='$disk_num',media=cdrom'
+}
+
+##############################
+### VirtFS
+##############################
+function create_virtfs
+{
+  virtfs_args=''
+  case "$virtfs_driver" in
+    "local")	;;
+    "handle")	;;
+    "proxy")	;;
+    *)
+      echo "Illegal FsDriver: "$virtfs_driver
+      exit 11
+      ;;
+  esac
+  virtfs_args='-virtfs fsdriver='$virtfs_driver
+  if [[ x$virtfs_id == x ]]; then
+    virtfs_id=$vm
+  fi
+  virtfs_args=$virtfs_args",id="$virtfs_id
+  if [[ ! -d $virtfs_path ]]; then
+    echo "Directory does not exist! "$virtfs_path
+    exit 12
+  fi
+  virtfs_args=$virtfs_args",path="$virtfs_path
+  if [[ x$virtfs_security != x ]] ; then
+    case "$virtfs_security" in
+      "passthrough")	;;
+      "mapped-xattr")	;;
+      "mapped-file")	;;
+      "none")	;;
+      *)
+        echo "Illegal secirity mode!"
+        exit 13
+        ;;
+    esac
+    virtfs_args=$virtfs_args",security_model="$virtfs_security
+    if [[ $virtfs_writeout == 'y' ]]; then
+        virtfs_args=$virtfs_args",writeout=immediate"
+    fi
+    if [[ $virtfs_readonly == 'y' ]]; then
+      virtfs_args=$virtfs_args",readonly"
+    fi
+    if [[ $virtfs_driver == "proxy" ]]; then
+      virtfs_args=$virtfs_args",socket="$system_rundir/$vm/virtfs.sock
+      virtfs_args=$virtfs_args",sock_fd"
+    fi
+  fi
 }
 
 ##############################
@@ -517,7 +567,7 @@ function create_network_adaptor
     
     if [[ x${network_name[$idx]} == x ]]; then
       echo "Need NIC symbol name: "$idx
-      exit 13
+      exit 14
     fi
     if [[ x${network_model[$idx]} == x ]]; then
       network_model[$idx]=$DEF_NIC
@@ -525,7 +575,7 @@ function create_network_adaptor
     check_nic ${network_model[$idx]}
     if [[ ! $? ]]; then
       echo "Illegal nic model: "$${network_model[$idx]} 
-      exit 13
+      exit 15
     fi
 
     case "${network_type[$idx]}" in
@@ -551,7 +601,7 @@ function create_network_adaptor
         fi
         if [[ x${network_if[$idx]} == x ]]; then
           echo "Need NIC interface name: "$idx
-          exit 13
+          exit 16
         fi
         nic_arg=$nic_arg',ifname='${network_if[$idx]}
         if [[ x${network_ifup[$idx]} == x ]]; then
@@ -579,7 +629,7 @@ function create_network_adaptor
         fi
         if [[ x${network_path[$idx]} == x ]]; then
           echo "Need Path: "$idx
-          exit 13
+          exit 17
         fi
         nic_arg='-chardev socket,id='${network_charid[$idx]}'path='${network_path[$idx]}
         nic_arg=$nic_arg' '
@@ -597,7 +647,7 @@ function create_network_adaptor
         ;;
       *)
         echo "Unknown NIC type: "${network_type[$idx]}
-        exit 13
+        exit 18
         ;;
     esac
     net_args=$net_args' '$nic_arg
@@ -626,7 +676,7 @@ function create_display
       if [[ $spice_tls == 'y' ]]; then
         if [[ x$spice_tls_port == x || x$ssl_SSLDIR == x ]]; then
           echo 'Need both TLS port and SSL cert dir specified.'
-          exit 14
+          exit 19
         fi
         disp_args=$disp_args',tls-port='$spice_tls_port',x509-dir='$ssl_SSLDIR
       fi
@@ -648,7 +698,7 @@ function create_display
       ;;
     *)
       echo 'Illegal display: '$display_type
-      exit 14
+      exit 20
       ;;
   esac  
 }
@@ -767,6 +817,7 @@ function build_cmdline
   create_kbd
   create_console
   create_rtc
+  create_virtfs
   get_pid_file
 
   if [[ $system_qemu == 'kvm' ]]; then
@@ -857,7 +908,7 @@ function read_conf
 
   if [ ! -f $def_conf ]; then
     echo You must place vmmaestro.conf in $SYSDIR
-    exit 3
+    exit 21
   fi
   read_conf_file $def_conf
   if [[ x$system_sasl_conf_path != x ]]; then
@@ -868,7 +919,7 @@ function read_conf
 
   if [ ! -f $vm_conf ]; then
     echo You must place $vm.conf in $SYSDIR
-    exit 3
+    exit 22
   fi
   read_conf_file $vm_conf
 }
@@ -953,7 +1004,7 @@ function shutdown_vm
 
   if [[ $boot_qemu_delay == $delay ]]; then
       echo Failed to shutdown $vm
-      exit 21
+      exit 23
   fi
 }
 
@@ -975,7 +1026,7 @@ function stop_vm
 
   if [[ $boot_qemu_delay == $delay ]]; then
       echo Failed to stop $vm
-      exit 22
+      exit 24
   fi
 }
 
@@ -1242,40 +1293,43 @@ function show_disks
         printf "DISK %d: /dev/%s/%s" $idx $vg_name ${disk_lv[$idx]}
         disk_drive=/dev/$vg_name/${disk_lv[$idx]}
         if [[ ! -b $disk_drive ]]; then
-            printf "\e[31;1mnot found\e[0m."
+            printf "\e[31;1mNot Found\e[0m."
         fi
     else
         printf "DISK %d: %s" $idx ${disk_lv[$idx]}
         disk_drive=${disk_lv[$idx]}
         if [[ ! -f $disk_drive ]]; then
-            printf "\e[31;1mnot found\e[0m."
+            printf "\e[31;1mNot Found\e[0m."
         fi
     fi
     if [[ x${disk_if[$idx]} == x ]]; then
       disk_if[$idx]=$DEF_DISKIF
     fi
+    color="0"
     case "${disk_if[$idx]}" in
       "ide")      ;;
       "scsi")     ;;
       "virtio")   ;;
       "virtio-scsi") ;;
       *)
-        ${disk_if[$idx]}="\e[31;1mNot supported\e[0m"
+        color="31;1"
+        ${disk_if[$idx]}="Not supported"
         ;;
     esac
-    printf ",if=%s" ${disk_if[$idx]}
+    printf ",if=\e[%sm%s\e[0m" $color ${disk_if[$idx]}
     if [[ x${disk_aio[$idx]} == x ]]; then
       disk_aio[$idx]='native'
     fi
+    color="0"
     case "${disk_aio[$idx]}" in
       "native")   ;;
       "threads")  ;;
       *)
-        ${disk_aio[$idx]}="\e[31;1mNot supported\e[0m"
-          exit 10
-          ;;
+        color="31;1"
+        disk_aio[$idx]="Not supported"
+        ;;
     esac
-    printf ",aio=%s" ${disk_aio[$idx]}
+    printf ",aio=\e[%sm%s\e[0m" $color "${disk_aio[$idx]}"
     if [[ x${disk_fmt[$idx]} != x ]]; then
       printf ",format=%s" ${disk_fmt[$idx]}
     fi
@@ -1289,14 +1343,16 @@ function show_disks
 ##############################
 function show_cdrom
 {
+  color="0"
   case "$cdrom_if" in
     "ide")    ;;
     "scsi")   ;;
      *)
-       $cdrom_if="\e[31;1mNot supported\e[0m"
+       color="31;1"
+       $cdrom_if="Not supported"
   esac
   if [[ x$cdrom_iso != x ]]; then
-    printf "CDROM: if=%s,iso=%s" $cdrom_if $cdrom_iso
+    printf "CDROM: if=\e[%sm%s\e[0m,iso=%s" $color "$cdrom_if" $cdrom_iso
     if [[ ! -f $cdrom_iso ]]; then
         printf " \e[31;1mNot found\e[0m"
     fi
@@ -1332,18 +1388,22 @@ function show_network
   while [[ x${network_type[$idx]} != x ]];
   do
 
+    color="0"
     if [[ x${network_name[$idx]} == x ]]; then
-      network_name[$idx]="\e[31;1mNone\e[0m"
+      color="31;1"
+      network_name[$idx]="None"
     fi
     if [[ x${network_model[$idx]} == x ]]; then
       network_model[$idx]=$DEF_NIC
     fi
     check_nic ${network_model[$idx]}
+    color2="0"
     if [[ ! $? ]]; then
-      network_model[$idx]="\e[31;1mUnsupported\e[0m" 
+      color2="31;1"
+      network_model[$idx]="Unsupported" 
     fi
 
-    printf "NET %d: Model=%s,Name=%s" $idx  ${network_model[$idx]} ${network_name[$idx]}
+    printf "NET %d: Model=\e[%sm%s\e[0m,Name=\e[%sm%s\e[0m" $idx  $color2${network_model[$idx]} $color ${network_name[$idx]}
     case "${network_type[$idx]}" in
       "bridge")
         printf ",type=%s" ${network_type[$idx]}
@@ -1361,19 +1421,25 @@ function show_network
           printf ",vhost=on"
           network_model[$idx]=$DEF_NIC
         fi
+        color="0"
         if [[ x${network_if[$idx]} == x ]]; then
-          network_if[$idx]="\e[31;1mNone\e[0m"
+          color="31;1"
+          network_if[$idx]="None"
         fi
-        printf ",ifname=%s\n" ${network_if[$idx]}
+        printf ",ifname=\e[%sm%s\e[0m\n" $color ${network_if[$idx]}
+        color="0"
         if [[ x${network_ifup[$idx]} == x ]]; then
-          network_ifup[$idx]="\e[31;1mNone\e[0m"
+          color="31;1"
+          network_ifup[$idx]="None"
         else
-          printf "\tscript=%s" ${network_ifup[$idx]}
+          printf "\tscript=\e[%sm%s\e[0m" $color ${network_ifup[$idx]}
         fi
+        color="0"
         if [[ x${network_ifdown[$idx]} == x ]]; then
-          network_ifdown[$idx]="\e[31;1mNone\e[0m"
+          color="31;1"
+          network_ifdown[$idx]="None"
         fi
-        printf ",downscript=%s" ${network_ifdown[$idx]}
+        printf ",downscript=\e[%sm%s\e[0m" $color ${network_ifdown[$idx]}
         if [[ ${network_vlan[$idx]} ]]; then
           printf ",vlan=%s" $network_vlan
         fi
@@ -1387,10 +1453,12 @@ function show_network
         if [[ x${network_charid[$idx]} == x ]]; then
           ${network_charid[$idx]}='char'$idx
         fi
+        color="0"
         if [[ x${network_path[$idx]} == x ]]; then
-          network_path[$idx]="\e[31;1mNone\e[0m"
+          color="31;1"
+          network_path[$idx]="None"
         fi
-        printf ",id=%s,name=%s,path=%s" ${network_charid[$idx]} ${network_name[$idx]} ${network_path[$idx]}
+        printf ",id=%s,name=%s,path=\e[%sm%s\e[0m" ${network_charid[$idx]} ${network_name[$idx]} $color ${network_path[$idx]}
         if [[ ${network_addr[$idx]} ]]; then
           create_macaddr
           printf ",mac=%s" ${macaddr}
@@ -1424,13 +1492,17 @@ function show_display
         printf ",sasl"
       fi
       if [[ $spice_tls == 'y' ]]; then
+        color="0"
         if [[ x$spice_tls_port == x ]]; then
-          spice_tls_port="\e[31;1mNone\e[0m"
+          color="31;1"
+          spice_tls_port="None"
         fi
+        color2="0"
         if [[ x$ssl_SSLDIR == x ]]; then
+          color2="31;1"
           ssl_SSLDIR="\e[31;1mNone\e[0m"
         fi
-        printf ",tls-port=%s,x509-dir=%s" $spice_tls_port $ssl_SSLDIR
+        printf ",tls-port=\e[%sm%s\e[0m,x509-dir=\e[%sm%s\e[0m" $color $spice_tls_port $color2 $ssl_SSLDIR
       fi
       ;;
     virtio)
@@ -1539,6 +1611,62 @@ function show_pid_file
   pid_file=$system_rundir/$vm/$vm.pid
   printf "PID: %s\n" $pid_file
 }
+
+##############################
+### Show VirtFS
+##############################
+function show_virtfs
+{
+  if [[ ! -z $virtfs_driver ]]; then
+    color="0"
+    case "$virtfs_driver" in
+      "local")	;;
+      "handle")	;;
+      "proxy")	;;
+      *)
+        color="31;1"
+        virtfs_driver="Illegal Driver"
+      ;;
+    esac
+    printf "VirtFS: driver=\e[%sm%s\e[0m" $color "$virtfs_driver"
+    if [[ x$virtfs_id == x ]]; then
+      virtfs_id=$vm
+    fi
+    printf ",id=%s" $virtfs_id
+    color="0"
+    if [[ ! -d $virtfs_path ]]; then
+      color="31;1"
+      virtfs_path="Not Found"
+    fi
+    printf ",path=\e[%sm%s\e[0m" $color "$virtfs_path"
+    if [[ x$virtfs_security != x ]] ; then
+      color="0"
+      case "$virtfs_security" in
+        "passthrough")	;;
+        "mapped-xattr")	;;
+        "mapped-file")	;;
+        "none")	;;
+        *)
+          color="31;1"
+          virtfs_security="Error"
+          ;;
+      esac
+      printf ",security_model=\e[%sm%s\e[0m" $color  $virtfs_security
+      if [[ $virtfs_writeout == 'y' ]]; then
+        printf ",writeout=immediate"
+      fi
+      if [[ $virtfs_readonly == 'y' ]]; then
+        printf ",readonly"
+      fi
+      if [[ $virtfs_driver == "proxy" ]]; then
+        printf ",socket=%s" $system_rundir/$vm/virtfs.sock
+        printf ",sock_fd"
+      fi
+    fi
+    echo
+  fi
+}
+
 #############################
 #### Show Conf
 #############################
@@ -1557,6 +1685,7 @@ function show_conf
   show_display
   show_kbd
   show_rtc
+  show_virtfs
   show_rundir
   show_serial
   show_monitor
@@ -1665,7 +1794,7 @@ while [[ "$1" ]]; do
       ;;
     *)
       echo "Unknown command: "$cmd. >&2
-      exit 2
+      exit 26
       ;;
   esac
   del_conf
