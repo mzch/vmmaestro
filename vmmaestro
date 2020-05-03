@@ -459,47 +459,49 @@ function create_cdrom {
 ##############################
 function create_virtfs
 {
-  virtfs_args=''
-  case "$virtfs_driver" in
-    "local")	;;
-    "handle")	;;
-    "proxy")	;;
-    *)
-      echo "Illegal FsDriver: "$virtfs_driver
-      exit 11
-      ;;
-  esac
-  virtfs_args='-virtfs fsdriver='$virtfs_driver
-  if [[ x$virtfs_id == x ]]; then
-    virtfs_id=$vm
-  fi
-  virtfs_args=$virtfs_args",id="$virtfs_id
-  if [[ ! -d $virtfs_path ]]; then
-    echo "Directory does not exist! "$virtfs_path
-    exit 12
-  fi
-  virtfs_args=$virtfs_args",path="$virtfs_path
-  if [[ x$virtfs_security != x ]] ; then
-    case "$virtfs_security" in
-      "passthrough")	;;
-      "mapped-xattr")	;;
-      "mapped-file")	;;
-      "none")	;;
+  if [[ $virtfs_enable == 'y' ]] ; then
+    virtfs_args=''
+    case "$virtfs_driver" in
+      "local")	;;
+      "handle")	;;
+      "proxy")	;;
       *)
-        echo "Illegal secirity mode!"
-        exit 13
+        echo "Illegal FsDriver: "$virtfs_driver
+        exit 11
         ;;
     esac
-    virtfs_args=$virtfs_args",security_model="$virtfs_security
-    if [[ $virtfs_writeout == 'y' ]]; then
-        virtfs_args=$virtfs_args",writeout=immediate"
+    virtfs_args='-virtfs fsdriver='$virtfs_driver
+    if [[ x$virtfs_id == x ]]; then
+      virtfs_id=$vm
     fi
-    if [[ $virtfs_readonly == 'y' ]]; then
-      virtfs_args=$virtfs_args",readonly"
+    virtfs_args=$virtfs_args",id="$virtfs_id
+    if [[ ! -d $virtfs_path ]]; then
+      echo "Directory does not exist! "$virtfs_path
+      exit 12
     fi
-    if [[ $virtfs_driver == "proxy" ]]; then
-      virtfs_args=$virtfs_args",socket="$system_rundir/$vm/virtfs.sock
-      virtfs_args=$virtfs_args",sock_fd"
+    virtfs_args=$virtfs_args",path="$virtfs_path
+    if [[ x$virtfs_security != x ]] ; then
+      case "$virtfs_security" in
+        "passthrough")	;;
+        "mapped-xattr")	;;
+        "mapped-file")	;;
+        "none")	;;
+        *)
+          echo "Illegal secirity mode!"
+          exit 13
+          ;;
+      esac
+      virtfs_args=$virtfs_args",security_model="$virtfs_security
+      if [[ $virtfs_writeout == 'y' ]]; then
+          virtfs_args=$virtfs_args",writeout=immediate"
+      fi
+      if [[ $virtfs_readonly == 'y' ]]; then
+        virtfs_args=$virtfs_args",readonly"
+      fi
+      if [[ $virtfs_driver == "proxy" ]]; then
+        virtfs_args=$virtfs_args",socket="$system_rundir/$vm/virtfs.sock
+        virtfs_args=$virtfs_args",sock_fd"
+      fi
     fi
   fi
 }

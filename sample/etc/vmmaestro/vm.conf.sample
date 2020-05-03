@@ -190,6 +190,7 @@ iso		= /etc/vmmaestro/img/linux.iso
 ## VirtFS
 ############################################################
 [virtfs]
+enable		= n
 driver		= local
 # driver		= handle
 # driver		= proxy
