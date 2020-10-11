@@ -1405,7 +1405,7 @@ function show_network
       network_model[$idx]="Unsupported" 
     fi
 
-    printf "NET %d: Model=\e[%sm%s\e[0m,Name=\e[%sm%s\e[0m" $idx  $color2${network_model[$idx]} $color ${network_name[$idx]}
+    printf "NET %d: Model=\e[%sm%s\e[0m,Name=\e[%sm%s\e[0m" $idx  $color2 ${network_model[$idx]} $color ${network_name[$idx]}
     case "${network_type[$idx]}" in
       "bridge")
         printf ",type=%s" ${network_type[$idx]}
