@@ -66,7 +66,7 @@ type		= 'std'
 
 ############################################################
 ## NUMA
-##		is_num		'y' simulate a numa system
+##		is_numa		'y' simulate a numa system
 ##				'n' not
 ##		numa_opts	numa option
 ############################################################
@@ -138,8 +138,8 @@ speed		= ''
 
 ############################################################
 ## Disk Section
-##		You need multiple disk drives, put [disk] sections
-##		you needs. Drive order depends on listing order here.
+##		You need multiple disk drives, put numbers of [disk]
+##		sections you needs. Drive order depends on listing order here.
 ############################################################
 ##	lv	Set lv name or file name used as VM's drive.
 ##	if	'virtio'	para-virtual device, fastest
@@ -217,8 +217,8 @@ sock_fd		= n
 
 ############################################################
 ## Network section
-##	You need multiple disk drives, put [disk] sections
-##	you needs. Drive order depends on listing order here.
+##	You need multiple network devices, put numbers of [network]
+##	sections you needs. Drive order depends on listing order here.
 ############################################################
 ##	type	'tap'		use 'tap' driver
 ##		'brdige'	use 'bridge' driver
