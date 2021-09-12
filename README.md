@@ -54,28 +54,28 @@ Type ```vmmaestro start vm-name``` and enjoy!
 
 ----
 ## Reference    
-#### vmmaestro consolestart VM
+#### vmmaestro consolestart [VM [VM]...]
 start VM and then connect to serial console.
 
-#### vmmaestro start [VM [VM [VM]...]]
+#### vmmaestro start VM [VM [VM]...]
 start VMs. This command can boot multiple VMs.
 
-#### vmmaestro shutdown [VM [VM [VM]...]]
+#### vmmaestro shutdown VM [VM [VM]...]
 shutdown VMs. When entering this command, VMs will do shutdown sequences.
 
-#### vmmaestro stop [VM [VM [VM]...]]
+#### vmmaestro stop VM [VM [VM]...]
 stop VMs. When entering this command, VMs will terminate immediately
-#### vmmaestro kill [VM [VM [VM]...]]
+#### vmmaestro kill VM [VM [VM]...]
 kill kvm process directly.
 
-#### vmmaestro restart [VM [VM [VM]...]]
+#### vmmaestro restart VM [VM [VM]...]
 Reboot VMs.
 
-#### vmmaestro status [VM [VM [VM]...]]
+#### vmmaestro status VM [VM [VM]...]
 If VM is running, shows the message, "```VM name is running.```".
 Otherwise shows the message, "```VM name is stopped.```"
 
-#### vmmaestro show [VM[VM[VM]...]]
+#### vmmaestro show VM[VM[VM]...]
 Show VM status and configurations.
 
 #### vmmaestro list [-s|--status]]
