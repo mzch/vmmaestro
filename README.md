@@ -75,8 +75,11 @@ Reboot VMs.
 If VM is running, shows the message, "```VM name is running.```".
 Otherwise shows the message, "```VM name is stopped.```"
 
-#### vmmaestro list [VM[VM[VM]...]]
+#### vmmaestro show [VM[VM[VM]...]]
 Show VM status and configurations.
+
+#### vmmaestro list [-s|--status]]
+Show status and configurations of all VMs.
 
 #### vmmaestro console VM
 Connect serial port and show local text screen. 
