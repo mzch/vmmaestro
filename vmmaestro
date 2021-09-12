@@ -54,9 +54,27 @@ function set_default_values
 ########################################
 
 if [[ $# < 2 ]]; then
-  cmds='[start|consolestart|stop|shutdown|restart|kill|console|monitor|status|show]'
-  echo 'Usage: '$0' '$cmds' vm-name,...'
-  exit 1
+  case "$1" in
+    list)
+      ;;
+    *)
+      echo 'Usage: '$0' command'
+      echo
+      echo -e '       '$0' start vm ...\t\t\tStart VM'
+      echo -e '       '$0' consolestart|cstart vm ...\tStart VM with serial console'
+      echo -e '       '$0' shutdown vm ...\t\tShutdown VM'
+      echo -e '       '$0' stop vm ...\t\t\tStop VM (without shutodnw)'
+      echo -e '       '$0' restart vm ...\t\tRestart VM'
+      echo -e '       '$0' kill vm ...\t\t\tKill VM'
+      echo -e '       '$0' console|serial|serial0 vm ...Enter serial console of VM'
+      echo -e '       '$0' monitor|kvm|qemu vm ...\tEnter KVM monitor of VM'
+      echo -e '       '$0' status vm ...\t\tShow VM running status'
+      echo -e '       '$0' show vm ...\t\t\tShow VM details'
+      echo -e '       '$0' list [vm ...]\t\tList VM details'
+      echo
+      exit 1
+      ;;
+  esac
 fi
 
 ########################################
@@ -1716,6 +1734,22 @@ function list_vm
 }
 
 ########################################
+### list all vm
+########################################
+function list_all
+{
+  ls $SYSDIR/*.conf | while read conf
+  do
+    vm=$(basename $conf .conf)
+    if [[ "$vm" != "vmmaestro" && -f "$conf" ]]; then
+      read_conf
+      list_vm
+      del_conf
+    fi
+  done
+}
+
+########################################
 ### Connect to console
 ########################################
 function connect_to_console
@@ -1752,55 +1786,63 @@ fi
 cmd=$1
 shift
 
-res=0
+if [[ -z "$1" ]]; then
 
-while [[ "$1" ]]; do
-  vm=$1
-  read_conf
-  case "$cmd" in
-    console|serial|serial0)
-      connect_to_console
-      ;;
-    monitor|kvm|qemu)
-      connect_to_monitor
-      ;;
-    consolestart|cstart)
-      start_vm
-      connect_to_console
-      break
-      ;;
-    start)
-      start_vm
-      ;;
-    stop)
-      stop_vm
-      ;;
-    shutdown)
-      shutdown_vm
-      ;;
-    restart)
-      shutdown_vm
-      start_vm
-      ;;
-    kill)
-      get_pid_file
-      $SUDO kill -KILL `$SUDO cat $pid_file`
-      ;;
-    status)
-      status_vm
-      res=$(( $res + $? ))
-      ;;
-    list|show)
-      list_vm
-      res=$(( $res + $? ))
-      ;;
-    *)
-      echo "Unknown command: "$cmd. >&2
-      exit 26
-      ;;
-  esac
-  del_conf
-  shift
-done
+  list_all
+
+else
+
+  res=0
+
+  while [[ "$1" ]]; do
+    vm=$1
+    read_conf
+    case "$cmd" in
+      console|serial|serial0)
+        connect_to_console
+        ;;
+      monitor|kvm|qemu)
+        connect_to_monitor
+        ;;
+      consolestart|cstart)
+        start_vm
+        connect_to_console
+        break
+        ;;
+      start)
+        start_vm
+        ;;
+      stop)
+        stop_vm
+        ;;
+      shutdown)
+        shutdown_vm
+        ;;
+      restart)
+        shutdown_vm
+        start_vm
+        ;;
+      kill)
+        get_pid_file
+        $SUDO kill -KILL `$SUDO cat $pid_file`
+        ;;
+      status)
+        status_vm
+        res=$(( $res + $? ))
+        ;;
+      list|show)
+        list_vm
+        res=$(( $res + $? ))
+        ;;
+      *)
+        echo "Unknown command: "$cmd. >&2
+        exit 26
+        ;;
+    esac
+    del_conf
+    shift
+  done
+
+fi
 
 exit $res
