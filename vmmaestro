@@ -1739,7 +1739,7 @@ function list_vm
 function list_all
 {
   if [[ ! -z "$1" && "$1" != "-s" && "$1" != "--status" ]]; then
-      echo "Unkown option: "$1
+      echo "Unknown option: "$1
       exit 27
   fi
   opt=$1
