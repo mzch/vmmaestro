@@ -58,7 +58,7 @@ if [[ $# < 2 ]]; then
     list)
       ;;
     *)
-      echo 'Usage: '$0' command'
+      echo 'VmMaestro - Tiny shell script for KVM control'
       echo
       echo -e '       '$0' start vm ...                  :Start VM'
       echo -e '       '$0' consolestart|cstart vm ...    :Start VM with serial console'
@@ -70,7 +70,7 @@ if [[ $# < 2 ]]; then
       echo -e '       '$0' monitor|kvm|qemu vm ...       :Enter KVM monitor of VM'
       echo -e '       '$0' status vm ...                 :Show VM running status'
       echo -e '       '$0' show vm ...                   :Show VM details'
-      echo -e '       '$0' list [vm ...]                 :List VM details'
+      echo -e '       '$0' list [-s|--status]            :List VM details or status'
       echo
       exit 1
       ;;
@@ -1738,12 +1738,21 @@ function list_vm
 ########################################
 function list_all
 {
+  if [[ ! -z "$1" && "$1" != "-s" && "$1" != "--status" ]]; then
+      echo "Unkown option: "$1
+      exit 27
+  fi
+  opt=$1
   ls $SYSDIR/*.conf | while read conf
   do
     vm=$(basename $conf .conf)
     if [[ "$vm" != "vmmaestro" && -f "$conf" ]]; then
       read_conf
-      list_vm
+      if [[ ! -z $opt ]]; then
+        status_vm
+      else
+        list_vm
+      fi
       del_conf
     fi
   done
@@ -1786,9 +1795,9 @@ fi
 cmd=$1
 shift
 
-if [[ -z "$1" ]]; then
+if [[ "$cmd" == "list" ]]; then
 
-  list_all
+  list_all $1
 
 else
 
@@ -1830,7 +1839,7 @@ else
         status_vm
         res=$(( $res + $? ))
         ;;
-      list|show)
+      show)
         list_vm
         res=$(( $res + $? ))
         ;;
