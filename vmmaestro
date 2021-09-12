@@ -60,17 +60,17 @@ if [[ $# < 2 ]]; then
     *)
       echo 'Usage: '$0' command'
       echo
-      echo -e '       '$0' start vm ...\t\t\tStart VM'
-      echo -e '       '$0' consolestart|cstart vm ...\tStart VM with serial console'
-      echo -e '       '$0' shutdown vm ...\t\tShutdown VM'
-      echo -e '       '$0' stop vm ...\t\t\tStop VM (without shutodnw)'
-      echo -e '       '$0' restart vm ...\t\tRestart VM'
-      echo -e '       '$0' kill vm ...\t\t\tKill VM'
-      echo -e '       '$0' console|serial|serial0 vm ...Enter serial console of VM'
-      echo -e '       '$0' monitor|kvm|qemu vm ...\tEnter KVM monitor of VM'
-      echo -e '       '$0' status vm ...\t\tShow VM running status'
-      echo -e '       '$0' show vm ...\t\t\tShow VM details'
-      echo -e '       '$0' list [vm ...]\t\tList VM details'
+      echo -e '       '$0' start vm ...                  :Start VM'
+      echo -e '       '$0' consolestart|cstart vm ...    :Start VM with serial console'
+      echo -e '       '$0' shutdown vm ...               :Shutdown VM'
+      echo -e '       '$0' stop vm ...                   :Stop VM (without shutodnw)'
+      echo -e '       '$0' restart vm ...                :Restart VM'
+      echo -e '       '$0' kill vm ...                   :Kill VM'
+      echo -e '       '$0' console|serial|serial0 vm ... :Enter serial console of VM'
+      echo -e '       '$0' monitor|kvm|qemu vm ...       :Enter KVM monitor of VM'
+      echo -e '       '$0' status vm ...                 :Show VM running status'
+      echo -e '       '$0' show vm ...                   :Show VM details'
+      echo -e '       '$0' list [vm ...]                 :List VM details'
       echo
       exit 1
       ;;
