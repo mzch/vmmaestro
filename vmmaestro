@@ -356,6 +356,27 @@ function create_bios
 }
 
 ##############################
+### create TPM device
+##############################
+function create_tpm
+{
+  tpm_args=""
+  if [[ x"${tpm_enable}" = x"true" || x"${tpm_enable}" = x"yes" ]]; then
+    if [[ x"${tpm_type}" = x"passthrough" ]]; then
+      tpm_args="-tppdev passthrough, id="${tpm_id}",path="${tpm_dev}" "
+      tpm_args=$tpm_args"-device tpm-tis,tpmdev="${tpm_id}
+    elif [[ x"${tpm_type}" = x"emulator" ]]; then
+      tpm_args="-chardev socket,id="${tpm_char_id}",path="${tpm_char_path}" "
+      tpm_args=$tpm_args"-tpmdev emulator,id="${tpm_id}",chardev="${tpm_char_id}
+      tpm_args=$tpm_args"-device tpm-tis,tpmdev="${tpm_id}
+    else
+      echo "Illegal TPM type: "${tpm_type}
+      exit 28
+    fi
+  fi
+}
+
+##############################
 #### creete drive args
 ##############################
 function create_disk_drive
@@ -828,6 +849,7 @@ function build_cmdline
   create_rng
   create_mem
   create_bios
+  create_tpm
   create_disk_drive
   create_floppy
   create_cdrom
@@ -1302,6 +1324,25 @@ function show_bios
 }
 
 ##############################
+### show TPM device
+##############################
+function show_tpm
+{
+  if [[ x"${tpm_enable}" == x"true" ]] || [[ x"${tpm_enable}" == x"yes" ]]; then
+    printf "TPM: enabled. type=%s\n" ${tpm_type}
+    if [[ "${tpm_type}" = "passthrough" ]]; then
+      printf "     id=%s,path=%s" ${tpm_id} ${tpm_dev}
+    elif [[ "${tpm_type}" = "emulator" ]]; then
+      printf "     id=%s,char_id=%s,char_path=%s" ${tpm_id} ${tpm_char_id} ${tpm_char_path}
+    else
+      printf "     \e[31;1mIllegal TPM type: %s\e[0m" ${tpm_type}
+    fi
+  else
+    printf "TPM: disabled\n"
+  fi
+}
+
+##############################
 #### Show Disks
 ##############################
 function show_disks
@@ -1697,6 +1738,7 @@ function show_conf
   show_rng
   show_mem
   show_bios
+  show_tpm
   show_disks
   show_cdrom
   show_boot

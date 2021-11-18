@@ -137,6 +137,23 @@ bank		= ''
 speed		= ''
 
 ############################################################
+## TPM section
+##	enable 	true when TPM enables
+##	type	"passthrough" or "emulator"
+##	id	TPM device ID
+##	dev	TMP device when "passthrough" is specified
+##	char_id	charcter device if when "emulator" is specified
+##	char_path	character device socket file
+############################################################
+[tpm]
+enable		= false
+type		= passthrough
+id		= tpm0
+dev		= /dev/tpm0
+char_id		= chartpm0
+char_path	= /run/swtpm/tpm0
+
+############################################################
 ## Disk Section
 ##		You need multiple disk drives, put numbers of [disk]
 ##		sections you needs. Drive order depends on listing order here.
