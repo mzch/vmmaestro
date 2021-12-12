@@ -73,7 +73,7 @@ SASL_CONF_PATH	= /home/$runas/.qemu/sasl2/sasl2.conf
 ############################################################
 [system]
 ## Base Settings
-RUNDIR		= /var/run/vmmaestro
+RUNDIR		= /run/vmmaestro
 ############################################################
 #QEMU		= 'qemu-system-x86_64'
 QEMU		= 'kvm'

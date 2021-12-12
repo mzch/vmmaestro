@@ -363,7 +363,7 @@ function create_tpm
   tpm_args=""
   if [[ x"${tpm_enable}" = x"true" || x"${tpm_enable}" = x"yes" ]]; then
     if [[ x"${tpm_type}" = x"passthrough" ]]; then
-      tpm_args="-tppdev passthrough, id="${tpm_id}",path="${tpm_dev}" "
+      tpm_args="-tpmdev passthrough, id="${tpm_id}",path="${tpm_dev}" "
       tpm_args=$tpm_args"-device tpm-tis,tpmdev="${tpm_id}
     elif [[ x"${tpm_type}" = x"emulator" ]]; then
       tpm_args="-chardev socket,id="${tpm_char_id}",path="${tpm_char_path}" "
