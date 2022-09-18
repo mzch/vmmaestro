@@ -76,10 +76,10 @@ If VM is running, shows the message, "```VM name is running.```".
 Otherwise shows the message, "```VM name is stopped.```"
 
 #### vmmaestro list [VM ...]
-Show status and configurations of all VMs.
+Show status and configurations of VMs.
 
 #### vmmaestro console [VM ...]
-Connect serial port and show local text screen. 
+Connect serial port. 
 
 #### vmmaestro monitor [VM ...]
 Connect KVM/QEMU monitor port.
