@@ -50,32 +50,24 @@ function set_default_values
 }
 
 ########################################
-#### check args
+#### print help
 ########################################
-
-if [[ $# < 2 ]]; then
-  case "$1" in
-    list)
-      ;;
-    *)
-      echo 'VmMaestro - Tiny shell script for KVM control'
-      echo
-      echo -e '       '$0' start vm ...                  :Start VM'
-      echo -e '       '$0' consolestart|cstart vm ...    :Start VM with serial console'
-      echo -e '       '$0' shutdown vm ...               :Shutdown VM'
-      echo -e '       '$0' stop vm ...                   :Stop VM (without shutodnw)'
-      echo -e '       '$0' restart vm ...                :Restart VM'
-      echo -e '       '$0' kill vm ...                   :Kill VM'
-      echo -e '       '$0' console|serial|serial0 vm ... :Enter serial console of VM'
-      echo -e '       '$0' monitor|kvm|qemu vm ...       :Enter KVM monitor of VM'
-      echo -e '       '$0' status vm ...                 :Show VM running status'
-      echo -e '       '$0' show vm ...                   :Show VM details'
-      echo -e '       '$0' list [-s|--status]            :List VM details or status'
-      echo
-      exit 1
-      ;;
-  esac
-fi
+function print_help
+{
+    echo 'VmMaestro - Tiny shell script for KVM control'
+    echo
+    echo -e '       '$0' start vm ...                  :Start VM'
+    echo -e '       '$0' consolestart|cstart vm ...    :Start VM with serial console'
+    echo -e '       '$0' shutdown vm ...               :Shutdown VM'
+    echo -e '       '$0' stop vm ...                   :Stop VM (without shutodnw)'
+    echo -e '       '$0' restart vm ...                :Restart VM'
+    echo -e '       '$0' kill vm ...                   :Kill VM'
+    echo -e '       '$0' console|serial|serial0 vm ... :Enter serial console of VM'
+    echo -e '       '$0' monitor|kvm|qemu vm ...       :Enter KVM monitor of VM'
+    echo -e '       '$0' status vm ...                 :Show VM running status'
+    echo -e '       '$0' list vm ...                   :List VM details and status'
+    echo
+}
 
 ########################################
 #### create startup command line
@@ -1077,15 +1069,18 @@ function stop_vm
 ########################################
 function status_vm
 {
-  echo -n $vm" "
   proc_check
   if [[ $? -ne 0 ]]; then
-    echo is stopped.
-    return 1
+    color=31
+    stat="stopped"
+    res=1
   else
-    echo is running.
-    return 0
+    color=36
+    stat="running"
+    res=0
   fi
+  printf "%s is \e[%d;1m%s\e[0m.\n" $vm $color $stat
+  return $res
 }
 
 #############################
@@ -1776,27 +1771,32 @@ function list_vm
 }
 
 ########################################
-### list all vm
+### Get all vm
 ########################################
-function list_all
+function get_all_vm
 {
-  if [[ ! -z "$1" && "$1" != "-s" && "$1" != "--status" ]]; then
-      echo "Unknown option: "$1
-      exit 27
-  fi
-  opt=$1
-  ls $SYSDIR/*.conf | while read conf
+  pos=0
+  confs=$(ls -1 $SYSDIR/*.conf)
+  for conf in $confs
   do
     vm=$(basename $conf .conf)
     if [[ "$vm" != "vmmaestro" && -f "$conf" ]]; then
-      read_conf
-      if [[ ! -z $opt ]]; then
-        status_vm
-      else
-        list_vm
-      fi
-      del_conf
+      allvms[$pos]=$vm
+      pos=$(($pos + 1))
     fi
+  done
+}
+
+########################################
+### Set args in arrays
+########################################
+function set_args
+{
+  allvms[0]=""
+  while [[ "$1" ]];
+  do
+    allvms+=($1)
+    shift
   done
 }
 
@@ -1834,66 +1834,77 @@ else
   SUDO=
 fi
 
-cmd=$1
+CMD=$1
 shift
 
-if [[ "$cmd" == "list" ]]; then
+allvms[0]=""
 
-  list_all $1
-
+if [[ $# -lt 1 ]]; then
+  get_all_vm
 else
-
-  res=0
-
-  while [[ "$1" ]]; do
-    vm=$1
-    read_conf
-    case "$cmd" in
-      console|serial|serial0)
-        connect_to_console
-        ;;
-      monitor|kvm|qemu)
-        connect_to_monitor
-        ;;
-      consolestart|cstart)
-        start_vm
-        connect_to_console
-        break
-        ;;
-      start)
-        start_vm
-        ;;
-      stop)
-        stop_vm
-        ;;
-      shutdown)
-        shutdown_vm
-        ;;
-      restart)
-        shutdown_vm
-        start_vm
-        ;;
-      kill)
-        get_pid_file
-        $SUDO kill -KILL `$SUDO cat $pid_file`
-        ;;
-      status)
-        status_vm
-        res=$(( $res + $? ))
-        ;;
-      show)
-        list_vm
-        res=$(( $res + $? ))
-        ;;
-      *)
-        echo "Unknown command: "$cmd. >&2
-        exit 26
-        ;;
-    esac
-    del_conf
-    shift
-  done
-
+  set_args $@
 fi
+
+res=0
+vm=
+
+for vm in ${allvms[@]}
+do
+  read_conf
+  case "$CMD" in
+    "console"|"serial"|"serial0")
+      connect_to_console
+      res=$(( $res + $? ))
+      ;;
+    "monitor"|"kvm"|"qemu")
+      connect_to_monitor
+      res=$(( $res + $? ))
+      ;;
+    "consolestart"|"cstart")
+      start_vm
+      connect_to_console
+      res=$(( $res + $? ))
+      ;;
+    "start")
+      start_vm
+      res=$(( $res + $? ))
+      ;;
+    "stop")
+      stop_vm
+      res=$(( $res + $? ))
+      ;;
+    "shutdown")
+      shutdown_vm
+      res=$(( $res + $? ))
+      ;;
+    "restart")
+      shutdown_vm
+      start_vm
+      res=$(( $res + $? ))
+      ;;
+    "kill")
+      get_pid_file
+      $SUDO kill -KILL `$SUDO cat $pid_file`
+      res=$(( $res + $? ))
+      ;;
+    "status")
+      status_vm
+      res=$(( $res + $? ))
+      ;;
+    "list")
+      list_vm
+      res=$(( $res + $? ))
+      ;;
+    *)
+      echo "Unknown command: "$cmd. >&2
+      print_help
+      exit 26
+      ;;
+  esac
+  del_conf
+  if [[ $VMM_INT -gt 0 ]]; then
+    sleep $VMM_INT
+  fi
+done
 
 exit $res
