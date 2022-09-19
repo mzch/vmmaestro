@@ -53,39 +53,40 @@ Create lvm partitions or files for VM as you specified in the vm config file(s).
 Type ```vmmaestro start vm-name```and enjoy!
 
 ----
-## Reference    
+## Reference
 #### vmmaestro consolestart [VM...]
-start VM and then connect to serial console.
+start VM and then connect to serial console. No specified VM will start all VMs in order.
 
 #### vmmaestro start [VM...]
-start VMs. This command can boot multiple VMs.
+start VMs. This command can boot multiple VMs. No specified VM will start all VMs in order.
 
 #### vmmaestro shutdown [VM...]
-shutdown VMs. When entering this command, VMs will do shutdown sequences.
+shutdown VMs. When entering this command, VMs will do shutdown sequences. No specified VM will shutdown all VMs in order.
 
 #### vmmaestro stop [VM...]
-stop VMs. When entering this command, VMs will terminate immediately
+stop VMs. When entering this command, VMs will terminate immediately. No specified VM will stop all VMs in order.
 #### vmmaestro kill [VM...]
-kill kvm process directly.
+kill kvm process directly. No specified VM will kill all VMs in order.
 
 #### vmmaestro restart [VM...]
-Reboot VMs.
+Reboot VMs. No specified VM will restart all VMs in order.
 
 #### vmmaestro status [VM...]
 If VM is running, shows the message, "```VM name is running.```".
 Otherwise shows the message, "```VM name is stopped.```"
+No specified VM will show all VMs' status in order.
 
 #### vmmaestro list [VM ...]
-Show status and configurations of VMs.
+Show status and configurations of VMs. No specified VM will list all VMs in order.
 
 #### vmmaestro console [VM ...]
-Connect serial port. 
+Connect VM's serial port. No specified VM will connect all VMs' ports in order.
 
 #### vmmaestro monitor [VM ...]
-Connect KVM/QEMU monitor port.
+Connect KVM/QEMU monitor port. No specified VM will connect all VMs' monitors in order.
 
 #### vmmaestro help
-Print usage
+Print usage.
 
 ----
 ## Hint    
