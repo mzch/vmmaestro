@@ -1909,7 +1909,7 @@ do
       break;
       ;;
     *)
-      echo "Unknown command: "$cmd. >&2
+      echo "Unknown command: "$CMD. >&2
       print_help
       exit 26
       ;;
