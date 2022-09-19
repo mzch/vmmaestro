@@ -73,7 +73,7 @@ Reboot VMs. No specified VM will restart all VMs in order.
 
 #### vmmaestro status [VM...]
 If VM is running, shows the message, "```VM name is running.```".
-Otherwise shows the message, "```VM name is stopped.```"
+Otherwise shows the message, "```VM name is stopped.```".
 No specified VM will show all VMs' status in order.
 
 #### vmmaestro list [VM ...]
