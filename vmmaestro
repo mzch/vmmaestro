@@ -1763,7 +1763,7 @@ function list_vm
     stat="Running"
     res=0
   fi
-  printf "%s:\t\e[%d;1m%s\e[0m.\n" $vm $color $stat
+  printf "\e[33;1m%s\e[0m:\t\e[%d;1m%s\e[0m.\n" $vm $color $stat
   show_conf
   echo
 
