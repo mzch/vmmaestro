@@ -1834,12 +1834,17 @@ else
   SUDO=
 fi
 
+if [[ $# -eq 0 ]]; then
+  print_help
+  exit 0
+fi
+
 CMD=$1
 shift
 
 allvms[0]=""
 
-if [[ $# -lt 1 ]]; then
+if [[ $# -eq 0 ]]; then
   get_all_vm
 else
   set_args $@
