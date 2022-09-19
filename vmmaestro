@@ -1850,50 +1850,63 @@ vm=
 
 for vm in ${allvms[@]}
 do
-  read_conf
   case "$CMD" in
     "console"|"serial"|"serial0")
+      read_conf
       connect_to_console
       res=$(( $res + $? ))
       ;;
     "monitor"|"kvm"|"qemu")
+      read_conf
       connect_to_monitor
       res=$(( $res + $? ))
       ;;
     "consolestart"|"cstart")
+      read_conf
       start_vm
       connect_to_console
       res=$(( $res + $? ))
       ;;
     "start")
+      read_conf
       start_vm
       res=$(( $res + $? ))
       ;;
     "stop")
+      read_conf
       stop_vm
       res=$(( $res + $? ))
       ;;
     "shutdown")
+      read_conf
       shutdown_vm
       res=$(( $res + $? ))
       ;;
     "restart")
+      read_conf
       shutdown_vm
       start_vm
       res=$(( $res + $? ))
       ;;
     "kill")
+      read_conf
       get_pid_file
       $SUDO kill -KILL `$SUDO cat $pid_file`
       res=$(( $res + $? ))
       ;;
     "status")
+      read_conf
       status_vm
       res=$(( $res + $? ))
       ;;
     "list")
+      read_conf
       list_vm
       res=$(( $res + $? ))
+      ;;
+    "help")
+      print_help
+      break;
       ;;
     *)
       echo "Unknown command: "$cmd. >&2

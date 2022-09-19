@@ -84,8 +84,9 @@ Connect serial port.
 #### vmmaestro monitor [VM ...]
 Connect KVM/QEMU monitor port.
 
+#### vmmaestro help
+Print usage
+
 ----
 ## Hint    
 * By default, VNC & SPICE port is bind to localhost address (127.0.0.1). I recommend to use ```SSH tunneling``` instead of changing bind address.
-
-
