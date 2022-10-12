@@ -54,39 +54,44 @@ Type ```vmmaestro start vm-name```and enjoy!
 
 ----
 ## Reference
-#### vmmaestro consolestart [VM...]
+#### vmmaestro [-r|--reverse] consolestart [VM...]
 start VM and then connect to serial console. No specified VM will start all VMs in order.
 
-#### vmmaestro start [VM...]
+#### vmmaestro [-r|--reverse] start [VM...]
 start VMs. This command can boot multiple VMs. No specified VM will start all VMs in order.
 
-#### vmmaestro shutdown [VM...]
+#### vmmaestro [-r|--reverse] shutdown [VM...]
 shutdown VMs. When entering this command, VMs will do shutdown sequences. No specified VM will shutdown all VMs in order.
 
-#### vmmaestro stop [VM...]
+#### vmmaestro [-r|--reverse] stop [VM...]
 stop VMs. When entering this command, VMs will terminate immediately. No specified VM will stop all VMs in order.
 #### vmmaestro kill [VM...]
 kill kvm process directly. No specified VM will kill all VMs in order.
 
-#### vmmaestro restart [VM...]
+#### vmmaestro [-r|--reverse] restart [VM...]
 Reboot VMs. No specified VM will restart all VMs in order.
 
-#### vmmaestro status [VM...]
+#### vmmaestro [-r|--reverse] status [VM...]
 If VM is running, shows the message, "```VM name is running.```".
 Otherwise shows the message, "```VM name is stopped.```".
 No specified VM will show all VMs' status in order.
 
-#### vmmaestro list [VM ...]
+#### vmmaestro [-r|--reverse] list [VM ...]
 Show status and configurations of VMs. No specified VM will list all VMs in order.
 
-#### vmmaestro console [VM ...]
+#### vmmaestro [-r|--reverse] console [VM ...]
 Connect VM's serial port. No specified VM will connect all VMs' ports in order.
 
-#### vmmaestro monitor [VM ...]
+#### vmmaestro [-r|--reverse] monitor [VM ...]
 Connect KVM/QEMU monitor port. No specified VM will connect all VMs' monitors in order.
 
 #### vmmaestro help
 Print usage.
+
+- When no VM and `-r`,`--reverse` option is specified, `vmmaestro` will search VMs in reverse.
+
+#### Envoronment Variables
+If setting `VMM_DELAY` environment variable, `vmmaestro` will insert specified seconds delay between earch VM.
 
 ----
 ## Hint    

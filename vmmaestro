@@ -1776,7 +1776,13 @@ function list_vm
 function get_all_vm
 {
   pos=0
-  confs=$(ls -1 $SYSDIR/*.conf)
+  lsopt=
+  if [[ $do_reverse -gt 0 ]]; then
+    lsopt="-1r"
+  else
+    lsopt="-1"
+  fi
+  confs=$(ls $lsopt $SYSDIR/*.conf)
   for conf in $confs
   do
     vm=$(basename $conf .conf)
@@ -1838,6 +1844,17 @@ if [[ $# -eq 0 ]]; then
   print_help
   exit 0
 fi
+
+do_reverse=0
+OPTIONS=`getopt -n $(basename $0) -o r -l reverse -- "$@"`
+eval set -- "$OPTIONS"
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    "--reverse") do_reverse=1; shift ;;
+    "-r") do_reverse=1; shift ;;
+    "--") shift; break;;
+  esac
+done
 
 CMD=$1
 shift
@@ -1920,8 +1937,8 @@ do
       ;;
   esac
   del_conf
-  if [[ $VMM_INT -gt 0 ]]; then
-    sleep $VMM_INT
+  if [[ $VMM_DELAY -gt 0 ]]; then
+    sleep $VMM_DELAY
   fi
 done
 
