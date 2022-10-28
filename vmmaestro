@@ -708,7 +708,7 @@ function create_display
       fi
       if [[ $spice_tls == 'y' ]]; then
         if [[ x$spice_tls_port == x || x$ssl_SSLDIR == x ]]; then
-          echo 'Need both TLS port and SSL cert dir specified.'
+          echo 'Need both TLS port and SSL certs dir specified.'
           exit 19
         fi
         disp_args=$disp_args',tls-port='$spice_tls_port',x509-dir='$ssl_SSLDIR
@@ -983,7 +983,6 @@ function del_conf
   unset network_if
   unset network_ifup
   unset network_ifdown
-  unset vg_name
   unset disk_lv
   unset disk_if
   unset disk_fmt
@@ -991,14 +990,11 @@ function del_conf
   unset disk_aio
   unset cdrom_iso
   unset cdrom_if
-  unset keyboard_lang
   unset floppy_drive1
   unset floppy_drive2
   unset display_type
   unset spice_port
   unset spice_tls_port
-  unset system_SASL_CONF_PATH
-  unset system_SSLDIR
 }
 
 ########################################
