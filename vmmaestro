@@ -932,9 +932,9 @@ EOAS
 }
 
 ########################################
-### Read configuration
+### Read system wide configuration
 ########################################
-function read_conf
+function read_def_conf
 {
   set_default_values
 
@@ -948,11 +948,17 @@ function read_conf
   if [[ x$system_sasl_conf_path != x ]]; then
     export SASL_CONF_PATH=$system_sasl_conf_path
   fi
+}
 
-  vm_conf=$SYSDIR/$vm.conf
+########################################
+### Read VM configuration
+########################################
+function read_conf
+{
+  vm_conf=$SYSDIR/$conf_loc/$vm.conf
 
   if [ ! -f $vm_conf ]; then
-    echo You must place $vm.conf in $SYSDIR
+    echo You must place $vm.conf in $SYSDIR/$conf_loc
     exit 22
   fi
   read_conf_file $vm_conf
@@ -1782,11 +1788,11 @@ function get_all_vm
   else
     lsopt="-1"
   fi
-  confs=$(ls $lsopt $SYSDIR/*.conf)
+  confs=$(ls $lsopt $SYSDIR/$conf_loc/*.conf)
   for conf in $confs
   do
     vm=$(basename $conf .conf)
-    if [[ "$vm" != "vmmaestro" && -f "$conf" ]]; then
+    if [[ -f "$conf" ]]; then
       allvms[$pos]=$vm
       pos=$(($pos + 1))
     fi
@@ -1860,6 +1866,8 @@ CMD=$1
 shift
 
 allvms[0]=""
+
+read_def_conf
 
 if [[ $# -eq 0 ]]; then
   get_all_vm
