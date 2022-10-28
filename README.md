@@ -40,7 +40,7 @@ Add bridge interfaces per NIC. Recommend to name them like '```br0```', '```br1`
 
 #### Step 8
 * Create the global configuration file, ```/etc/vmmaestro/vmmaestro.conf``` (See ```vmmaestro.conf.sample```).
-* Create the VM specific configuration file in ```/etc/vmmaestro```. The base name of it must be the same name as VM and has the extension, '```.conf```'.
+* Create the VM specific configuration file in ```/etc/vmmaestro/vms```. The base name of it must be the same name as VM and has the extension, '```.conf```'. You can change `vms` directory in `/etc/vmmaestro/vmmaestro.conf`.
 * You can put all settings in the VM specific configuration file and leave blank the global configuration. However, I recommend to put as many common settings as possible in the global configuration file. When the same item in both file, **the one put into the VM specific configuration is given priority**.
 
 #### Step 9
