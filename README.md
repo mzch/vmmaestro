@@ -88,7 +88,7 @@ Connect KVM/QEMU monitor port. No specified VM will connect all VMs' monitors in
 #### vmmaestro help
 Print usage.
 
-- When no VM and `-r`,`--reverse` option is specified, `vmmaestro` will search VMs in reverse.
+※ When no VM and `-r`,`--reverse` option is specified, `vmmaestro` will search VMs in reverse.
 
 #### Envoronment Variables
 If setting `VMM_DELAY` environment variable, `vmmaestro` will insert specified seconds delay between earch VM.
