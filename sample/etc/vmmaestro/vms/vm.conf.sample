@@ -156,7 +156,7 @@ char_path	= /run/swtpm/tpm0
 ############################################################
 ## Disk Section
 ##		You need multiple disk drives, put numbers of [disk]
-##		sections you needs. Drive order depends on listing order here.
+##		sections you need. Drive order depends on listing order here.
 ############################################################
 ##	lv	Set lv name or file name used as VM's drive.
 ##	if	'virtio'	para-virtual device, fastest
@@ -312,7 +312,7 @@ chroot		=
 ##	units	Number of CPU units
 ##	cores	Number of CPU cores per 1 CPU unit
 ##	threads	Number of CPU threads
-##	sockets	Number of CPU soclets
+##	sockets	Number of CPU socket
 ##	iswinguest	Set 1 when Windows guest
 ############################################################
 [cpu]
