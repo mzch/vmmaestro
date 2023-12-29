@@ -238,7 +238,7 @@ sock_fd		= n
 ##	sections you needs. Drive order depends on listing order here.
 ############################################################
 ##	type	'tap'		use 'tap' driver
-##		'brdige'	use 'bridge' driver
+##		'bridge'	use 'bridge' driver
 ##		'user'		use 'vhost-user' driver
 ##		'none'		don't use network
 ##	addr	Specify MAC address. Please use prefix
@@ -253,7 +253,7 @@ sock_fd		= n
 ##					exec 'qemu-kvm -net nic,model=\?'
 ##		* When you set vhost to 'y', this setting is ignored
 ##		  and 'virtio' is always set.
-##		bridge	set brdige interface name if you select
+##		bridge	set bridge interface name if you select
 ##			type 'bridge'
 ##		if	tap interface name
 ##		ifup	set helper script when nic is going up
