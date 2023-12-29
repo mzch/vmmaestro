@@ -59,7 +59,7 @@ function print_help
     echo -e '       '$0' start vm ...                  :Start VM'
     echo -e '       '$0' consolestart|cstart vm ...    :Start VM with serial console'
     echo -e '       '$0' shutdown vm ...               :Shutdown VM'
-    echo -e '       '$0' stop vm ...                   :Stop VM (without shutodnw)'
+    echo -e '       '$0' stop vm ...                   :Stop VM (without shutdown)'
     echo -e '       '$0' restart vm ...                :Restart VM'
     echo -e '       '$0' kill vm ...                   :Kill VM'
     echo -e '       '$0' console|serial|serial0 vm ... :Enter serial console of VM'
