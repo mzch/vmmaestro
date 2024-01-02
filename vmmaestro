@@ -885,7 +885,7 @@ function read_conf_file
     CSECTION = "";
   }
   
-  /^[ \\ta-zA-Z0-9_-+!@$%^&\\/.:]+/ {
+  /^[ \\ta-zA-Z0-9_+!@$%^&\\/.:-]+/ {
     pos   = index(\$0, "=");
     if (pos > 0)
     {
@@ -908,11 +908,11 @@ function read_conf_file
     }
   }
   
-/^[ \\t]*\\[[a-zA-Z0-9_-+!@$%^&\\/.:]+/ {
+/^[ \\t]*\\[[a-zA-Z0-9_+!@$%^&\\/.:-]+/ {
   gsub("^[ \\t]+" ,"", \$1);
   gsub("[ \\t]+$" ,"", \$1);
-  gsub("^\\[" ,"", \$1);
-  gsub("\\]$" ,"", \$1);
+  gsub("^\\\[" ,"", \$1);
+  gsub("\\\]$" ,"", \$1);
   CSECTION = \$1;
   if (match(CSECTION,"disk") > 0)
   {     
