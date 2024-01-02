@@ -10,7 +10,7 @@
 #E=echo
 
 ########################################
-# use_sudo : y use sudo command 
+# use_sudo : y use sudo command
 #            d use doas command
 #            else not use any commnad
 ########################################
@@ -125,7 +125,7 @@ function create_cpu
   fi
 
   cpu_args='-cpu '$cpu_model' -smp '$cpu_units
-  
+
   if [[ x$cpu_cores != x ]]; then
     cpu_args=$cpu_args',cores='$cpu_cores
   fi
@@ -152,7 +152,7 @@ function check_numa
     fi
   else
     numa_args=''
-  fi 
+  fi
 }
 
 ##############################
@@ -597,7 +597,7 @@ function create_network_adaptor
   do
 
     nic_arg=""
-    
+
     if [[ x${network_name[$idx]} == x ]]; then
       echo "Need NIC symbol name: "$idx
       exit 14
@@ -607,7 +607,7 @@ function create_network_adaptor
     fi
     check_nic ${network_model[$idx]}
     if [[ ! $? ]]; then
-      echo "Illegal nic model: "$${network_model[$idx]} 
+      echo "Illegal nic model: "$${network_model[$idx]}
       exit 15
     fi
 
@@ -686,7 +686,7 @@ function create_network_adaptor
     net_args=$net_args' '$nic_arg
 
     ((idx=idx+1))
-    
+
   done
 }
 
@@ -733,7 +733,7 @@ function create_display
       echo 'Illegal display: '$display_type
       exit 20
       ;;
-  esac  
+  esac
 }
 
 ##############################
@@ -745,7 +745,7 @@ function create_kbd
   KBD_LIST=$KBD_LIST"de en-us fi fr-be hr it lv nl-be pt sl tr"
 
   kbd_args=
-  if [[ x$keyboard_lang != x ]]; then 
+  if [[ x$keyboard_lang != x ]]; then
     for l in $KBD_LIST
     do
       if [[ $keyboard_lang = $l ]]; then
@@ -878,13 +878,13 @@ function build_cmdline
 function read_conf_file
 {
   cmds=$(awk -f - $1 <<EOAS
-  
+
   BEGIN {
     DISKS    = -1;
     NICS     = -1;
     CSECTION = "";
   }
-  
+
   /^[ \\ta-zA-Z0-9_+!@$%^&\\/.:-]+/ {
     pos   = index(\$0, "=");
     if (pos > 0)
@@ -907,7 +907,7 @@ function read_conf_file
           printf ("%s_%s=%s\n", CSECTION, left, right);
     }
   }
-  
+
 /^[ \\t]*\\[[a-zA-Z0-9_+!@$%^&\\/.:-]+/ {
   gsub("^[ \\t]+" ,"", \$1);
   gsub("[ \\t]+$" ,"", \$1);
@@ -915,11 +915,11 @@ function read_conf_file
   gsub("\\\]$" ,"", \$1);
   CSECTION = \$1;
   if (match(CSECTION,"disk") > 0)
-  {     
+  {
         DISKS = DISKS + 1;
   }
   if (match(CSECTION, "network") > 0)
-  {     
+  {
         NICS = NICS + 1;
   }
 }
@@ -1159,7 +1159,7 @@ function show_iommu
 function show_rng
 {
   if [[ $rng_enable == 'y' ]]; then
-    printf "RNG: enabled\n" 
+    printf "RNG: enabled\n"
   fi
 }
 
@@ -1458,7 +1458,7 @@ function show_network
     color2="0"
     if [[ ! $? ]]; then
       color2="31;1"
-      network_model[$idx]="Unsupported" 
+      network_model[$idx]="Unsupported"
     fi
 
     printf "NET %d: Model=\e[%sm%s\e[0m,Name=\e[%sm%s\e[0m" $idx  $color2 ${network_model[$idx]} $color ${network_name[$idx]}
@@ -1531,7 +1531,7 @@ function show_network
     esac
     echo
     ((idx=idx+1))
-    
+
   done
 }
 
@@ -1581,7 +1581,7 @@ function show_display
     *)
       printf "\e[31;1mInvalid Display\e[0m"
       ;;
-  esac  
+  esac
   echo
 }
 
@@ -1595,7 +1595,7 @@ function show_kbd
   KBD_LIST=$KBD_LIST"de en-us fi fr-be hr it lv nl-be pt sl tr"
 
   flag=0
-  if [[ x$keyboard_lang != x ]]; then 
+  if [[ x$keyboard_lang != x ]]; then
     printf "KBD: %s" $keyboard_lang
     for l in $KBD_LIST
     do
@@ -1730,7 +1730,7 @@ function show_virtfs
 #############################
 function show_conf
 {
-  show_cpus 
+  show_cpus
   show_iommu
   show_rng
   show_mem
@@ -1816,7 +1816,7 @@ function connect_to_console
   clear
   get_serial
   echo For reasons unknown, ^O is the panic button.
-  $SUDO socat -,raw,echo=0,escape=0x0f UNIX-CONNECT:$serial_port 
+  $SUDO socat -,raw,echo=0,escape=0x0f UNIX-CONNECT:$serial_port
 }
 
 ########################################
