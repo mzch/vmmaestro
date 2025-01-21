@@ -29,27 +29,27 @@ Install `socat`, `sudo`, `bridge-utils` and `qemu-kvm` packages.
 * Add `kvm` user to `sudo` (See `sample/etc/sudoers.d/qemu`).
 * Of course, add also your account to `sudo`.
 
-#### Step 6
+### Step 6
 * Add KVM kernel module. (execute `modprobe kvm`)
 * Add TUN/tap kernel module, `tun` to the system. (execute '`modprobe tun`')
 * Add Vhost-net kernel module, `vhost-net` to the system. (execute '`modprobe vhost-net`')
 * Add entries above into `/etc/modules` if necessary.
 
-#### Step 7
+### Step 7
 Add bridge interfaces per NIC. Recommend to name them like '`br0`', '`br1`'...
 
-#### Step 8
+### Step 8
 * Create the global configuration file, `/etc/vmmaestro/vmmaestro.conf` (See `vmmaestro.conf.sample`).
 * Create the VM specific configuration file in `/etc/vmmaestro/vms`. The base name of it must be the same name as VM and has the extension, '`.conf`'. You can change `vms` directory in `/etc/vmmaestro/vmmaestro.conf`.
 * You can put all settings in the VM specific configuration file and leave blank the global configuration. However, I recommend to put as many common settings as possible in the global configuration file. When the same item in both file, **the one put into the VM specific configuration is given priority**.
 
-#### Step 9
+### Step 9
 Create acl file for bridge interfaces in `/etc/qemu`. (See `sample/etc/qemu/bridge.conf`)
 
-#### Step 10
+### Step 10
 Create lvm partitions or files for VM as you specified in the vm config file(s).
 
-#### Step 11
+### Step 11
 Type `vmmaestro start vm-name`and enjoy!
 
 ----
