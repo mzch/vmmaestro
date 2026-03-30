@@ -1834,12 +1834,16 @@ function connect_to_monitor
 ### main
 ########################################
 
-if [[ $use_sudo == 'y' ]]; then
-  SUDO='sudo'
-elif [[ $use_sudo == 'd' ]]; then
-  SUDO='doas'
-else
+if [[ $UID -eq 0 ]]; then
   SUDO=
+else
+  if [[ $use_sudo == 'y' ]]; then
+    SUDO='sudo'
+  elif [[ $use_sudo == 'd' ]]; then
+    SUDO='doas'
+  else
+    SUDO=
+  fi
 fi
 
 if [[ $# -eq 0 ]]; then
