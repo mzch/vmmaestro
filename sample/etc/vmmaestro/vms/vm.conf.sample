@@ -173,14 +173,14 @@ char_path	= /run/swtpm/tpm0
 ## First disk
 [disk]
 lv		= 'vm-root'
-if		= 'virtio'
+if		= 'virtio-scsi'
 fmt		= 'raw'
 aio		= 'native'
 
 ## Second disk
 [disk]
 lv		= 'vm-swap'
-if		= 'virtio'
+if		= 'virtio-scsi'
 fmt		= 'raw'
 aio		= 'native'
 
